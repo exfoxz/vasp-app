@@ -1,0 +1,10 @@
+{
+"name": "VaspSocket",
+"version": "0.0.0",
+"description": "Socket Server for VASPi",
+"dependencies": {
+    "socket.io": "latest",
+    "express": "latest"
+    },
+    "author": "exfoxz"
+}
