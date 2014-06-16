@@ -37,6 +37,7 @@
                             >{{user.name}}</a>
                         </li>
                     </ul>
+                    <div class='nav navbar-nav' id='spinner'></div>
                     <ul class="nav navbar-nav navbar-right">
                         <li class="active" ng-click='ctrl.subscribe("room1")'><a href="#">Room 1</a></li>
                     </ul>
@@ -53,27 +54,18 @@
                     style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas> -->
                 </div>
 
-                <div class="col-sm-3 sidebar">
-
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <button class="btn btn-warning" ng-click="ctrl.get()">Get</button>
+                <div class="col-sm-2 sidebar">
+                    <form role='form'>
+                        <div class='form-group'>
+                            <label class='sr-only'>Name Input</label>
+                            <input class='form-control' placeholder='Enter name of protein' ng-model='ctrl.input.name'>
+                            <input class='form-control' placeholder='Enter color of protein' ng-model='ctrl.input.color'>
                         </div>
 
-                        <div class="col-sm-3">
-                            <div id='spinner'></div>
-                        </div>
-                    </div>
+                        <button class="btn btn-warning" ng-click="ctrl.fetch(ctrl.input.name)">Search</button>
+                    </form>
 
-                    <div class="row">
-                        <div>
-                            <input ng-model='ctrl.input.name'>
-                            <button class='btn btn-info'
-                             ng-click='ctrl.add(ctrl.input.name)'>Add</button>
-                        </div>
-                    </div>
-
-                    <div class="row">
+                 <!--    <div class="row">
 
                         <div ng-repeat="obj in ctrl.barkObjects">
 
@@ -91,7 +83,7 @@
 
                         </div>
                     </div>
-
+ -->
             </div>
 
         </div>
