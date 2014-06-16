@@ -1,7 +1,7 @@
 {
-"name": "VaspSocket",
-"version": "0.0.0",
-"description": "Socket Server for VASPi",
+"name": "VASP APP",
+"version": "0.0.1",
+"description": "Web app for VASP",
 "dependencies": {
     "socket.io": "latest",
     "express": "latest"
