@@ -1,5 +1,5 @@
 {
-"name": "VaspSocket",
+"name": "VaspApp",
 "version": "0.0.1",
 "description": "Web App for VASP",
 "dependencies": {
