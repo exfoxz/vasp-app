@@ -34,8 +34,8 @@ app.controller('objCtrl', function($scope, $http) {
   };
 
   //url for server to fetch information
-  var serverUrl = 'http://localhost:5000/';
-  //var serverUrl = 'http://vasp-api.herokuapp.com/';
+  //var serverUrl = 'http://localhost:5000/';
+  var serverUrl = 'http://vasp-api.herokuapp.com/';
 
   //objects recevied from Bark
   ctrl.barkObjects = [];
