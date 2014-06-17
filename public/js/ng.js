@@ -34,8 +34,8 @@ app.controller('objCtrl', function($scope, $http) {
   };
 
   //url for server to fetch information
-  //var serverUrl = 'http://localhost:5000/';
-  var serverUrl = 'http://vasp-api.herokuapp.com/';
+  var serverUrl = 'http://localhost:5000/';
+  //var serverUrl = 'http://vasp-api.herokuapp.com/';
 
   //objects recevied from Bark
   ctrl.barkObjects = [];
@@ -68,7 +68,7 @@ app.controller('objCtrl', function($scope, $http) {
         console.log(data);
 
         //add sphere to scene
-        addObject(data.atoms, ctrl.input.color);
+        addObject(data.atoms, data.centroid, ctrl.input.color);
       })
       .error(function(err) {
         //stop spinner
@@ -208,71 +208,71 @@ app.controller('objCtrl', function($scope, $http) {
 
   }
 
-  //Initialize socket
-  //ctrl.urlSocket = 'http://bark.cse.lehigh.edu:3700';
-  ctrl.urlSocket = 'http://localhost:3700';
-  ctrl.socket = io.connect(ctrl.urlSocket);
+  // //Initialize socket
+  // //ctrl.urlSocket = 'http://bark.cse.lehigh.edu:3700';
+  // ctrl.urlSocket = 'http://localhost:3700';
+  // ctrl.socket = io.connect(ctrl.urlSocket);
 
-  ctrl.mouseCounter = 0;
-  //Get initial message from socket server
-  //Receiving data from socket server
-  ctrl.socket.on('message', function(data) {
-      //welcome message
-      console.log(data);
-      if(data.message) {
-          //Initialize the canvas for later use
-          ctrl.canvas = document.getElementById("scene").children[0];
-          ctrl.ctx = ctrl.canvas.getContext('2d');
-          console.log(ctrl.ctx);
-          //id
-          console.log(ctrl.socket.socket.sessionid);
-      }
-      //processing data
-      else if(data.mouseData) {
-          //console.log(document.getElementById("layer2"));
-          console.log(data);
-          //if id === received id, the data is from self
-          if(data.mouseData.id === ctrl.socket.socket.sessionid)
-            console.log('This is from you!');
-          //else, the data is from...
-          else {
-            //TODO: DRAW A POINTER BASED ON MOUSE DATA
-       /*     console.log(ctrl.ctx.canvas.clientWidth * data.mouseData.percentX);
-            console.log(ctrl.ctx.canvas.clientHeight * data.mouseData.percentY);
-            ctrl.ctx.fillRect(ctrl.ctx.canvas.clientWidth * data.mouseData.percentX,
-              ctrl.ctx.canvas.clientHeight * data.mouseData.percentY
-              ,10,10);
-            //console.log('This is ' + ctrl.canvas.width);*/
-            console.log('This is from: ' + data.mouseData.id);
-          }
-      }
-  });
+  // ctrl.mouseCounter = 0;
+  // //Get initial message from socket server
+  // //Receiving data from socket server
+  // ctrl.socket.on('message', function(data) {
+  //     //welcome message
+  //     console.log(data);
+  //     if(data.message) {
+  //         //Initialize the canvas for later use
+  //         ctrl.canvas = document.getElementById("scene").children[0];
+  //         ctrl.ctx = ctrl.canvas.getContext('2d');
+  //         console.log(ctrl.ctx);
+  //         //id
+  //         console.log(ctrl.socket.socket.sessionid);
+  //     }
+  //     //processing data
+  //     else if(data.mouseData) {
+  //         //console.log(document.getElementById("layer2"));
+  //         console.log(data);
+  //         //if id === received id, the data is from self
+  //         if(data.mouseData.id === ctrl.socket.socket.sessionid)
+  //           console.log('This is from you!');
+  //         //else, the data is from...
+  //         else {
+  //           //TODO: DRAW A POINTER BASED ON MOUSE DATA
+  //           console.log(ctrl.ctx.canvas.clientWidth * data.mouseData.percentX);
+  //           console.log(ctrl.ctx.canvas.clientHeight * data.mouseData.percentY);
+  //           ctrl.ctx.fillRect(ctrl.ctx.canvas.clientWidth * data.mouseData.percentX,
+  //             ctrl.ctx.canvas.clientHeight * data.mouseData.percentY
+  //             ,10,10);
+  //           //console.log('This is ' + ctrl.canvas.width);
+  //           console.log('This is from: ' + data.mouseData.id);
+  //         }
+  //     }
+  // });
 
-  ctrl.socket.on('newUser', function(data) {
-    console.log(data);
-    /*
-    //if data of new user is different from self's id
-    if(data.id != ctrl.socket.socket.sessionid)
-      $scope.$apply(function(){
-        ctrl.users.push({name: data.randomName, color: 'black'});
-      });
-    */
-    $scope.$apply(function(){
-      ctrl.users = data.users;
-    });
-  });
+  // ctrl.socket.on('newUser', function(data) {
+  //   console.log(data);
+  //   /*
+  //   //if data of new user is different from self's id
+  //   if(data.id != ctrl.socket.socket.sessionid)
+  //     $scope.$apply(function(){
+  //       ctrl.users.push({name: data.randomName, color: 'black'});
+  //     });
+  //   */
+  //   $scope.$apply(function(){
+  //     ctrl.users = data.users;
+  //   });
+  // });
 
-  ctrl.socket.on('queried', function(data) {
-    console.log('sdasd');
-    console.log('QUERIED: ' + data);
-  });
+  // ctrl.socket.on('queried', function(data) {
+  //   console.log('sdasd');
+  //   console.log('QUERIED: ' + data);
+  // });
 
-  ctrl.socket.on('queriedControlData', function(data) {
-    if(data.id == ctrl.socket.socket.sessionid) {
-      console.log(controls);
-      ctrl.socket.emit('sendControlData', {controls: controls});
-    }
-  });
+  // ctrl.socket.on('queriedControlData', function(data) {
+  //   if(data.id == ctrl.socket.socket.sessionid) {
+  //     console.log(controls);
+  //     ctrl.socket.emit('sendControlData', {controls: controls});
+  //   }
+  // });
   //subscribes a room
   ctrl.subscribe = function(room) {
     ctrl.socket.emit('subscribe', {room: room});

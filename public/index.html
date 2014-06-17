@@ -48,7 +48,7 @@
         <div labe='Main Container' class="container">
             <div class="row">
 
-                <div ng-mousemove='ctrl.mousemove($event)' class="col-sm-9" id="scene">
+                <div class="col-sm-9" id="scene">
                     <!-- TODO: FIX LAYER 2 - cannot rotate problem
                     <canvas class='canvas' id="layer2"
                     style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas> -->
@@ -59,7 +59,13 @@
                         <div class='form-group'>
                             <label class='sr-only'>Name Input</label>
                             <input class='form-control' placeholder='Enter name of protein' ng-model='ctrl.input.name'>
-                            <input class='form-control' placeholder='Enter color of protein' ng-model='ctrl.input.color'>
+                            <select class='form-control' placeholder='Enter color of protein' ng-model='ctrl.input.color'>
+                            <option value='red'>Red</option>
+                            <option value='blue'>Blue</option>
+                            <option value='green'>Green</option>
+                            <option value='yellow'>Yellow</option>
+                            <option value='black'>Black</option>
+                            </select>
                         </div>
 
                         <button class="btn btn-warning" ng-click="ctrl.fetch(ctrl.input.name)">Search</button>

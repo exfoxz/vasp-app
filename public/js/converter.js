@@ -95,16 +95,37 @@ window.onload = function () {
         window.requestAnimationFrame(animate, renderer.domElement);
     }
 /** Add new object to the scene */
-function addObject(atoms, color) {
-    console.log(atoms);
+function addObject(atoms, centroid, color) {    
     var config = {
         radius: 1,
-        segments: 16,
-        rings: 16
+        segments: 10, //drop to 10 - 12
+        rings: 6 //drop to 6
     }
+
+    var sphereGeometry;
+
     atoms.forEach(function(atom) {
-        addSphere(atom, config, color, scene);
+        if(!sphereGeometry) {
+            console.log('initial sphere');
+            sphereGeometry =
+                new THREE.SphereGeometry(config.radius, config.segments, config.rings);
+            console.log(sphereGeometry);
+            sphereGeometry.applyMatrix(new THREE.Matrix4().makeTranslation(atom.x, atom.y, atom.z));
+        }
+
+        else {    
+            console.log('new sphere');
+            var newSphere = new THREE.SphereGeometry(config.radius, config.segments, config.rings);
+            newSphere.applyMatrix(new THREE.Matrix4().makeTranslation(atom.x, atom.y, atom.z));
+            //merge newSphere to sphereGeometry
+            THREE.GeometryUtils.merge(sphereGeometry, newSphere);
+        }
     })
+    //create a mesh
+    var mesh = new THREE.Mesh(sphereGeometry, new THREE.MeshLambertMaterial({color: color}));
+    //add sphereGeometry to scene
+    mesh.position.set(-centroid[0], -centroid[1], -centroid[2]);
+    scene.add(mesh);
 }
 
 function addSphere(atom, config, color, scene) {
@@ -113,7 +134,6 @@ function addSphere(atom, config, color, scene) {
          new THREE.MeshLambertMaterial({color: color}));
 
     sphere.position.set(atom.x, atom.y, atom.z);
-
     scene.add(sphere);
 }
 // /** GET server's triangles data file and store it and add it to scene*/
