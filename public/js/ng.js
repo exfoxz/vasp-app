@@ -1,37 +1,52 @@
 'use strict';
-var app = angular.module('app', []);
+var app = angular.module('app', ['ui.bootstrap']);
 
 
 app.config(function($httpProvider){
   delete $httpProvider.defaults.headers.common['X-Requested-With'];
 });
 
-app.controller('objCtrl', function($scope, $http) {
+app.controller('objCtrl', function($scope, $http, $timeout) {
   var ctrl = this;
 
   //dummy object for input
   ctrl.input = {};
 
+    //object for progress feedback
+    ctrl.progress = {started: false, value: 0, delay: 1000, inc: 20};
+    ctrl.progress.increment = function() {
+        var value = this.value;
+        var inc = this.inc;
+        $timeout(function(){
+            value+= inc;
+        }, this.delay);
+    }
+    /* reset ctrl.input */
+    ctrl.input.reset = function () {
+        ctrl.input.name = '';
+    }
+    //welcome message
+    ctrl.welcomeMessage = "<- Enter a protein's name and click Go! to get started!";
   //new spinner
-  ctrl.spinnerDiv = document.getElementById('spinner');
-  ctrl.spinnerOpts = { //options for spinner
-    lines: 7, // The number of lines to draw
-    length: 8, // The length of each line
-    width: 2, // The line thickness
-    radius: 3, // The radius of the inner circle
-    corners: 1, // Corner roundness (0..1)
-    rotate: 90, // The rotation offset
-    direction: 1, // 1: clockwise, -1: counterclockwise
-    color: '#000', // #rgb or #rrggbb or array of colors
-    speed: 1, // Rounds per second
-    trail: 50, // Afterglow percentage
-    shadow: false, // Whether to render a shadow
-    hwaccel: false, // Whether to use hardware acceleration
-    className: 'spinner', // The CSS class to assign to the spinner
-    zIndex: 2e9, // The z-index (defaults to 2000000000)
-    top: 'auto', // Top position relative to parent in px
-    left: 'auto' // Left position relative to parent in px
-  };
+//  ctrl.spinnerDiv = document.getElementById('spinner');
+//  ctrl.spinnerOpts = { //options for spinner
+//    lines: 7, // The number of lines to draw
+//    length: 8, // The length of each line
+//    width: 2, // The line thickness
+//    radius: 3, // The radius of the inner circle
+//    corners: 1, // Corner roundness (0..1)
+//    rotate: 90, // The rotation offset
+//    direction: 1, // 1: clockwise, -1: counterclockwise
+//    color: '#000', // #rgb or #rrggbb or array of colors
+//    speed: 1, // Rounds per second
+//    trail: 50, // Afterglow percentage
+//    shadow: false, // Whether to render a shadow
+//    hwaccel: false, // Whether to use hardware acceleration
+//    className: 'spinner', // The CSS class to assign to the spinner
+//    zIndex: 2e9, // The z-index (defaults to 2000000000)
+//    top: 'auto', // Top position relative to parent in px
+//    left: 'auto' // Left position relative to parent in px
+//  };
 
   //url for server to fetch information
   //var serverUrl = 'http://localhost:5000/';
@@ -44,33 +59,63 @@ app.controller('objCtrl', function($scope, $http) {
   ctrl.objects = {
     names:[],
     counter:0
-  }
+  };
 
+    //an array of colors for proteins
+    ctrl.colors = ['red', 'blue', 'green', 'yellow', 'black'];
+    ctrl.colorIndex = 0;
+
+    //set color for protein
+    ctrl.setColor = function (index) {
+        ctrl.input.color = ctrl.colors[index];
+        ctrl.proteinStyle = {'background-color' : ctrl.input.color};
+    }
  //offset in children array to get to objects
  ctrl.offset = 2;
 
+    //check for empty color, default to red
+    if(!ctrl.input.color) {
+        console.log('No color, default to red');
+        ctrl.setColor(ctrl.colorIndex++);
+    }
+
  //get atoms from server
  ctrl.fetch = function(id) {
-
   //check for undefined or empty input
   if(ctrl.input.name == undefined || ctrl.input.name == '') {
     console.log('NO NAME');
   }
-  else {  
-    //start spinner
-    var spinner = new Spinner(ctrl.spinnerOpts).spin(ctrl.spinnerDiv);
+  else {
+      //show progress bar
+      ctrl.progress.increment();
+      ctrl.progress.started = true;
+      ctrl.progress.value = 20;
+      //remove welcome message
+      if(angular.element('#welcome'))
+        angular.element('#welcome').remove();
+
+      //reset input
+      ctrl.input.reset();
 
     console.log('fetching... ' + id);
     $http.get(serverUrl + 'pdbs/' + id)
       .success(function(data) {
-        //stop spinner
-        spinner.stop();
         console.log(data);
-
+        ctrl.progress.increment()
         //add sphere to scene
         addObject(data.atoms, data.centroid, ctrl.input.color);
+            ctrl.progress.increment()
+            //rotate through colors
+            ctrl.setColor(ctrl.colorIndex++);
+            ctrl.progress.increment()
+
+            //hide progress bar
+            ctrl.progress.started = false;
       })
       .error(function(err) {
+            //hide progress bar
+            ctrl.progress.started = false;
+
         //stop spinner
         spinner.stop();
 
@@ -78,6 +123,7 @@ app.controller('objCtrl', function($scope, $http) {
       })
   }
  };
+
 
   //get objects from Bark
   ctrl.get = function () {
@@ -92,10 +138,10 @@ app.controller('objCtrl', function($scope, $http) {
 
                //reference currentObject to add color and style
                var currentObject = ctrl.barkObjects[i];
-               currentObject.color = rainbow(16, i + 3);
-               currentObject.style = {"background-color": currentObject.color};
+                currentObject.color = rainbow(16, i + 3);
+                currentObject.style = {"background-color": currentObject.color};
             }
-          })
+        })
   }
 
   ctrl.add = function(obj) {

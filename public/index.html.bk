@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>VASPi</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/styles.css" rel="stylesheet">
+    </head>
+
+    <body ng-app="app" ng-controller='objCtrl as ctrl'>
+        <div label='Navbar header' class="navbar navbar-default navbar-static-top">
+            <div class="container">
+
+                <div class="navbar-header">
+                    <a href="#" class="navbar-brand"> VASPi X</a>
+
+                    <button class="navbar-toggle" data-toggle="collapse"
+                    data-target=".navHeaderCollapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+
+                <div class="collapse navbar-collapse navHeaderCollapse">
+                    <ul class="nav navbar-nav">
+                        <li
+                            ng-repeat="user in ctrl.users"
+                            ng-style='{"background-color": user.color, "color": "white"}'>
+                            <a
+                            class="userX"
+                            href="#"
+                            ng-click='ctrl.queryUser($index)'
+                            >{{user.name}}</a>
+                        </li>
+                    </ul>
+                    <div class='nav navbar-nav' id='spinner'></div>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="active" ng-click='ctrl.subscribe("room1")'><a href="#">Room 1</a></li>
+                    </ul>
+                 </div>
+            </div>
+        </div>
+
+        <div labe='Main Container' class="container">
+            <div class="row">
+
+                <div class="col-sm-9" id="scene">
+                    <!-- TODO: FIX LAYER 2 - cannot rotate problem
+                    <canvas class='canvas' id="layer2"
+                    style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas> -->
+                </div>
+
+                <div class="col-sm-2 sidebar">
+                    <form role='form'>
+                        <div class='form-group'>
+                            <label class='sr-only'>Name Input</label>
+                            <input class='form-control' placeholder='Enter name of protein' ng-model='ctrl.input.name'>
+                            <select class='form-control' placeholder='Enter color of protein' ng-model='ctrl.input.color'>
+                            <option value='red'>Red</option>
+                            <option value='blue'>Blue</option>
+                            <option value='green'>Green</option>
+                            <option value='yellow'>Yellow</option>
+                            <option value='black'>Black</option>
+                            </select>
+                        </div>
+
+                        <button class="btn btn-warning" ng-click="ctrl.fetch(ctrl.input.name)">Search</button>
+                    </form>
+
+                 <!--    <div class="row">
+
+                        <div ng-repeat="obj in ctrl.barkObjects">
+
+                            <button style="margin: 5px"
+                                class="btn"
+                                id="{{$index}}"
+                                ng-style="ctrl.barkObjects[$index].style"
+                                ng-class="{'active': ctrl.barkObjects[$index].active}"
+                                ng-click="ctrl.render($index)"
+                                droppable
+                                drop="handleDrop()"
+                                draggable>
+                                {{obj.name}}
+                            </button>
+
+                        </div>
+                    </div>
+ -->
+            </div>
+
+        </div>
+
+        <div label='footer' class="navbar  navbar-default navbar-fixed-bottom">
+            <div class="container">
+                <p class="navbar-text"> Bioinformatics Lab - Lehigh University </p>
+            </div>
+        </div>
+        <script src="js/jquery.min.js"></script>
+        <script src="js/angular.min.js"></script>
+        <script src="js/bootstrap.js"></script>
+        <script src="js/ng.js"></script>
+        <script src="js/three.js"></script>
+        <script src="js/spin.min.js"></script>
+        <script src="js/OrbitControls.js"></script>
+        <script src="js/converter.js"></script>
+        <script src='/socket.io/socket.io.js'></script>
+    </body>
+</html>

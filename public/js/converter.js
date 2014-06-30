@@ -4,8 +4,9 @@
 
 //create global vars
     var scene, camera, light, renderer, controls, container, guiController, object, geometry;
-    scene = new THREE.Scene();
 
+    //canvasId to grab with document.getElementById
+    var canvas_id = 'canvas';
     //range of looking for GEOMETRY and TOPOLOGY
     var RANGE = 30;
     var objectCount = 2;
@@ -48,18 +49,26 @@ window.onload = function () {
 
     /** Initialize variables and scenes */
     function init() {
-        var WIDTH = document.getElementById("scene").offsetWidth - 20;
-            HEIGHT = 800    ;
+        //canvas element
+        var canvasEl = document.getElementById(canvas_id);
+        console.log(canvasEl);
+        //scene object
+        scene = new THREE.Scene();
+        console.log(scene);
+        var WIDTH = canvasEl.offsetWidth;
+            HEIGHT = canvasEl.offsetHeight;
         var VIEW_ANGLE = 45,
             ASPECT = WIDTH/HEIGHT,
             NEAR = 0.1,
             FAR = 1000,
             CAM_POS_Z = 100;
 
-        renderer = new THREE.WebGLRenderer({antialias:true});
+        renderer = new THREE.WebGLRenderer({antialias:true, alpha: true });
         renderer.setSize(WIDTH, HEIGHT);
-        renderer.setClearColor( 0xffffff, 1 );
-        document.getElementById('scene').appendChild(renderer.domElement);
+        //set background color to white
+//        renderer.setClearColor( 0xffffff, 1);
+
+        canvasEl.appendChild(renderer.domElement);
 
         camera =
             new THREE.PerspectiveCamera(
@@ -76,8 +85,6 @@ window.onload = function () {
         scene.add(light);
 
         controls = new THREE.OrbitControls(camera, renderer.domElement);
-        console.log(controls);
-        console.log(camera);
     }
 
     /** render from geometry information */
@@ -97,7 +104,7 @@ window.onload = function () {
 /** Add new object to the scene */
 function addObject(atoms, centroid, color) {    
     var config = {
-        radius: 1,
+        radius: 1,  //TODO: dynamic radius
         segments: 10, //drop to 10 - 12
         rings: 6 //drop to 6
     }

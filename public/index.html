@@ -6,107 +6,136 @@
         <title>VASPi</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
-        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/bootstrap.css" rel="stylesheet">
         <link href="css/styles.css" rel="stylesheet">
     </head>
 
     <body ng-app="app" ng-controller='objCtrl as ctrl'>
-        <div label='Navbar header' class="navbar navbar-default navbar-static-top">
-            <div class="container">
+    <div class="wrapper">
+        <div class="box">
+            <div class="row row-offcanvas row-offcanvas-right">
 
-                <div class="navbar-header">
-                    <a href="#" class="navbar-brand"> VASPi </a>
 
-                    <button class="navbar-toggle" data-toggle="collapse"
-                    data-target=".navHeaderCollapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                </div>
+                <!-- sidebar -->
+                <div class="column col-sm-2 col-xs-1 sidebar-offcanvas" id="sidebar">
+                    <div class="sidebar-offcanvas sidebar-header">
+                        <a href="/" class="navbar-brand logo">
+                            <span>VASPi <span class="glyphicon glyphicon-heart"></span></span>
+                        </a>
+                        <ul class="nav">
+                            <li><a href="#" data-toggle="offcanvas" class="visible-xs text-center"><i class="glyphicon glyphicon-chevron-right">X</i></a></li>
+                        </ul>
 
-                <div class="collapse navbar-collapse navHeaderCollapse">
-                    <ul class="nav navbar-nav">
-                        <li
-                            ng-repeat="user in ctrl.users"
-                            ng-style='{"background-color": user.color, "color": "white"}'>
-                            <a
-                            class="userX"
-                            href="#"
-                            ng-click='ctrl.queryUser($index)'
-                            >{{user.name}}</a>
-                        </li>
-                    </ul>
-                    <div class='nav navbar-nav' id='spinner'></div>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li class="active" ng-click='ctrl.subscribe("room1")'><a href="#">Room 1</a></li>
-                    </ul>
-                 </div>
-            </div>
-        </div>
-
-        <div labe='Main Container' class="container">
-            <div class="row">
-
-                <div class="col-sm-9" id="scene">
-                    <!-- TODO: FIX LAYER 2 - cannot rotate problem
-                    <canvas class='canvas' id="layer2"
-                    style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas> -->
-                </div>
-
-                <div class="col-sm-2 sidebar">
-                    <form role='form'>
-                        <div class='form-group'>
-                            <label class='sr-only'>Name Input</label>
-                            <input class='form-control' placeholder='Enter name of protein' ng-model='ctrl.input.name'>
-                            <select class='form-control' placeholder='Enter color of protein' ng-model='ctrl.input.color'>
-                            <option value='red'>Red</option>
-                            <option value='blue'>Blue</option>
-                            <option value='green'>Green</option>
-                            <option value='yellow'>Yellow</option>
-                            <option value='black'>Black</option>
-                            </select>
+                         <!-- NAV MENU -->
+                        <ul class="nav hidden-xs" id="lg-menu">
+                        </ul>
+                        <!-- /NAV MENU -->
+                    </div>
+                   <div class="sidebar-main">
+                        <div class="sidebar-main-first">
+                            <header>
+                                <ul class="nav hidden-xs" id="lg-menu">
+                                    <li class="active"><a href="#proteins">
+                                        <i class="glyphicon glyphicon-th-list"></i> Proteins</a>
+                                    </li>
+                                </ul>
+                            </header>
+                            <div class="input-group">
+                                <input type="text" ng-model='ctrl.input.name' placeholder="Enter protein's name" class="form-control">
+                                <!--<span class="input-group-btn">-->
+                                   <!---->
+                                <!--</span>-->
+                                <span class="input-group-addon input-group-addon-middle" ng-style="ctrl.proteinStyle"></span>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" ng-click="ctrl.fetch(ctrl.input.name)">Go!</button>
+                                </span>
+                            </div><!-- /input-group -->
                         </div>
+                       <div class="sidebar-main-second">
+                           <header>
+                               <ul class="nav hidden-xs" id="lg-menu">
+                                   <li class="active"><a href="#proteins">
+                                       <i class="glyphicon glyphicon-th-list"></i> VASP Operations</a>
+                                   </li>
+                               </ul>
+                           </header>
+                           <div class="input-group">
+                               <input type="text" ng-model='ctrl.input.vasp' placeholder="Enter VASP" class="form-control">
+                               <!--<span class="input-group-btn">-->
+                               <!---->
+                               <!--</span>-->
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" ng-click="ctrl.vasp(ctrl.input.name)">Go!</button>
+                                </span>
+                           </div><!-- /input-group -->
+                       </div>
+                   </div>
 
-                        <button class="btn btn-warning" ng-click="ctrl.fetch(ctrl.input.name)">Search</button>
-                    </form>
+                    <!-- tiny only nav-->
+                    <ul class="nav visible-xs" id="xs-menu">
+                        <li><a href="#featured" class="text-center"><i class="glyphicon glyphicon-list-alt"></i></a></li>
+                        <li><a href="#stories" class="text-center"><i class="glyphicon glyphicon-list"></i></a></li>
+                        <li><a href="#" class="text-center"><i class="glyphicon glyphicon-paperclip"></i></a></li>
+                        <li><a href="#" class="text-center"><i class="glyphicon glyphicon-refresh"></i></a></li>
+                    </ul>
 
-                 <!--    <div class="row">
+                </div>
+                <!-- /sidebar -->
 
-                        <div ng-repeat="obj in ctrl.barkObjects">
+                <!-- main right col -->
+                <div class="column col-sm-10 col-xs-11" id="main">
+                    <!-- top nav -->
+                        <div class="navbar navbar-blue">
+                            <div class="navbar-header">
+                                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+                                    <span class="sr-only">Toggle</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                            </div>
+                            <nav class="collapse navbar-collapse" role="navigation">
+                                <ul class="nav navbar-nav">
+                                    <li>
+                                        <a href="#"><i class="glyphicon glyphicon-home"></i> Home</a>
+                                    </li>
+                                </ul>
+                                <!--                            <ul class="nav navbar-nav navbar-right">
+                                                                <li class="dropdown">
+                                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i></a>
+                                                                    <ul class="dropdown-menu">
+                                                                        <li><a href="">More</a></li>
+                                                                        <li><a href="">More</a></li>
+                                                                    </ul>
+                                                                </li>
+                                                            </ul>-->
+                            </nav>
+                        </div>
+                    <!-- /top nav -->
 
-                            <button style="margin: 5px"
-                                class="btn"
-                                id="{{$index}}"
-                                ng-style="ctrl.barkObjects[$index].style"
-                                ng-class="{'active': ctrl.barkObjects[$index].active}"
-                                ng-click="ctrl.render($index)"
-                                droppable
-                                drop="handleDrop()"
-                                draggable>
-                                {{obj.name}}
-                            </button>
-
+                    <!-- editor -->
+                    <div class="canvas-container">
+                        <div ng-show="ctrl.progress.started"><progressbar class="progress-striped active" type='success' value="ctrl.progress.value"></progressbar></div>
+                        <div id="canvas">
+                            <h1 id="welcome">{{ctrl.welcomeMessage}}</h1>
                         </div>
                     </div>
- -->
-            </div>
+                    <!-- /editor -->
+                </div>
+                <!-- /main -->
 
-        </div>
-
-        <div label='footer' class="navbar  navbar-default navbar-fixed-bottom">
-            <div class="container">
-                <p class="navbar-text"> Bioinformatics Lab - Lehigh University </p>
             </div>
         </div>
-        <script src="js/jquery.min.js"></script>
-        <script src="js/angular.min.js"></script>
-        <script src="js/bootstrap.js"></script>
-        <script src="js/ng.js"></script>
-        <script src="js/three.js"></script>
-        <script src="js/spin.min.js"></script>
-        <script src="js/OrbitControls.js"></script>
-        <script src="js/converter.js"></script>
-        <script src='/socket.io/socket.io.js'></script>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/ui-bootstrap-tpls-0.11.0.js"></script>
+    <script src="js/ng.js"></script>
+    <script src="js/three.js"></script>
+    <script src="js/spin.min.js"></script>
+    <script src="js/OrbitControls.js"></script>
+    <script src="js/converter.js"></script>
+    <script src='/socket.io/socket.io.js'></script>
     </body>
 </html>

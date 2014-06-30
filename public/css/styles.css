@@ -1,5 +1,273 @@
+/* custom template */
+/* custom template */
+html, body {
+    height: 100%;
+    font-family:verdana,arial,sans-serif;
+    color: #ffffff;
+}
+
+.nav {
+    font-family:Arial,sans-serif;
+    font-size:13px;
+}
+
+a {
+    color:#222222;
+}
+
+a:hover {
+    text-decoration:none;
+}
+
+hr {
+    border-color:#dedede;
+}
+
+.wrapper, .row {
+    height: 100%;
+    margin-left:0;
+    margin-right:0;
+}
+
+.wrapper:before, .wrapper:after,
+.column:before, .column:after {
+    content: "";
+    display: table;
+}
+
+.wrapper:after,
+.column:after {
+    clear: both;
+}
+
+.column {
+    height: 100%;
+    overflow: auto;
+    *zoom:1;
+}
+
+.column .padding {
+    padding: 20px;
+}
+
+.full{
+    padding-top:70px;
+}
+
+.box {
+    bottom: 0; /* increase for footer use */
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    background-color:#444444;
+    /*
+      background-image:url('/assets/example/bg_suburb.jpg');
+      background-size:cover;
+      background-attachment:fixed;
+    */
+}
+
+.divider {
+    margin-top:32px;
+}
+
+.navbar-blue {
+    border-right: 1px solid silver;
+    background-color:#444444;
+    color:#ffffff;
+    font-family:arial,sans-serif;
+    top:0;
+    position:fixed;
+    width:inherit;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.navbar-blue li > a,.navbar-toggle  {
+    color:#efefef;
+}
+
+.navbar-blue .dropdown-menu li a {color:#2A4888;}
+.navbar-blue .dropdown-menu li > a {padding-left:30px;}
+
+.navbar-blue li>a:hover, .navbar-blue li>a:focus, .navbar-blue .open, .navbar-blue .open>a, .navbar-blue .open>a:hover, .navbar-blue .open>a:focus {
+    background-color:#393939;
+    color:#fff;
+}
+
+#main {
+    background-color:#e9eaed;
+    padding-left:0;
+    padding-right:0;
+    position: relative;
+}
+#main .img-circle {
+    margin-top:18px;
+    height:70px;
+    width:70px;
+}
+/* SIDE BAR */
+#sidebar {
+    border-bottom: 1px solid silver;
+    padding:0px;
+    /* padding-top:15px; */
+    position: relative;
+}
+
+#sidebar, #sidebar a, #sidebar-footer a {
+    color: #ffffff;
+    background-color: transparent;
+    text-shadow:0 0 2px #000000;
+    padding-right:0px;
+}
+
+#sidebar li> a:hover {
+    background-color:#393939;
+}
+#sidebar .sidebar-header {
+    width: 100%;
+    height: 52px;
+    border-bottom: 1px solid silver;
+}
+#sidebar .sidebar-main {
+    background-color: rgb(242, 242, 242);
+    position: absolute;
+    width: 100%;
+    top: 52px;
+    bottom: 0;
+    left: 0;
+}
+#sidebar .sidebar-main-first {
+    width: 100%;
+    height: 50%;
+}
+
+#sidebar .sidebar-main-first > header{
+    background-color:#444444;
+}
+
+#sidebar .sidebar-main-second > header{
+    background-color:#444444;
+}
+
+#sidebar .sidebar-main-second {
+    width: 100%;
+    height: 50%;
+}
+
+.input-group-addon-middle {
+    border: 0;
+}
+#sidebar .sidebar-main-body {
+}
+
+.logo {
+    display:block;
+    padding:3px;
+    background-color:#fff;
+    color:#3B5999;
+    margin:9px;
+    margin-right:2px;
+    margin-left:15px;
+    font-size:20px;
+    font-weight:700;
+    text-align:center;
+    text-decoration:none;
+    text-shadow:0 0 1px;
+    border-radius:2px;
+}
+
+.logo > span {
+    background-color: black;
+}
+/* canvas */
+.canvas-container {
+    position: absolute;
+    top: 52px;
+    width: 100%;
+    /* height: 100%; */
+    box-sizing: border-box;
+    /* top: 0px; */
+    left: 0px;
+    bottom: 0;
+    left: 0;
+    overflow : hidden;
+    outline: solid 3px rgba(66, 87, 203, 0.8);
+    outline-offset: -3px;
+    background-image: url(http://www.polymer-project.org/tools/designer/elements/design-canvas/grid.png);
+}
+
+#canvas {
+    height: 100%;
+    width: 100%;
+}
+
+/*progressbar*/
+.progress {
+    height: 8px;
+}
+/* welcome message */
+#welcome {
+    position: absolute;
+    top: 30%;
+    left: 30%;
+    margin: 0;
+    background-color: black;
+}
+/* adjust the contents on smaller devices */
+@media (max-width: 768px) {
+
+    .column .padding {
+        padding: 7px;
+    }
+
+    .full{
+        padding-top:20px;
+    }
+
+    .navbar-blue {
+        background-color: #f2f2f2;
+    }
+
+}
+
+
+/*
+ * off canvas sidebar
+ * --------------------------------------------------
+ */
+@media screen and (max-width: 768px) {
+    .row-offcanvas {
+        position: relative;
+        -webkit-transition: all 0.25s ease-out;
+        -moz-transition: all 0.25s ease-out;
+        transition: all 0.25s ease-out;
+    }
+
+    .row-offcanvas-right.active {
+        left: 33%;
+    }
+
+    .row-offcanvas-right.active .sidebar-offcanvas {
+        left: -33%;
+        position: absolute;
+        top: 0;
+        width: 33%;
+        margin-left: 5px;
+    }
+
+    #sidebar, #sidebar a, #sidebar-footer a {
+        padding-left: 3px;
+    }
+}
+
+/* VASP specifics */
 .sidebar {
 }
+
 #three{
     background-color: blue;
 }
