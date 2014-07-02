@@ -123,7 +123,13 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
       })
   }
  };
+    ctrl.colorPicker = function () {
+        var x = $('.colorpicker');
+        x.colorpicker();
+        x.colorpicker('show');
 
+        console.log(x);
+    }
 
   //get objects from Bark
   ctrl.get = function () {

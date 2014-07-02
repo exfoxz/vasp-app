@@ -104,7 +104,15 @@ window.onload = function () {
 /** Add new object to the scene */
 function addObject(atoms, centroid, color) {    
     var config = {
-        radius: 1,  //TODO: dynamic radius
+        radius: {
+            'C' : 1.7,
+            'N' : 1.5,
+            'S' : 1.8,
+            'O' : 1.5,
+            'H' : 1.2,
+            'OTH' : 1.9, //unrecognized atom types
+            'def' : 1
+        },  //TODO: dynamic radius
         segments: 10, //drop to 10 - 12
         rings: 6 //drop to 6
     }
@@ -112,17 +120,28 @@ function addObject(atoms, centroid, color) {
     var sphereGeometry;
 
     atoms.forEach(function(atom) {
+        if(!config.radius[atom.element]) {
+            console.log('UNASD');
+            var radius = config.radius['OTH'];
+        }
+        else {
+            var radius = config.radius[atom.element];
+
+        }
         if(!sphereGeometry) {
             console.log('initial sphere');
             sphereGeometry =
-                new THREE.SphereGeometry(config.radius, config.segments, config.rings);
+                new THREE.SphereGeometry(radius, config.segments, config.rings);
             console.log(sphereGeometry);
             sphereGeometry.applyMatrix(new THREE.Matrix4().makeTranslation(atom.x, atom.y, atom.z));
         }
 
         else {    
             console.log('new sphere');
-            var newSphere = new THREE.SphereGeometry(config.radius, config.segments, config.rings);
+            var radius
+            var newSphere = new THREE.SphereGeometry(radius, config.segments, config.rings);
+//            console.log(config.radius[atom.element]);
+
             newSphere.applyMatrix(new THREE.Matrix4().makeTranslation(atom.x, atom.y, atom.z));
             //merge newSphere to sphereGeometry
             THREE.GeometryUtils.merge(sphereGeometry, newSphere);
@@ -135,14 +154,14 @@ function addObject(atoms, centroid, color) {
     scene.add(mesh);
 }
 
-function addSphere(atom, config, color, scene) {
-    var sphere = new THREE.Mesh(
-        new THREE.SphereGeometry(config.radius, config.segments, config.rings),
-         new THREE.MeshLambertMaterial({color: color}));
-
-    sphere.position.set(atom.x, atom.y, atom.z);
-    scene.add(sphere);
-}
+//function addSphere(atom, config, color, scene) {
+//    var sphere = new THREE.Mesh(
+//        new THREE.SphereGeometry(config.radius, config.segments, config.rings),
+//         new THREE.MeshLambertMaterial({color: color}));
+//
+//    sphere.position.set(atom.x, atom.y, atom.z);
+//    scene.add(sphere);
+//}
 // /** GET server's triangles data file and store it and add it to scene*/
 //     function adder(fileName, color) {
 //     var myCoordinates = [], myFaces = [], lines;

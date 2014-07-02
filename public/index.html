@@ -45,7 +45,8 @@
                                 <!--<span class="input-group-btn">-->
                                    <!---->
                                 <!--</span>-->
-                                <span class="input-group-addon input-group-addon-middle" ng-style="ctrl.proteinStyle"></span>
+                                <span class="input-group-addon input-group-addon-middle" ng-click="ctrl.colorPicker()" ng-style="ctrl.proteinStyle"></span>
+                                <!--<input type="color" class="input-group-addon input-group-addon-middle"  ng-model="" value="rgb(128,0,0);">-->
                                 <span class="input-group-btn">
                                     <button class="btn btn-default" type="button" ng-click="ctrl.fetch(ctrl.input.name)">Go!</button>
                                 </span>
@@ -128,6 +129,7 @@
         </div>
     </div>
     <script src="js/jquery.min.js"></script>
+    <script src="js//bootstrap-colorpicker.js"></script>
     <script src="js/angular.min.js"></script>
     <script src="js/bootstrap.js"></script>
     <script src="js/ui-bootstrap-tpls-0.11.0.js"></script>
