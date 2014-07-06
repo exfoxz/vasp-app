@@ -100,8 +100,8 @@ window.onload = function () {
         //console.log(camera.matrix.elements[0]);
         //console.log(camera.matrix.elements[1]);
         window.requestAnimationFrame(animate, renderer.domElement);
-    }
-/** Add new object to the scene */
+    }3
+/** Add new object to the scene and return mesh */
 function addObject(atoms, centroid, color) {    
     var config = {
         radius: {
@@ -118,7 +118,6 @@ function addObject(atoms, centroid, color) {
     }
 
     var sphereGeometry;
-
     atoms.forEach(function(atom) {
         if(!config.radius[atom.element]) {
             console.log('UNASD');
@@ -152,6 +151,7 @@ function addObject(atoms, centroid, color) {
     //add sphereGeometry to scene
     mesh.position.set(-centroid[0], -centroid[1], -centroid[2]);
     scene.add(mesh);
+    return mesh;
 }
 
 //function addSphere(atom, config, color, scene) {

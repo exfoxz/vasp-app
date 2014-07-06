@@ -149,8 +149,28 @@ hr {
     background-color:#444444;
 }
 
+
+#sidebar .sidebar-main-first .input-group {
+    margin-right: 2px
+}
+
 #sidebar .sidebar-main-second > header{
     background-color:#444444;
+}
+
+#sidebar .sidebar-main-second .input-group {
+    margin-right: 2px
+}
+
+#sidebar .sidebar-main ul.list-group {
+    padding-left: 10px;
+    color: black;
+    text-shadow: none;
+}
+
+#sidebar .sidebar-main ul.list-group li {
+    border-top: 3px solid;
+    margin: 3px 2px 0 0
 }
 
 #sidebar .sidebar-main-second {

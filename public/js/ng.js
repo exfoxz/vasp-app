@@ -12,6 +12,10 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
   //dummy object for input
   ctrl.input = {};
 
+    //list of structres
+    ctrl.structures = [];
+    //list of proteins
+    ctrl.proteins = {};
     //object for progress feedback
     ctrl.progress = {started: false, value: 0, delay: 1000, inc: 20};
     ctrl.progress.increment = function() {
@@ -27,26 +31,6 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
     }
     //welcome message
     ctrl.welcomeMessage = "<- Enter a protein's name and click Go! to get started!";
-  //new spinner
-//  ctrl.spinnerDiv = document.getElementById('spinner');
-//  ctrl.spinnerOpts = { //options for spinner
-//    lines: 7, // The number of lines to draw
-//    length: 8, // The length of each line
-//    width: 2, // The line thickness
-//    radius: 3, // The radius of the inner circle
-//    corners: 1, // Corner roundness (0..1)
-//    rotate: 90, // The rotation offset
-//    direction: 1, // 1: clockwise, -1: counterclockwise
-//    color: '#000', // #rgb or #rrggbb or array of colors
-//    speed: 1, // Rounds per second
-//    trail: 50, // Afterglow percentage
-//    shadow: false, // Whether to render a shadow
-//    hwaccel: false, // Whether to use hardware acceleration
-//    className: 'spinner', // The CSS class to assign to the spinner
-//    zIndex: 2e9, // The z-index (defaults to 2000000000)
-//    top: 'auto', // Top position relative to parent in px
-//    left: 'auto' // Left position relative to parent in px
-//  };
 
   //url for server to fetch information
   //var serverUrl = 'http://localhost:5000/';
@@ -100,17 +84,22 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
     console.log('fetching... ' + id);
     $http.get(serverUrl + 'pdbs/' + id)
       .success(function(data) {
-        console.log(data);
-        ctrl.progress.increment()
-        //add sphere to scene
-        addObject(data.atoms, data.centroid, ctrl.input.color);
+            console.log(data);
             ctrl.progress.increment()
-            //rotate through colors
-            ctrl.setColor(ctrl.colorIndex++);
+            //add protein to scene and to list of proteins
+            var protein = addObject(data.atoms, data.centroid, ctrl.input.color);
+            ctrl.proteins[id] = protein;
+
             ctrl.progress.increment()
 
             //hide progress bar
             ctrl.progress.started = false;
+
+            //add to list of structures
+            ctrl.structures.push({id: id, style: {'border-top-color': ctrl.input.color}})
+
+            //rotate through colors
+            ctrl.setColor(ctrl.colorIndex++);
       })
       .error(function(err) {
             //hide progress bar
@@ -129,6 +118,11 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
         x.colorpicker('show');
 
         console.log(x);
+    }
+    //toggle object visibility
+    ctrl.vToggle = function (id) {
+        console.log('toggle', id)
+        ctrl.proteins[id].visible = !ctrl.proteins[id].visible;
     }
 
   //get objects from Bark

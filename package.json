@@ -1,10 +1,14 @@
 {
-"name": "VaspApp",
-"version": "0.0.1",
-"description": "Web App for VASP",
-"dependencies": {
+  "name": "Vasp-app",
+  "version": "0.0.1",
+  "description": "Web App for VASP",
+  "dependencies": {
     "socket.io": "latest",
     "express": "latest"
-    },
-    "author": "exfoxz"
+  },
+  "author": "exfoxz",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-watch": "^0.6.1"
+  }
 }
