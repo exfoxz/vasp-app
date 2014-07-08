@@ -14,8 +14,14 @@ app.controller('objCtrl', function($scope, $http, $timeout, $upload) {
 
     //list of structres
     ctrl.structures = [];
-    //list of proteins
+    //list of protein meshes
     ctrl.proteins = {};
+
+    //list of surfaces
+    ctrl.surfaces = [];
+    //list of surf meshes
+    ctrl.surfs = {};
+
     //object for progress feedback
     ctrl.progress = {started: false, value: 0, delay: 1000, inc: 20};
     ctrl.progress.increment = function() {
@@ -112,6 +118,32 @@ app.controller('objCtrl', function($scope, $http, $timeout, $upload) {
       })
   }
  };
+    /** callback after surf file has been read */
+    ctrl.readerCallback = function (file, data) {
+        //remove welcome message
+        if(angular.element('#welcome'))
+            angular.element('#welcome').remove();
+        var id = file.name.split('.')[0];
+        //parse surf data
+        var object = PARSER.surfParser(data);
+        //add to scene
+        var surfMesh = PARSER.addSurfObject(SCENE.scene, object, 'red');
+        //add to a list of surf meshes
+        ctrl.surfs[id] = surfMesh;
+        //add to an array of surf
+        ctrl.surfaces.push({id: id})
+    }
+    /** Surface file reader */
+    ctrl.fileReader = function(event){
+        if(window.File && window.FileReader && window.FileList && window.Blob) {
+            console.log('File reader is supported!');
+            console.log(event);
+        }
+        else
+            console.log('File reader API is not supported!');
+    }
+    //ctrl.fileReader();
+    /** ng-file-upload init */
     ctrl.myModelObj;
     ctrl.className = "dragover";
     ctrl.onFileSelect = function($files) {
@@ -154,12 +186,17 @@ app.controller('objCtrl', function($scope, $http, $timeout, $upload) {
 
         console.log(x);
     }
-    //toggle object visibility
+    //toggle pdb object visibility
     ctrl.vToggle = function (id) {
         console.log('toggle', id)
         ctrl.proteins[id].visible = !ctrl.proteins[id].visible;
     }
 
+    //toggle surf object visibility
+    ctrl.surfToggle = function (id) {
+        console.log('toggle', id)
+        ctrl.surfs[id].visible = !ctrl.surfs[id].visible;
+    }
   //get objects from Bark
   ctrl.get = function () {
     //TODO: is wiping the best way?
@@ -409,7 +446,26 @@ app.controller('objCtrl', function($scope, $http, $timeout, $upload) {
   }
 
 });
-
+app.directive('fileread', function(){
+   return {
+       scope: {
+           fileread: '='
+       },
+       link: function(scope, el, attrs){
+           el.bind('change', function(changeEvent){
+               var file = changeEvent.target.files[0];
+               var reader = new FileReader();
+               reader.onload = function(loadEvent){
+                   scope.$apply(function(){
+                       //run passed-in func after reader is loaded
+                       scope.fileread(file, loadEvent.target.result);
+                   });
+               }
+               reader.readAsText(file);
+           })
+       }
+   }
+});
 //create a draggable directive
 app.directive('draggable', function() {
   return function(scope, element) {

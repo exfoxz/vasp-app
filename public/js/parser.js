@@ -82,6 +82,7 @@ var PARSER = (function(){
         var geometry = new THREE.Geometry();
         var myCoordinates = data.coordinates;
         var myFaces = data.faces;
+        var objectCount = 2;
         //loop to add vertices
         for (var i = 0; i< myCoordinates.length; i+=6) {
             addVertex(myCoordinates[i], myCoordinates[i+1], myCoordinates[i+2])
