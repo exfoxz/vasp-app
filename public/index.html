@@ -37,7 +37,9 @@
                             <header>
                                 <ul class="nav hidden-xs" id="lg-menu">
                                     <li class="active">
-                                        <i class="glyphicon glyphicon-th-list"></i> StructuresX
+                                        <a>
+                                            <i class="glyphicon glyphicon-th-list"></i> Structures
+                                        </a>
                                     </li>
                                 </ul>
                             </header>
@@ -50,7 +52,7 @@
                             </div>
                             <!--Structure list-->
                             <ul class="list-group">
-                                <li class="list-group-item" ng-repeat="item in ctrl.structures" ng-style="item.style">{{item.id}}<input type="checkbox" name="toggle" ng-click="ctrl.vToggle(item.id)" class="btn sidebar-list-item"><span class="glyphicon glyphicon-eye-open "></span></li>
+                                <li class="list-group-item" ng-repeat="item in ctrl.structures" ng-style="item.style"><code>{{item.id}}</code><input type="checkbox" checked name="toggle" ng-click="ctrl.vToggle(item.id)" class="btn sidebar-list-item"><span class="glyphicon glyphicon-eye-open "></span></li>
                             </ul>
                             <!--/Structure list-->
                         </div>
@@ -59,15 +61,17 @@
                            <header>
                                <ul class="nav hidden-xs" id="lg-menu">
                                    <li class="active">
-                                       <i class="glyphicon glyphicon-th-list"></i> Surfaces
+                                       <a>
+                                           <i class="glyphicon glyphicon-th-list"></i> Surfaces
+                                       </a>
                                    </li>
                                </ul>
                            </header>
-                           <div class="input-group">
-                               <input type="text" ng-model='ctrl.input.vasp' placeholder="Enter VASP" class="form-control">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button" ng-click="ctrl.vasp(ctrl.input.name)">Go!</button>
-                                </span>
+                           <div>
+                               <input type="text" ng-model="ctrl.myModelObj">
+                               <input type="file" ng-file-select="ctrl.onFileSelect($files)" multiple>
+                               <div class="drop-box" ng-file-drop="ctrl.onFileSelect($files)" ng-file-drag-over-class="ctrl.className"
+                                    ng-show="true">drop files here</div>
                            </div>
                        </div>
                    </div>
@@ -131,16 +135,17 @@
         </div>
     </div>
     <script src="js/jquery.min.js"></script>
-    <script src="js//bootstrap-colorpicker.js"></script>
+    <script src="bower_components/ng-file-upload/angular-file-upload-shim.js"></script>
     <script src="js/angular.min.js"></script>
+    <script src="bower_components/ng-file-upload/angular-file-upload.js"></script>
     <script src="js/bootstrap.js"></script>
     <script src="js/ui-bootstrap-tpls-0.11.0.js"></script>
     <script src="js/ng.js"></script>
     <script src="js/three.js"></script>
-    <script src="js/spin.min.js"></script>
     <script src="js/OrbitControls.js"></script>
-    <script src="js/converter.js"></script>
-    <script src='/socket.io/socket.io.js'></script>
+    <script src="js/scene.js"></script>
+    <script src="js/parser.js"></script>
+
     <!--Gruntjs Livereload script -->
     <script src="//localhost:35729/livereload.js"></script>
     </body>
