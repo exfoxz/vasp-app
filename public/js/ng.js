@@ -53,7 +53,10 @@ app.controller('objCtrl', function($scope, $http, $timeout, $upload) {
 
     //an array of colors for proteins
     ctrl.colors = ['red', 'blue', 'green', 'yellow', 'black'];
+    //color index for pdb
     ctrl.colorIndex = 0;
+    //color index for surf
+    ctrl.surfColorIndex = 0;
 
     //set color for protein
     ctrl.setColor = function (index) {
@@ -126,12 +129,13 @@ app.controller('objCtrl', function($scope, $http, $timeout, $upload) {
         var id = file.name.split('.')[0];
         //parse surf data
         var object = PARSER.surfParser(data);
+        var color = ctrl.colors[ctrl.surfColorIndex++];
         //add to scene
-        var surfMesh = PARSER.addSurfObject(SCENE.scene, object, 'red');
+        var surfMesh = PARSER.addSurfObject(SCENE.scene, object, color);
         //add to a list of surf meshes
         ctrl.surfs[id] = surfMesh;
         //add to an array of surf
-        ctrl.surfaces.push({id: id})
+        ctrl.surfaces.push({id: id, style: {'border-top-color': color}});
     }
     /** Surface file reader */
     ctrl.fileReader = function(event){
