@@ -133,6 +133,8 @@
                         <div id="canvas">
                             <h1 id="welcome">{{ctrl.welcomeMessage}}</h1>
                             <div class="message-center" ng-show="ctrl.showOp">
+                                <span class="message-center-exit" ng-click="ctrl.closeVasp()">X</span>
+                                {{ctrl.source}} and {{ctrl.target}}
                                 <button class="btn btn-primary" ng-click="ctrl.vaspOp()">U</button>
                                 <button class="btn btn-primary" ng-click="ctrl.vaspOp()">I</button>
                                 <button class="btn btn-primary" ng-click="ctrl.vaspOp()">D</button>

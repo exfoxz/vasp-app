@@ -259,9 +259,17 @@ hr {
     margin: 0;
     width: 150px;
     height: 80px;
-    background-color: white;
-    padding-top: 20px;
+    background-color: black;
+    padding-top: 10px;
     padding-left: 20px;
+}
+
+.message-center-exit {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: -10px;
+    margin-left: -5px;
 }
 
 .message-center > button {

@@ -228,9 +228,16 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
           ctrl.input.name = '';
       }
   };
+    ctrl.closeVasp = function () {
+        ctrl.showOp = false;
+    }
     ctrl.showOp = false;
   ctrl.vasp = function (op, source, target) {
-      $scope.$apply(function(){ctrl.showOp = true;});
+      $scope.$apply(function(){
+          ctrl.showOp = true;
+          ctrl.source = source;
+          ctrl.target = target;
+      });
       console.log(ctrl.showOp);
       console.log(op, source, target);
       //TODO: set up server to do VASP operations
