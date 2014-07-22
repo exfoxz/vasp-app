@@ -228,8 +228,10 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
           ctrl.input.name = '';
       }
   };
-
+    ctrl.showOp = false;
   ctrl.vasp = function (op, source, target) {
+      $scope.$apply(function(){ctrl.showOp = true;});
+      console.log(ctrl.showOp);
       console.log(op, source, target);
       //TODO: set up server to do VASP operations
 //      switch (op) {
@@ -260,6 +262,10 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
 //                  console.log("No valid operation");
 //      }
   }
+    ctrl.vaspOp = function(){
+        console.log('vasp on');
+        ctrl.showOp = false;
+    }
 
 //  //render function to render objects received from server
 //  ctrl.render = function(index) {

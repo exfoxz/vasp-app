@@ -251,6 +251,21 @@ hr {
     margin: 0;
     background-color: black;
 }
+
+.message-center {
+    position: absolute;
+    top: 30%;
+    left: 30%;
+    margin: 0;
+    width: 150px;
+    height: 80px;
+    background-color: white;
+    padding-top: 20px;
+    padding-left: 20px;
+}
+
+.message-center > button {
+}
 /* adjust the contents on smaller devices */
 @media (max-width: 768px) {
 

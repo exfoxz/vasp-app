@@ -132,6 +132,11 @@
                         <div ng-show="ctrl.progress.started"><progressbar class="progress-striped active" type='success' value="ctrl.progress.value"></progressbar></div>
                         <div id="canvas">
                             <h1 id="welcome">{{ctrl.welcomeMessage}}</h1>
+                            <div class="message-center" ng-show="ctrl.showOp">
+                                <button class="btn btn-primary" ng-click="ctrl.vaspOp()">U</button>
+                                <button class="btn btn-primary" ng-click="ctrl.vaspOp()">I</button>
+                                <button class="btn btn-primary" ng-click="ctrl.vaspOp()">D</button>
+                            </div>
                         </div>
                     </div>
                     <!-- /editor -->
