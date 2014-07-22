@@ -2,7 +2,7 @@
  * Created by ExFoxZ on 07/07/2014.
  */
 
-/** anonymous function to execute */
+/** anonymous function to execute to get parser functions */
 var PARSER = (function(){
     var parser = {};
     /** function to add object to a scene of THREEJS - pdb */

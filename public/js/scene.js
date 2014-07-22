@@ -1,8 +1,4 @@
-/**
- * Created by ExFoxZ on 1/20/14.
- */
-
-/** anonymous function to execute */
+/** anonymous function to execute to scene up and running */
 var SCENE = (function(){
     var myScene = {};
     console.log("SCENE IS RUNNING...");
@@ -38,8 +34,6 @@ var SCENE = (function(){
 
         renderer = new THREE.WebGLRenderer({antialias:true, alpha: true });
         renderer.setSize(WIDTH, HEIGHT);
-        //set background color to white
-//        renderer.setClearColor( 0xffffff, 1);
 
         canvasEl.appendChild(renderer.domElement);
 
@@ -68,12 +62,17 @@ var SCENE = (function(){
 
     /** animate by looping with requestAnimationFrame */
     function animate() {
+        window.requestAnimationFrame(animate, renderer.domElement);
         controls.update();
         render();
-        //console.log(camera.matrix.elements[0]);
-        //console.log(camera.matrix.elements[1]);
-        window.requestAnimationFrame(animate, renderer.domElement);
     }
+
+    //TEST: add drag event to window
+//    window.addEventListener('dragenter', function(e){
+//        console.log('drag enter');
+//        console.log(e);
+//    })
+
     //bind scene to myScene
     myScene.scene = scene;
 

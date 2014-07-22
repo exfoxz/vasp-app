@@ -67,16 +67,19 @@
                                    </li>
                                </ul>
                            </header>
+                           <!-- file uploader -->
                            <div>
-                               <input type="file" id="fileinput" fileread="ctrl.readerCallback">
+                               <input type="file" class="uploader" id="fileinput" fileread="ctrl.readerCallback">
                                <div class="drop-box" ng-file-drop="ctrl.onFileSelect($files)" ng-file-drag-over-class="ctrl.className"
                                     ng-show="true">drop files here</div>
                            </div>
-                           <!--Structure list-->
+                           <!-- /file uploader -->
+
+                           <!--Surface list-->
                            <ul class="list-group">
-                               <li class="list-group-item" ng-repeat="item in ctrl.surfaces" ng-style="item.style"><code>{{item.id}}</code><input type="checkbox" checked name="toggle" ng-click="ctrl.surfToggle(item.id)" class="btn sidebar-list-item"><span class="glyphicon glyphicon-eye-open "></span></li>
+                               <li class="list-group-item" draggable droppable item="{{item.id}}" ondrop="ctrl.vasp" ng-repeat="item in ctrl.surfaces" ng-style="item.style"><code>{{item.id}}</code><input type="checkbox" checked name="toggle" ng-click="ctrl.surfToggle(item.id)" class="btn sidebar-list-item"><span class="glyphicon glyphicon-eye-open "></span></li>
                            </ul>
-                           <!--/Structure list-->
+                           <!--/Surface list-->
                        </div>
                    </div>
 
