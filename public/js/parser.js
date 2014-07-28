@@ -5,78 +5,6 @@
 /** anonymous function to execute to get parser functions */
 var PARSER = (function(){
     var parser = {};
-    /** function to add object to a scene of THREEJS - pdb */
-    parser.addPdbObject = function(scene, atoms, centroid, color) {
-        var config = {
-            radius: {
-                'C' : 1.7,
-                'N' : 1.5,
-                'S' : 1.8,
-                'O' : 1.5,
-                'H' : 1.2,
-                'OTH' : 1.9 //unrecognized atom types
-            },  //TODO: dynamic radius
-            colors: {
-                'N' : 'blue',
-                'S' : 'yellow',
-                'O' : 'red',
-                'H' : 'white',
-            },
-            defaultColor : color,
-            segments: 10, //drop to 10 - 12
-            rings: 6 //drop to 6
-        }
-
-        var sphereGeometry;
-        //material to make the final sphere
-        var sphereMaterial = new THREE.MeshLambertMaterial({color: color});
-        atoms.forEach(function(atom) {
-            if(!config.radius[atom.element]) {
-                var radius = config.radius['OTH'];
-//            sphereMaterial.color = '0xffffff';
-            }
-            else {
-                var radius = config.radius[atom.element];
-                //if the known element is not carbon
-                if(atom.element !== 'C') {
-//                sphereMaterial.color = '0xffffff';
-                }
-//            else
-//                sphereMaterial.color = '0xffffff';
-            }
-
-            if(!sphereGeometry) {
-                console.log('initial sphere');
-                sphereGeometry =
-                    new THREE.SphereGeometry(radius, config.segments, config.rings);
-//            //set color to each face of the sphere
-//            for(var j = 0; j < sphereGeometry.faces.length; j++) {
-//                sphereGeometry.faces[j].color.setRBG(100,100,100);
-//            }
-//            console.log(sphereGeometry);
-                sphereGeometry.applyMatrix(new THREE.Matrix4().makeTranslation(atom.x, atom.y, atom.z));
-            }
-
-            else {
-                console.log('new sphere');
-                var newSphere = new THREE.SphereGeometry(radius, config.segments, config.rings);
-//            //set color to each face of the sphere
-//            for(var j = 0; j < newSphere.faces.length; j++) {
-//                newSphere.faces[j].color = sphereMaterial.color;
-//            }
-                newSphere.applyMatrix(new THREE.Matrix4().makeTranslation(atom.x, atom.y, atom.z));
-                //merge newSphere to sphereGeometry
-                THREE.GeometryUtils.merge(sphereGeometry, newSphere);
-            }
-        })
-        //create a mesh
-        var mesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
-        //add sphereGeometry to scene
-        mesh.position.set(-centroid[0], -centroid[1], -centroid[2]);
-        scene.add(mesh);
-        return mesh;
-    };
-
     /** function to add object to a scene of THREEJS - surf */
     parser.addSurfObject = function(scene, data, color) {
         var geometry = new THREE.Geometry();
@@ -125,6 +53,120 @@ var PARSER = (function(){
             return [xPrime/numGeometry,yPrime/numGeometry,zPrime/numGeometry];
         }
     }
+
+    /** function to add object to a scene of THREEJS - pdb */
+    parser.addPdbObjectX = function(scene, atoms, centroid, color) {
+        var config = {
+            radius: {
+                'C' : 1.7,
+                'N' : 1.5,
+                'S' : 1.8,
+                'O' : 1.5,
+                'H' : 1.2,
+                'OTH' : 1.9 //unrecognized atom types
+            },  //TODO: dynamic radius
+            colors: {
+                'N' : 'blue',
+                'S' : 'yellow',
+                'O' : 'red',
+                'H' : 'white',
+            },
+            defaultColor : color,
+            segments: 10, //drop to 10 - 12
+            rings: 6 //drop to 6
+        }
+
+        var sphereGeometry;
+        //material to make the final sphere
+        var sphereMaterial = new THREE.MeshLambertMaterial({color: color});
+        atoms.forEach(function(atom) {
+            if(!config.radius[atom.element]) {
+                 atom.radius = config.radius['OTH'];
+            }
+            else {
+                atom.radius = config.radius[atom.element];
+                //if the known element is not carbon
+                if(atom.element !== 'C') {
+                }
+            }
+
+            if(!sphereGeometry) {
+                console.log('initial sphere');
+                sphereGeometry =
+                console.log(atom)
+                    new THREE.BulkSphereGeometry([atom], config.segments, config.rings);
+                console.log(sphereGeometry);
+                console.log(sphereGeometry.faces[0].clone());
+//                sphereGeometry.applyMatrix(new THREE.Matrix4().makeTranslation(atom.x, atom.y, atom.z));
+                console.log(sphereGeometry.faces[0]);
+                console.log(sphereGeometry.applyMatrix)
+            }
+//
+//            else {
+//                console.log('new sphere');
+//                var newSphere = new THREE.BulkSphereGeometry(radius, config.segments, config.rings);
+//
+//                newSphere.applyMatrix(new THREE.Matrix4().makeTranslation(atom.x, atom.y, atom.z));
+//                //merge newSphere to sphereGeometry
+//                THREE.GeometryUtils.merge(sphereGeometry, newSphere);
+//            }
+        })
+
+        //create a mesh
+        var mesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        //add sphereGeometry to scene
+//        mesh.position.set(-centroid[0], -centroid[1], -centroid[2]);
+        scene.add(mesh);
+        return mesh;
+    };
+
+    parser.addPdbObject = function(scene, atoms, centroid, color) {
+        var config = {
+            radius: {
+                'C' : 1.7,
+                'N' : 1.5,
+                'S' : 1.8,
+                'O' : 1.5,
+                'H' : 1.2,
+                'OTH' : 1.9 //unrecognized atom types
+            },  //TODO: dynamic radius
+            colors: {
+                'N' : 'blue',
+                'S' : 'yellow',
+                'O' : 'red',
+                'H' : 'white',
+            },
+            defaultColor : color,
+            segments: 10, //drop to 10 - 12
+            rings: 6 //drop to 6
+        }
+
+        var sphereGeometry;
+        //material to make the final sphere
+        var sphereMaterial = new THREE.MeshLambertMaterial({color: color});
+
+        //TODO: is loop through each atom to get radius beforehand efficient?
+        atoms.forEach(function(atom) {
+            if (!config.radius[atom.element]) {
+                atom.radius = config.radius['OTH'];
+            }
+            else {
+                atom.radius = config.radius[atom.element];
+                //if the known element is not carbon
+                if (atom.element !== 'C') {
+                }
+            }
+        });
+
+        sphereGeometry = new THREE.BulkSphereGeometry(atoms, config.segments, config.rings);
+
+        //create a mesh
+        var mesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        //add sphereGeometry to scene
+        mesh.position.set(-centroid[0], -centroid[1], -centroid[2]);
+        scene.add(mesh);
+        return mesh;
+    };
 
     /** Surface files parser */
     parser.surfParser = function (data) {
