@@ -40,7 +40,7 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
 
   //url for server to fetch information
   //var serverUrl = 'http://localhost:5000/';
-  var serverUrl = 'http://http://54.64.25.255:8000/';
+  var serverUrl = 'http://54.64.25.255:8000/';
 
   //objects recevied from Bark
   ctrl.barkObjects = [];
