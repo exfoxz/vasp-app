@@ -40,7 +40,7 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
 
   //url for server to fetch information
   //var serverUrl = 'http://localhost:5000/';
-  var serverUrl = 'http://vasp-api.herokuapp.com/';
+  var serverUrl = 'http://http://54.64.25.255:8000/';
 
   //objects recevied from Bark
   ctrl.barkObjects = [];
@@ -74,6 +74,12 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
 
  //get atoms from server
  ctrl.fetch = function(id) {
+
+     //=========================== TEST WORKER
+        var dataX = {id: id};
+        worker.postMessage('Worker doing work');
+     //===========================
+
   //check for undefined or empty input
   if(ctrl.input.name == undefined || ctrl.input.name == '') {
     console.log('NO NAME');

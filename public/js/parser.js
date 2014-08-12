@@ -159,7 +159,6 @@ var PARSER = (function(){
         });
 
         sphereGeometry = new THREE.BulkSphereGeometry(atoms, config.segments, config.rings);
-
         //create a mesh
         var mesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
         //add sphereGeometry to scene
@@ -249,7 +248,6 @@ var PARSER = (function(){
         return data;
     }
 
-    console.log(parser);
     //export a parser object
     return parser;
 }());
