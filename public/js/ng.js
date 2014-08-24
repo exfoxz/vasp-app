@@ -6,7 +6,7 @@ app.config(function($httpProvider){
   delete $httpProvider.defaults.headers.common['X-Requested-With'];
 });
 
-app.controller('objCtrl', function($scope, $http, $timeout) {
+app.controller('objCtrl', function($scope, $http, $timeout, worker, parserworker) {
   var ctrl = this;
 
   //dummy object for input
@@ -74,12 +74,6 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
 
  //get atoms from server
  ctrl.fetch = function(id) {
-
-     //=========================== TEST WORKER
-        var dataX = {id: id};
-        worker.postMessage('Worker doing work');
-     //===========================
-
   //check for undefined or empty input
   if(ctrl.input.name == undefined || ctrl.input.name == '') {
     console.log('NO NAME');
@@ -101,9 +95,50 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
       .success(function(data) {
             console.log(data);
             ctrl.progress.increment()
+
+            var atoms = data.atoms;
+            var centroid = data.centroid;
+            var color = ctrl.input.color;
             //add protein to scene and to list of proteins
-            var protein = PARSER.addPdbObject(SCENE.scene, data.atoms, data.centroid, ctrl.input.color);
-            ctrl.proteins[id] = protein;
+            // =====================================================
+            // TEST WORKER ==========
+            // =====================================================
+//            worker({
+//                op: 'addPdbObject',
+//                params: {
+//                    atoms: atoms,
+//                    centroid: centroid,
+//                    color: color
+//                }
+//            });
+            var parserWorker = parserworker();
+            parserWorker.postMessage('hello');
+            parserWorker.postMessage('hello 2');
+            parserWorker.postMessage('hello 4');
+            parserWorker.postMessage('hello 5');
+            parserWorker.postMessage('hello 6');
+            parserWorker.postMessage('hello 3');
+            parserWorker.postMessage('hello 3');
+            parserWorker.postMessage('hello 3');
+//            console.log(parserWorker);
+//
+
+
+            // =====================================================
+            // END  ==========
+            // =====================================================
+
+            // =====================================================
+            // PUT THIS BACK INTO RUNNING AFTER DONE TESTING =======
+            // =====================================================
+//            var protein = PARSER.addPdbObject(SCENE.scene, data.atoms, data.centroid, ctrl.input.color);
+//            console.log('PROTEIN MESH FROM MAIN');
+//            console.log(protein);
+//
+//            ctrl.proteins[id] = protein;
+            // =====================================================
+            // END =================================================
+            // =====================================================
 
             ctrl.progress.increment()
 
@@ -119,11 +154,7 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
       .error(function(err) {
             //hide progress bar
             ctrl.progress.started = false;
-
-        //stop spinner
-        spinner.stop();
-
-        console.log(err);
+            console.log(err);
       })
   }
  };
@@ -588,3 +619,33 @@ app.directive('ondrop', function(){
         }
     }
 });
+
+app.factory('worker', function () {
+    return function (info) {
+        console.log('CREATING NEW WORKER');
+        var worker = new Worker('js/worker.js');
+
+        worker.addEventListener('message', function(e){
+            console.log('MAIN - message received from worker')
+            console.log(e.data);
+        }, false);
+
+        //=========================== TEST WORKER
+        worker.postMessage(info);
+        //===========================
+
+    }
+})
+
+app.factory('parserworker', function () {
+    return function () {
+        console.log('CREATING NEW WORKER');
+        var worker = new Worker('js/parserWorker.js');
+
+        worker.onmessage = function(e){
+            console.log('MAIN - message received from worker')
+            console.log(e.data);
+        };
+        return worker;
+    }
+})
