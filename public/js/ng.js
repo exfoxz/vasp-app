@@ -97,8 +97,14 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
       ctrl.input.reset();
 
     console.log('fetching... ' + id);
+
+      console.time('http');
+
     $http.get(serverUrl + 'pdbs/' + id)
       .success(function(data) {
+
+            console.timeEnd('http');
+
             console.log(data);
             ctrl.progress.increment()
             //add protein to scene and to list of proteins

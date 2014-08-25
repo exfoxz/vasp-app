@@ -3,6 +3,7 @@
  */
 
 THREE.BulkSphereGeometry = function (atoms, widthSegments, heightSegments, phiStart, phiLength, thetaStart, thetaLength) {
+    console.time('Bulking Sphere Geometry');
 
     THREE.Geometry.call( this );
     this.parameters = {
@@ -53,7 +54,7 @@ THREE.BulkSphereGeometry = function (atoms, widthSegments, heightSegments, phiSt
     thetaLength = thetaLength !== undefined ? thetaLength : Math.PI;
 
     var scope = this;
-
+    console.time('looping');
     //loop through an array of radius
     atoms.forEach(function(atom) { //center with x, y, z
         var x, y, vertices = [], uvs = [];
@@ -136,9 +137,11 @@ THREE.BulkSphereGeometry = function (atoms, widthSegments, heightSegments, phiSt
             vertex.applyMatrix4(new THREE.Matrix4().makeTranslation(atom.x, atom.y, atom.z));
         }
     });
+        console.timeEnd('looping');
 
     scope.computeFaceNormals();
 //    this.boundingSphere = new THREE.Sphere( new THREE.Vector3(), radius );
+    console.timeEnd('Bulking Sphere Geometry');
 };
 
 THREE.BulkSphereGeometry.prototype = Object.create( THREE.Geometry.prototype );

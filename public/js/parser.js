@@ -121,6 +121,7 @@ var PARSER = (function(){
     };
 
     parser.addPdbObject = function(scene, atoms, centroid, color) {
+        console.time('Add Pdb Object');
         var config = {
             radius: {
                 'C' : 1.7,
@@ -142,6 +143,7 @@ var PARSER = (function(){
         }
 
         var sphereGeometry;
+        console.time('Prepare data');
         //material to make the final sphere
         var sphereMaterial = new THREE.MeshLambertMaterial({color: color});
 
@@ -157,13 +159,20 @@ var PARSER = (function(){
                 }
             }
         });
-
+        console.timeEnd('Prepare data');
+        console.time('Making geometry');
         sphereGeometry = new THREE.BulkSphereGeometry(atoms, config.segments, config.rings);
+        console.timeEnd('Making geometry');
         //create a mesh
+        console.time('Make a mesh');
         var mesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
         //add sphereGeometry to scene
         mesh.position.set(-centroid[0], -centroid[1], -centroid[2]);
+        console.timeEnd('Make a mesh');
+        console.time('Add to scene');
         scene.add(mesh);
+        console.timeEnd('Add to scene');
+        console.timeEnd('Add Pdb Object');
         return mesh;
     };
 
