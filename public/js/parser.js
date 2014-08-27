@@ -3,28 +3,29 @@
  */
 
 /** anonymous function to execute to get parser functions */
-var PARSER = (function(){
+var PARSER = (function () {
     var parser = {};
+
     /** function to add object to a scene of THREEJS - surf */
-    parser.addSurfObject = function(scene, data, color) {
+    parser.addSurfObject = function (scene, data, color) {
         var geometry = new THREE.Geometry();
         var myCoordinates = data.coordinates;
         var myFaces = data.faces;
         var objectCount = 2;
         //loop to add vertices
-        for (var i = 0; i< myCoordinates.length; i+=6) {
-            addVertex(myCoordinates[i], myCoordinates[i+1], myCoordinates[i+2])
+        for (var i = 0; i < myCoordinates.length; i += 6) {
+            addVertex(myCoordinates[i], myCoordinates[i + 1], myCoordinates[i + 2])
         }
 
-        for (var j = 0; j< myFaces.length; j+=3) {
-            addFace(myFaces[j], myFaces[j+1], myFaces[j+2]);
+        for (var j = 0; j < myFaces.length; j += 3) {
+            addFace(myFaces[j], myFaces[j + 1], myFaces[j + 2]);
         }
 
         geometry.computeFaceNormals();
         geometry.computeVertexNormals();
 
         //findPrime function to find xP, yP and zP
-        if(objectCount == 2) {
+        if (objectCount == 2) {
             offset = findPrime(myCoordinates, data.numGeometry);
         }
 
@@ -35,109 +36,44 @@ var PARSER = (function(){
         return mesh;
 
         function addVertex(x, y, z) {
-            geometry.vertices.push( new THREE.Vector3( x, y, z) );
+            geometry.vertices.push(new THREE.Vector3(x, y, z));
         }
 
         function addFace(x, y, z) {
-            geometry.faces.push( new THREE.Face3( x, y, z));
+            geometry.faces.push(new THREE.Face3(x, y, z));
         }
 
         /** Find primes to position object to origin */
-        function findPrime (myCoordinates, numGeometry) {
+        function findPrime(myCoordinates, numGeometry) {
             var xPrime = 0, yPrime = 0, zPrime = 0;
-            for (var i = 0; i < myCoordinates.length - 6; i+=6) {
+            for (var i = 0; i < myCoordinates.length - 6; i += 6) {
                 xPrime += myCoordinates[i];
-                yPrime += myCoordinates[i+1];
-                zPrime += myCoordinates[i+2];
+                yPrime += myCoordinates[i + 1];
+                zPrime += myCoordinates[i + 2];
             }
-            return [xPrime/numGeometry,yPrime/numGeometry,zPrime/numGeometry];
+            return [xPrime / numGeometry, yPrime / numGeometry, zPrime / numGeometry];
         }
     }
 
-//    /** function to add object to a scene of THREEJS - pdb */
-//    parser.addPdbObjectX = function(scene, atoms, centroid, color) {
-//        var config = {
-//            radius: {
-//                'C' : 1.7,
-//                'N' : 1.5,
-//                'S' : 1.8,
-//                'O' : 1.5,
-//                'H' : 1.2,
-//                'OTH' : 1.9 //unrecognized atom types
-//            },  //TODO: dynamic radius
-//            colors: {
-//                'N' : 'blue',
-//                'S' : 'yellow',
-//                'O' : 'red',
-//                'H' : 'white',
-//            },
-//            defaultColor : color,
-//            segments: 10, //drop to 10 - 12
-//            rings: 6 //drop to 6
-//        }
-//
-//        var sphereGeometry;
-//        //material to make the final sphere
-//        var sphereMaterial = new THREE.MeshLambertMaterial({color: color});
-//        atoms.forEach(function(atom) {
-//            if(!config.radius[atom.element]) {
-//                 atom.radius = config.radius['OTH'];
-//            }
-//            else {
-//                atom.radius = config.radius[atom.element];
-//                //if the known element is not carbon
-//                if(atom.element !== 'C') {
-//                }
-//            }
-//
-//            if(!sphereGeometry) {
-//                console.log('initial sphere');
-//                sphereGeometry =
-//                    new THREE.BulkSphereGeometry([atom], config.segments, config.rings);
-//                console.log(sphereGeometry);
-//                console.log(sphereGeometry.faces[0].clone());
-////                sphereGeometry.applyMatrix(new THREE.Matrix4().makeTranslation(atom.x, atom.y, atom.z));
-//                console.log(sphereGeometry.faces[0]);
-//                console.log(sphereGeometry.applyMatrix)
-//            }
-////
-////            else {
-////                console.log('new sphere');
-////                var newSphere = new THREE.BulkSphereGeometry(radius, config.segments, config.rings);
-////
-////                newSphere.applyMatrix(new THREE.Matrix4().makeTranslation(atom.x, atom.y, atom.z));
-////                //merge newSphere to sphereGeometry
-////                THREE.GeometryUtils.merge(sphereGeometry, newSphere);
-////            }
-//        })
-//
-//        //create a mesh
-//        var mesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
-//        //add sphereGeometry to scene
-////        mesh.position.set(-centroid[0], -centroid[1], -centroid[2]);
-//        scene.add(mesh);
-//        return mesh;
-//    };
-
     /** function to add object to a scene of THREEJS - pdb */
-    parser.addPdbObject = function(scene, atoms, centroid, color) {
+    parser.addPdbObject = function (scene, atoms, centroid, color) {
         console.time('Add Pdb Object');
         var config = {
             radius: {
-                'C' : 1.7,
-                'N' : 1.5,
-                'S' : 1.8,
-                'O' : 1.5,
-                'H' : 1.2,
-                'OTH' : 1.9 //unrecognized atom types
+                'C': 1.7,
+                'N': 1.5,
+                'S': 1.8,
+                'O': 1.5,
+                'H': 1.2,
+                'OTH': 1.9 //unrecognized atom types
             },  //TODO: dynamic radius
             colors: {
-                'N' : 'blue',
-                'S' : 'yellow',
-                'O' : 'red',
-                'H' : 'white',
+                'N': 'blue',
+                'S': 'yellow',
+                'O': 'red',
+                'H': 'white',
             },
-            defaultColor : color,
+            defaultColor: color,
             segments: 10, //drop to 10 - 12
             rings: 6 //drop to 6
         }
@@ -146,9 +82,8 @@ var PARSER = (function(){
         console.time('Prepare data');
         //material to make the final sphere
         var sphereMaterial = new THREE.MeshLambertMaterial({color: color});
-
         //TODO: is loop through each atom to get radius beforehand efficient?
-        atoms.forEach(function(atom) {
+        atoms.forEach(function (atom) {
             if (!config.radius[atom.element]) {
                 atom.radius = config.radius['OTH'];
             }
@@ -163,23 +98,6 @@ var PARSER = (function(){
         console.time('Making geometry');
         sphereGeometry = new THREE.BulkSphereGeometry(atoms, config.segments, config.rings);
         console.timeEnd('Making geometry');
-        console.time('geometry');
-        sphereGeometry = new THREE.BulkSphereGeometry(atoms, config.segments, config.rings);
-        console.log('SPHERE GEOMETRY');
-        console.log(sphereGeometry);
-        console.timeEnd('geometry');
-//        console.log('GEOMETRY:');
-//        console.log(sphereGeometry);
-//        sphereGeometryX = new THREE.SphereGeometry(1);
-//        console.log('GEOMETRYX:');
-//        console.log(sphereGeometryX);
-//        console.time('COPYING');
-//        sphereGeometryX.vertices = sphereGeometry.vertices;
-//        sphereGeometryX.faces = sphereGeometry.faces;
-//        sphereGeometryX.facesVertexUvs = sphereGeometry.facesVertexUvs;
-//        sphereGeometryX.boundingSphere = sphereGeometry.boundingSphere;
-//        console.timeEnd('COPYING');
-//        console.log(sphereGeometryX);
         //create a mesh
         console.time('Make a mesh');
         var mesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
@@ -206,8 +124,8 @@ var PARSER = (function(){
         lines = data.split("\n");
 
         //get the GEOMETRY position
-        for(var i = 0; i < RANGE; i++) {
-            if(lines[i].charAt(0) == "G") {
+        for (var i = 0; i < RANGE; i++) {
+            if (lines[i].charAt(0) == "G") {
                 startGeometry = i;
                 break;
             }
@@ -220,7 +138,7 @@ var PARSER = (function(){
         //loop through lines[] to break down lines into words[]
         var words = [];
         for (i = 0; i < numGeometry; i++) {
-            words[i] = lines[i+startGeometry + 1].split(" ");
+            words[i] = lines[i + startGeometry + 1].split(" ");
         }
 
         //a counter to loop through words[]
@@ -228,7 +146,7 @@ var PARSER = (function(){
 
         //loop through words[] to add parsed-Floats to myCoordinates[]
         for (var j = 0; j < words.length; j++) {
-            for(var k = 0; k < words[0].length; k++) {
+            for (var k = 0; k < words[0].length; k++) {
                 myCoordinates[counter] = parseFloat(words[j][k]);
                 counter++;
             }
@@ -236,8 +154,8 @@ var PARSER = (function(){
         ////START LOOKING FOR FACES - TOPOLOGY
 
         //get the TOPOLOGY position
-        for(j = numGeometry - 1 + startGeometry; j < numGeometry - 1 + startGeometry + RANGE; j++) {
-            if(lines[j].charAt(0) == "T") {
+        for (j = numGeometry - 1 + startGeometry; j < numGeometry - 1 + startGeometry + RANGE; j++) {
+            if (lines[j].charAt(0) == "T") {
                 startTopology = j;
                 break;
             }
@@ -247,7 +165,7 @@ var PARSER = (function(){
         numTopology = parseInt(lines[startTopology].replace("TOPOLOGY: ", ""));
         words = [];
         for (i = 0; i < numTopology; i++) {
-            words[i] = lines[i+ startTopology + 1].split(" ");
+            words[i] = lines[i + startTopology + 1].split(" ");
         }
 
         //reset counter
@@ -255,7 +173,7 @@ var PARSER = (function(){
 
         //loop through words[] to add parsed-Floats to myCoordinates[]
         for (j = 0; j < words.length; j++) {
-            for(k = 0; k < words[0].length; k++) {
+            for (k = 0; k < words[0].length; k++) {
                 myFaces[counter] = parseFloat(words[j][k]);
                 counter++;
             }
