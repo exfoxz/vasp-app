@@ -157,8 +157,23 @@ var PARSER = (function(){
                 }
             }
         });
-
+        console.time('geometry');
         sphereGeometry = new THREE.BulkSphereGeometry(atoms, config.segments, config.rings);
+        console.log('SPHERE GEOMETRY');
+        console.log(sphereGeometry);
+        console.timeEnd('geometry');
+//        console.log('GEOMETRY:');
+//        console.log(sphereGeometry);
+//        sphereGeometryX = new THREE.SphereGeometry(1);
+//        console.log('GEOMETRYX:');
+//        console.log(sphereGeometryX);
+//        console.time('COPYING');
+//        sphereGeometryX.vertices = sphereGeometry.vertices;
+//        sphereGeometryX.faces = sphereGeometry.faces;
+//        sphereGeometryX.facesVertexUvs = sphereGeometry.facesVertexUvs;
+//        sphereGeometryX.boundingSphere = sphereGeometry.boundingSphere;
+//        console.timeEnd('COPYING');
+//        console.log(sphereGeometryX);
         //create a mesh
         var mesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
         //add sphereGeometry to scene

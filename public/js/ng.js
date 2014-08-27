@@ -6,7 +6,7 @@ app.config(function($httpProvider){
   delete $httpProvider.defaults.headers.common['X-Requested-With'];
 });
 
-app.controller('objCtrl', function($scope, $http, $timeout, worker, parserworker) {
+app.controller('objCtrl', function($scope, $http, $timeout) {
   var ctrl = this;
 
   //dummy object for input
@@ -72,92 +72,54 @@ app.controller('objCtrl', function($scope, $http, $timeout, worker, parserworker
         ctrl.setColor(ctrl.colorIndex++);
     }
 
- //get atoms from server
- ctrl.fetch = function(id) {
-  //check for undefined or empty input
-  if(ctrl.input.name == undefined || ctrl.input.name == '') {
-    console.log('NO NAME');
-  }
-  else {
-      //show progress bar
-      ctrl.progress.increment();
-      ctrl.progress.started = true;
-      ctrl.progress.value = 20;
-      //remove welcome message
-      if(angular.element('#welcome'))
-        angular.element('#welcome').remove();
+    /** Get atoms from server and add it to scene */
+     ctrl.fetch = function(id) {
+      //check for undefined or empty input
+      if(ctrl.input.name == undefined || ctrl.input.name == '') {
+        console.log('NO NAME');
+      }
+      else {
+          //show progress bar
+          ctrl.progress.increment();
+          ctrl.progress.started = true;
+          ctrl.progress.value = 20;
+          //remove welcome message
+          if(angular.element('#welcome'))
+            angular.element('#welcome').remove();
 
-      //reset input
-      ctrl.input.reset();
+          //reset input
+          ctrl.input.reset();
 
-    console.log('fetching... ' + id);
-    $http.get(serverUrl + 'pdbs/' + id)
-      .success(function(data) {
-            console.log(data);
-            ctrl.progress.increment()
+        console.log('fetching... ' + id);
+          console.time('http');
+        $http.get(serverUrl + 'pdbs/' + id)
+          .success(function(data) {
+                console.timeEnd('http');
+                console.log(data);
+                ctrl.progress.increment()
 
-            var atoms = data.atoms;
-            var centroid = data.centroid;
-            var color = ctrl.input.color;
-            //add protein to scene and to list of proteins
-            // =====================================================
-            // TEST WORKER ==========
-            // =====================================================
-//            worker({
-//                op: 'addPdbObject',
-//                params: {
-//                    atoms: atoms,
-//                    centroid: centroid,
-//                    color: color
-//                }
-//            });
-            var parserWorker = parserworker();
-            parserWorker.postMessage('hello');
-            parserWorker.postMessage('hello 2');
-            parserWorker.postMessage('hello 4');
-            parserWorker.postMessage('hello 5');
-            parserWorker.postMessage('hello 6');
-            parserWorker.postMessage('hello 3');
-            parserWorker.postMessage('hello 3');
-            parserWorker.postMessage('hello 3');
-//            console.log(parserWorker);
-//
+                var atoms = data.atoms;
+                var centroid = data.centroid;
+                var color = ctrl.input.color;
+                //add protein to scene and to list of proteins
+                var protein = PARSER.addPdbObject(SCENE.scene, data.atoms, data.centroid, ctrl.input.color);
+                ctrl.proteins[id] = protein;
 
-
-            // =====================================================
-            // END  ==========
-            // =====================================================
-
-            // =====================================================
-            // PUT THIS BACK INTO RUNNING AFTER DONE TESTING =======
-            // =====================================================
-//            var protein = PARSER.addPdbObject(SCENE.scene, data.atoms, data.centroid, ctrl.input.color);
-//            console.log('PROTEIN MESH FROM MAIN');
-//            console.log(protein);
-//
-//            ctrl.proteins[id] = protein;
-            // =====================================================
-            // END =================================================
-            // =====================================================
-
-            ctrl.progress.increment()
-
-            //hide progress bar
-            ctrl.progress.started = false;
-
-            //add to list of structures
-            ctrl.structures.push({id: id, style: {'border-top-color': ctrl.input.color}})
-
-            //rotate through colors
-            ctrl.setColor(ctrl.colorIndex++);
-      })
-      .error(function(err) {
-            //hide progress bar
-            ctrl.progress.started = false;
-            console.log(err);
-      })
-  }
- };
+                ctrl.progress.increment()
+                //hide progress bar
+                ctrl.progress.started = false;
+                //add to list of structures
+                ctrl.structures.push({id: id, style: {'border-top-color': ctrl.input.color}})
+                //rotate through colors
+                ctrl.setColor(ctrl.colorIndex++);
+          })
+          .error(function(err) {
+                //hide progress bar
+                ctrl.progress.started = false;
+                console.log(err);
+          })
+      }
+     };
     /** callback after surf file has been read */
     ctrl.readerCallback = function (file, data) {
         //remove welcome message
@@ -187,6 +149,7 @@ app.controller('objCtrl', function($scope, $http, $timeout, worker, parserworker
             console.log('File reader API is not supported!');
     }
     //ctrl.fileReader();
+
     /** ng-file-upload init */
     ctrl.myModelObj;
     ctrl.className = "dragover";
@@ -310,69 +273,6 @@ app.controller('objCtrl', function($scope, $http, $timeout, worker, parserworker
         console.log('vasp on');
         ctrl.showOp = false;
     }
-
-//  //render function to render objects received from server
-//  ctrl.render = function(index) {
-//    //if object exists
-//   if(window.scene.children[index+ctrl.offset]) {
-//      //toggle visible
-//      window.scene.children[index+ctrl.offset].visible = !window.scene.children[index+ctrl.offset].visible;
-//      console.log('Already exists!');
-//    }
-//    else {
-//      //var color = rainbow(16, index + 3);
-//      //add object
-//      addObject(ctrl.barkObjects[index], ctrl.barkObjects[index].color);
-//
-//      //button color
-//      //ctrl.barkObjects[index].style = {"background-color": color};
-//    }
-//    //console.log(scene);
-//
-//  //toggle active
-//    ctrl.barkObjects[index].active = !ctrl.barkObjects[index].active;
-//  }
-
-//  ctrl.handleDrop = function(targetId, sourceId) {
-//    console.log(targetId + ' ' + sourceId);
-//    //start spinner
-//    var spinner = new Spinner(ctrl.spinnerOpts).spin(ctrl.spinnerDiv);
-//
-//    //get object from target and source id
-//    var source = ctrl.barkObjects[sourceId];
-//    var target = ctrl.barkObjects[targetId];
-//
-//    //call VASP operation on source and target
-//    var op = 'i' //operation
-//    var url = 'http://bark.cse.lehigh.edu:3000/vasp/'
-//    + op
-//    + '/'
-//    + source.name
-//    + '&'
-//    + target.name //url to GET
-//
-//    $http.get(url)
-//    .success(function(data) {
-//      console.log(data);
-//
-//      //stop spinner
-//      spinner.stop();
-//
-//      //reference currentObject to add color and style
-//      var currentIndex = ctrl.barkObjects.length;
-//      data.name = source.name + ' ' + op.toUpperCase() + ' ' + target.name;
-//      data.color = rainbow(16, currentIndex + 3);
-//      data.style = {"background-color": data.color};
-//
-//      //add result to scence
-//      ctrl.barkObjects.push(data);
-//
-//    })
-//    .error(function(e) {
-//      console.log('There is an error: ' + e);
-//    })
-//
-//  }
 
   // //Initialize socket
   // //ctrl.urlSocket = 'http://bark.cse.lehigh.edu:3700';
@@ -620,32 +520,13 @@ app.directive('ondrop', function(){
     }
 });
 
-app.factory('worker', function () {
-    return function (info) {
-        console.log('CREATING NEW WORKER');
-        var worker = new Worker('js/worker.js');
-
-        worker.addEventListener('message', function(e){
-            console.log('MAIN - message received from worker')
-            console.log(e.data);
-        }, false);
-
-        //=========================== TEST WORKER
-        worker.postMessage(info);
-        //===========================
-
-    }
-})
-
 app.factory('parserworker', function () {
     return function () {
-        console.log('CREATING NEW WORKER');
-        var worker = new Worker('js/parserWorker.js');
-
+        console.log('CREATING NEW PARSER WORKER');
+//        var worker = new Worker('js/parserWorker.js');
         worker.onmessage = function(e){
-            console.log('MAIN - message received from worker')
-            console.log(e.data);
         };
+
         return worker;
     }
 })
