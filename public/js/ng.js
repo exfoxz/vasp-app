@@ -72,13 +72,20 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
         ctrl.setColor(ctrl.colorIndex++);
     }
 
- //get atoms from server
- ctrl.fetch = function(id) {
-
-     //=========================== TEST WORKER
-        var dataX = {id: id};
-        worker.postMessage('Worker doing work');
-     //===========================
+    /** Get atoms from server and add it to scene */
+     ctrl.fetch = function(id) {
+      //check for undefined or empty input
+      if(ctrl.input.name == undefined || ctrl.input.name == '') {
+        console.log('NO NAME');
+      }
+      else {
+          //show progress bar
+          ctrl.progress.increment();
+          ctrl.progress.started = true;
+          ctrl.progress.value = 20;
+          //remove welcome message
+          if(angular.element('#welcome'))
+            angular.element('#welcome').remove();
 
   //check for undefined or empty input
   if(ctrl.input.name == undefined || ctrl.input.name == '') {
@@ -133,6 +140,39 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
       })
   }
  };
+          //reset input
+          ctrl.input.reset();
+
+        console.log('fetching... ' + id);
+          console.time('http');
+        $http.get(serverUrl + 'pdbs/' + id)
+          .success(function(data) {
+                console.timeEnd('http');
+                console.log(data);
+                ctrl.progress.increment()
+
+                var atoms = data.atoms;
+                var centroid = data.centroid;
+                var color = ctrl.input.color;
+                //add protein to scene and to list of proteins
+                var protein = PARSER.addPdbObject(SCENE.scene, data.atoms, data.centroid, ctrl.input.color);
+                ctrl.proteins[id] = protein;
+
+                ctrl.progress.increment()
+                //hide progress bar
+                ctrl.progress.started = false;
+                //add to list of structures
+                ctrl.structures.push({id: id, style: {'border-top-color': ctrl.input.color}})
+                //rotate through colors
+                ctrl.setColor(ctrl.colorIndex++);
+          })
+          .error(function(err) {
+                //hide progress bar
+                ctrl.progress.started = false;
+                console.log(err);
+          })
+     };
+
     /** callback after surf file has been read */
     ctrl.readerCallback = function (file, data) {
         //remove welcome message
@@ -162,6 +202,7 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
             console.log('File reader API is not supported!');
     }
     //ctrl.fileReader();
+
     /** ng-file-upload init */
     ctrl.myModelObj;
     ctrl.className = "dragover";
@@ -286,69 +327,6 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
         ctrl.showOp = false;
     }
 
-//  //render function to render objects received from server
-//  ctrl.render = function(index) {
-//    //if object exists
-//   if(window.scene.children[index+ctrl.offset]) {
-//      //toggle visible
-//      window.scene.children[index+ctrl.offset].visible = !window.scene.children[index+ctrl.offset].visible;
-//      console.log('Already exists!');
-//    }
-//    else {
-//      //var color = rainbow(16, index + 3);
-//      //add object
-//      addObject(ctrl.barkObjects[index], ctrl.barkObjects[index].color);
-//
-//      //button color
-//      //ctrl.barkObjects[index].style = {"background-color": color};
-//    }
-//    //console.log(scene);
-//
-//  //toggle active
-//    ctrl.barkObjects[index].active = !ctrl.barkObjects[index].active;
-//  }
-
-//  ctrl.handleDrop = function(targetId, sourceId) {
-//    console.log(targetId + ' ' + sourceId);
-//    //start spinner
-//    var spinner = new Spinner(ctrl.spinnerOpts).spin(ctrl.spinnerDiv);
-//
-//    //get object from target and source id
-//    var source = ctrl.barkObjects[sourceId];
-//    var target = ctrl.barkObjects[targetId];
-//
-//    //call VASP operation on source and target
-//    var op = 'i' //operation
-//    var url = 'http://bark.cse.lehigh.edu:3000/vasp/'
-//    + op
-//    + '/'
-//    + source.name
-//    + '&'
-//    + target.name //url to GET
-//
-//    $http.get(url)
-//    .success(function(data) {
-//      console.log(data);
-//
-//      //stop spinner
-//      spinner.stop();
-//
-//      //reference currentObject to add color and style
-//      var currentIndex = ctrl.barkObjects.length;
-//      data.name = source.name + ' ' + op.toUpperCase() + ' ' + target.name;
-//      data.color = rainbow(16, currentIndex + 3);
-//      data.style = {"background-color": data.color};
-//
-//      //add result to scence
-//      ctrl.barkObjects.push(data);
-//
-//    })
-//    .error(function(e) {
-//      console.log('There is an error: ' + e);
-//    })
-//
-//  }
-
   // //Initialize socket
   // //ctrl.urlSocket = 'http://bark.cse.lehigh.edu:3700';
   // ctrl.urlSocket = 'http://localhost:3700';
@@ -470,7 +448,7 @@ app.controller('objCtrl', function($scope, $http, $timeout) {
       }
       var c = "#" + ("00" + (~ ~(r * 255)).toString(16)).slice(-2) + ("00" + (~ ~(g * 255)).toString(16)).slice(-2) + ("00" + (~ ~(b * 255)).toString(16)).slice(-2);
       return (c);
-  }
+  };
 
 });
 
@@ -594,3 +572,14 @@ app.directive('ondrop', function(){
         }
     }
 });
+
+app.factory('parserworker', function () {
+    return function () {
+        console.log('CREATING NEW PARSER WORKER');
+//        var worker = new Worker('js/parserWorker.js');
+        worker.onmessage = function(e){
+        };
+
+        return worker;
+    }
+})

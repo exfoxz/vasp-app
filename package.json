@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "description": "Web App for VASP",
   "dependencies": {
-    "socket.io": "latest",
-    "express": "latest"
+    "express": "latest",
+    "morgan": "^1.2.3",
+    "socket.io": "latest"
   },
   "author": "exfoxz",
   "devDependencies": {
