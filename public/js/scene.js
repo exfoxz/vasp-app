@@ -1,6 +1,9 @@
 /** anonymous function to execute to scene up and running */
 var SCENE = (function(){
     var myScene = {};
+    var defaults = {};
+    // Rotation check
+    var isRotating = false;
     console.log("SCENE IS RUNNING...");
     //create local vars
     var scene = new THREE.Scene();
@@ -43,6 +46,9 @@ var SCENE = (function(){
             );
         camera.position.set(0, 0, CAM_POS_Z);
 
+        defaults.defaultPosition = _.cloneDeep(camera.position);
+        defaults.defaultRotation = _.cloneDeep(camera.rotation);
+
         //add the camera to scene
 
         scene.add(camera)
@@ -63,7 +69,10 @@ var SCENE = (function(){
     /** animate by looping with requestAnimationFrame */
     function animate() {
         window.requestAnimationFrame(animate, renderer.domElement);
-        controls.update();
+        if(isRotating){
+            console.log('is rotating');
+            controls.update();
+        };
         render();
     }
 
@@ -76,6 +85,25 @@ var SCENE = (function(){
     //bind scene to myScene
     myScene.scene = scene;
 
+    // methods
+    myScene.methods = {
+        savePosition : function () {
+            return myScene.lastPosition = _.clone(camera.position);
+        },
+        toggleRotation : function () {
+            controls.autoRotate = !controls.autoRotate;
+            return isRotating = !isRotating;
+        },
+        increaseRotationSpeed: function (tick) {
+            return controls.autoRotateSpeed+= tick;
+        },
+        resetCameraRotation: function () {
+            var lastPosition = myScene.position;
+            var target = controls.target;
+            camera.position.copy(target).add(lastPosition);
+            return camera.lookAt(target);
+        }
+    };
     //export myScene object
     return myScene;
 }());

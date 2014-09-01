@@ -6,12 +6,63 @@ angular.module('app.controllers', [])
     .controller('objCtrl', function ($scope, $http, $timeout, Rainbow, Socket) {
         var ctrl = this;
 
+        //url for server to fetch information
+        var serverUrl = 'http://localhost:8000/';
+//      var serverUrl = 'http://54.64.25.255:8000/';
+
+        // Test button
+        ctrl.test = function () {
+            // =====================================================
+            // CAMERA ROTATION TEST ================================
+            // =====================================================
+            console.log('CAMERA ROTATION');
+            console.log(SCENE.methods.resetCameraRotation());
+            // =====================================================
+            // END =================================================
+            // =====================================================
+        };
+
+         // Save current workspace info to server
+        ctrl.save = function () {
+            // =====================================================
+            // Save camera position to a database ==================
+            // =====================================================
+            console.log('saving workspace');
+            var lastPosition = SCENE.methods.savePosition();
+            // Get ids for all the current pdbs
+            var pdbs = [];
+            ctrl.structures.forEach(function (data) {
+                pdbs.push(data.id);
+            });
+            // TODO: Surf files data?
+            console.log('POST to workspace/save');
+            // Do a POST request to server API
+            $http({method: 'POST', url: serverUrl + 'workspace/save', data: {pdbs: pdbs, cameraPosition: lastPosition}})
+                .success(function (data, status) {
+                    console.log('done POST save workspace');
+                    console.log(data);
+                })
+                .error(function (data, status) {
+                    // TODO: resolve POST error
+                    console.log('error');
+                });
+            // =====================================================
+            // END =================================================
+            // =====================================================
+        };
+
+        // Toggle camera rotation
+        ctrl.toggleRotation = function () {
+            console.log('toggle');
+            SCENE.methods.toggleRotation();
+        }
+
         //dummy object for input
         ctrl.input = {};
 
-        //list of structres
+        //list of pdbs
         ctrl.structures = [];
-        //list of protein meshes
+        //list of pdbs meshes
         ctrl.proteins = {};
 
         //list of surfaces
@@ -34,10 +85,6 @@ angular.module('app.controllers', [])
         }
         //welcome message
         ctrl.welcomeMessage = "<- Enter a protein's name and click Go! to get started!";
-
-        //url for server to fetch information
-//        var serverUrl = 'http://localhost:8000/';
-        var serverUrl = 'http://54.64.25.255:8000/';
 
         //objects recevied from Bark
         ctrl.barkObjects = [];
@@ -76,7 +123,6 @@ angular.module('app.controllers', [])
                 console.log('NO NAME');
             }
             else {
-                console.log('Rainbow :', Rainbow(1,2))
                 //show progress bar
                 ctrl.progress.increment();
                 ctrl.progress.started = true;

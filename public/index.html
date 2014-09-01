@@ -110,8 +110,17 @@
                             </div>
                             <nav class="collapse navbar-collapse" role="navigation">
                                 <ul class="nav navbar-nav">
-                                    <li>
+                                    <li ng-click="ctrl.test()">
                                         <a href="#"><i class="glyphicon glyphicon-home"></i> Home</a>
+                                    </li>
+                                    <li ng-click="ctrl.test2()">
+                                        <a href="#"><i class="glyphicon glyphicon-home"></i> Home 2</a>
+                                    </li>
+                                    <li ng-click="ctrl.toggleRotation()">
+                                        <a href="#"><i class="glyphicon glyphicon-play-circle"></i> Rotation</a>
+                                    </li>
+                                    <li ng-click="ctrl.save()">
+                                        <a href="#"><i class="glyphicon glyphicon-floppy-disk"></i> Save</a>
                                     </li>
                                 </ul>
                                 <!--                            <ul class="nav navbar-nav navbar-right">
@@ -148,6 +157,8 @@
             </div>
         </div>
     </div>
+    <!-- Lo-Dash -->
+    <script src="js/lodash.js"></script>
     <!--jQuery-->
     <script src="js/jquery.min.js"></script>
     <!--AngularJS-->

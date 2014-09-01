@@ -249,9 +249,11 @@ THREE.OrbitControls = function ( object, domElement ) {
 		offset.z = radius * Math.sin( phi ) * Math.cos( theta );
 
 		position.copy( this.target ).add( offset );
-
+        console.log('OFFSET');
+        console.log(offset);
 		this.object.lookAt( this.target );
-
+        console.log('POSITION');
+        console.log(this.object.position);
 		thetaDelta = 0;
 		phiDelta = 0;
 		scale = 1;
@@ -281,7 +283,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 	}
 
 	function onMouseDown( event ) {
-
+        console.log('Mouse down');
 		if ( scope.enabled === false ) { return; }
 		event.preventDefault();
 
@@ -410,6 +412,8 @@ THREE.OrbitControls = function ( object, domElement ) {
 			scope.dollyIn();
 
 		}
+
+        scope.update();
 
 	}
 
