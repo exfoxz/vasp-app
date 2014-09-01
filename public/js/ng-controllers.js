@@ -3,7 +3,7 @@
  */
 
 angular.module('app.controllers', [])
-    .controller('objCtrl', function ($scope, $http, $timeout, Rainbow) {
+    .controller('objCtrl', function ($scope, $http, $timeout, Rainbow, Socket) {
         var ctrl = this;
 
         //dummy object for input
@@ -36,7 +36,7 @@ angular.module('app.controllers', [])
         ctrl.welcomeMessage = "<- Enter a protein's name and click Go! to get started!";
 
         //url for server to fetch information
-        //var serverUrl = 'http://localhost:5000/';
+//        var serverUrl = 'http://localhost:8000/';
         var serverUrl = 'http://54.64.25.255:8000/';
 
         //objects recevied from Bark

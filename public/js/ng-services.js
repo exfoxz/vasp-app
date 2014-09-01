@@ -17,17 +17,20 @@ angular.module('app.services', [])
     })
     // TODO: MODIFY SOCKET SERVICE
     .factory('Socket', function () {
-        var ctrl = {};
+        console.log('Initializing socket...');
+        var Socket = {};
         // //Initialize socket
-        // //ctrl.urlSocket = 'http://bark.cse.lehigh.edu:3700';
-        // ctrl.urlSocket = 'http://localhost:3700';
-        // ctrl.socket = io.connect(ctrl.urlSocket);
+//        var urlSocket = 'http://bark.cse.lehigh.edu:3700';
+        var urlSocket = 'http://localhost:8000';
+        var socket = io.connect(urlSocket);
 
         // ctrl.mouseCounter = 0;
-        // //Get initial message from socket server
-        // //Receiving data from socket server
-        // ctrl.socket.on('message', function(data) {
-        //     //welcome message
+        // Get initial message from socket server
+        // Receiving data from socket server
+        socket.on('message', function(data) {
+            console.log(data);
+        });
+//             welcome message
         //     console.log(data);
         //     if(data.message) {
         //         //Initialize the canvas for later use
@@ -84,46 +87,45 @@ angular.module('app.services', [])
         //   }
         // });
         //subscribes a room
-
-        ctrl.subscribe = function (room) {
-            ctrl.socket.emit('subscribe', {room: room});
-        }
-
-        //send controls data to other sockets
-        ctrl.getControlData = function (id) {
-            ctrl.scoket.emit('getControl', {id: id});
-        }
-
-        //return object with percentage of x and y with respect to the canvas
-        ctrl.mousemove = function (e) {
-            //console.log(e);
-            ctrl.mouseCounter++;
-            if (ctrl.mouseCounter == 50) {
-                var mouseData = {id: ctrl.socket.socket.sessionid,
-                    percentX: e.offsetX / e.target.clientWidth,
-                    percentY: e.offsetY / e.target.clientHeight};
-                ctrl.socket.emit('send', {mouseData: mouseData});
-                ctrl.mouseCounter = 0;
-            }
-            else {
-                //console.log('counter: ' + ctrl.mouseCounter);
-            }
-
-        };
-
-        ctrl.queryUser = function (index) {
-            ctrl.socket.emit('queryUser', {id: ctrl.users[index].id,
-                name: ctrl.users[index].name});
-            console.log('queryUser ' + ctrl.users[index].name);
-        }
-
-        ctrl.users = [];
-
-        ctrl.test = function () {
-            console.log('testing...');
-        }
-
-        return ctrl;
+//
+//        ctrl.subscribe = function (room) {
+//            ctrl.socket.emit('subscribe', {room: room});
+//        }
+//
+//        //send controls data to other sockets
+//        ctrl.getControlData = function (id) {
+//            ctrl.scoket.emit('getControl', {id: id});
+//        }
+//
+//        //return object with percentage of x and y with respect to the canvas
+//        ctrl.mousemove = function (e) {
+//            //console.log(e);
+//            ctrl.mouseCounter++;
+//            if (ctrl.mouseCounter == 50) {
+//                var mouseData = {id: ctrl.socket.socket.sessionid,
+//                    percentX: e.offsetX / e.target.clientWidth,
+//                    percentY: e.offsetY / e.target.clientHeight};
+//                ctrl.socket.emit('send', {mouseData: mouseData});
+//                ctrl.mouseCounter = 0;
+//            }
+//            else {
+//                //console.log('counter: ' + ctrl.mouseCounter);
+//            }
+//
+//        };
+//
+//        ctrl.queryUser = function (index) {
+//            ctrl.socket.emit('queryUser', {id: ctrl.users[index].id,
+//                name: ctrl.users[index].name});
+//            console.log('queryUser ' + ctrl.users[index].name);
+//        }
+//
+//        ctrl.users = [];
+//
+//        ctrl.test = function () {
+//            console.log('testing...');
+//        }
+//        return ctrl;
     })
     // Get unique color in steps
     .factory('Rainbow', function () {
