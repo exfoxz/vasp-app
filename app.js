@@ -7,10 +7,6 @@ var morgan = require('morgan');
 app.use(express.static(__dirname + '/public'));
 app.use(morgan('dev')); // log every request to the console
 
-app.get('/', function(req, res) {
-    res.render('index.html');
-});
-
 var io = require('socket.io').listen(
     app.listen(port, function() {
         console.log('Listening on port ' + port);

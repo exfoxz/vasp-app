@@ -3,7 +3,7 @@
  */
 
 angular.module('app.controllers', [])
-    .controller('objCtrl', function ($scope, $http, $timeout, Rainbow, Socket) {
+    .controller('objCtrl', function ($scope, $http, $timeout, Rainbow, Socket, $location) {
         var ctrl = this;
 
         //url for server to fetch information
@@ -25,6 +25,10 @@ angular.module('app.controllers', [])
          // Save current workspace info to server
         ctrl.save = function () {
             // =====================================================
+            // Check save conditions ===============================
+            // =====================================================
+            console.log($location.path());
+            // =====================================================
             // Save camera position to a database ==================
             // =====================================================
             console.log('saving workspace');
@@ -41,6 +45,10 @@ angular.module('app.controllers', [])
                 .success(function (data, status) {
                     console.log('done POST save workspace');
                     console.log(data);
+                   // Check status
+                   if(status === 200)
+                        // Change url without reloading
+                       $location.path(data.id);
                 })
                 .error(function (data, status) {
                     // TODO: resolve POST error
