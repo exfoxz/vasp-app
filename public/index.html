@@ -14,8 +14,6 @@
     <div class="wrapper">
         <div class="box">
             <div class="row row-offcanvas row-offcanvas-right">
-
-
                 <!-- sidebar -->
                 <div class="column col-sm-2 col-xs-1 sidebar-offcanvas" id="sidebar">
                     <div class="sidebar-offcanvas sidebar-header">
@@ -113,9 +111,6 @@
                                     <li ng-click="ctrl.test()">
                                         <a href="#"><i class="glyphicon glyphicon-home"></i> Home</a>
                                     </li>
-                                    <li ng-click="ctrl.test2()">
-                                        <a href="#"><i class="glyphicon glyphicon-home"></i> Home 2</a>
-                                    </li>
                                     <li ng-click="ctrl.toggleRotation()">
                                         <a href="#"><i class="glyphicon glyphicon-play-circle"></i> Rotation</a>
                                     </li>
@@ -137,17 +132,14 @@
                     <!-- /top nav -->
 
                     <!-- editor -->
-                    <div class="canvas-container">
-                        <div ng-show="ctrl.progress.started"><progressbar class="progress-striped active" type='success' value="ctrl.progress.value"></progressbar></div>
+                    <div class="canvas-container" ng-controller="canvasCtrl">
+                        <div ng-show="progress.started"><progressbar class="progress-striped active" type='success' value="progress.value"></progressbar></div>
+                        <!--<div class="cover" ng-show="showCover">-->
+                            <!--<div ng-view></div>-->
+                        <!--</div>-->
+                        <div ng-view class="cover" ng-show="showCover"></div>
                         <div id="canvas">
-                            <h1 id="welcome">{{ctrl.welcomeMessage}}</h1>
-                            <div class="message-center" ng-show="ctrl.showOp">
-                                <span class="message-center-exit" ng-click="ctrl.closeVasp()">X</span>
-                                {{ctrl.source}} and {{ctrl.target}}
-                                <button class="btn btn-primary" ng-click="ctrl.vaspOp()">U</button>
-                                <button class="btn btn-primary" ng-click="ctrl.vaspOp()">I</button>
-                                <button class="btn btn-primary" ng-click="ctrl.vaspOp()">D</button>
-                            </div>
+                            <h1 id="welcome">{{Canvas.welcomeMessage}}</h1>
                         </div>
                     </div>
                     <!-- /editor -->
@@ -162,10 +154,11 @@
     <!--jQuery-->
     <script src="js/jquery.min.js"></script>
     <!--AngularJS-->
-    <script src="bower_components/ng-file-upload/angular-file-upload-shim.js"></script>
+    <script src="js/angular-file-upload-shim.min.js"></script>
     <script src="js/angular.min.js"></script>
-    <script src="bower_components/ng-file-upload/angular-file-upload.js"></script>
+    <script src="js/angular-file-upload.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular-route.js"></script>
+    <script src="js/angular-ui-router.min.js"></script>
     <!--Bootstrap-->
     <script src="js/bootstrap.js"></script>
     <script src="js/ui-bootstrap-tpls-0.11.0.js"></script>

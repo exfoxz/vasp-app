@@ -274,7 +274,99 @@ hr {
 
 .message-center > button {
 }
-/* adjust the contents on smaller devices */
+
+
+/* Canvas modal */
+.cover {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    display: absolute;
+}
+
+.modal-message-center {
+    position: absolute;
+    top: 20%;
+    left: 20%;
+    margin: 0;
+    /*width: 50%;*/
+    /*height: 20%;*/
+    background-color: black;
+    padding-top: 10px;
+    padding-left: 20px;
+}
+
+/* spinner */
+.spinner-large {
+    font-size: 1000%;
+    animation-duration: 3s;
+    -moz-animation-duration: 3s;
+    -webkit-animation-duration: 3s;
+}
+.spinner {
+    -webkit-animation-name: spin;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-name: spin;
+    -moz-animation-timing-function: linear;
+    -moz-animation-iteration-count: infinite;
+    animation-name: spin;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+.spinner2 {
+    -webkit-animation-name: spin2;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-name: spin2;
+    -moz-animation-timing-function: linear;
+    -moz-animation-iteration-count: infinite;
+    animation-name: spin2;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+.spinner3 {
+    -webkit-animation-name: spin3;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-name: spin3;
+    -moz-animation-timing-function: linear;
+    -moz-animation-iteration-count: infinite;
+    animation-name: spin3;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+.spinner4 {
+    -webkit-animation-name: spin4;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-name: spin4;
+    -moz-animation-timing-function: linear;
+    -moz-animation-iteration-count: infinite;
+    animation-name: spin4;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+/*.spinner3 {*/
+    /*font-size: 150%;*/
+    /*-webkit-animation: spin 2s linear infinite;*/
+    /*-moz-animation: spin 2s linear infinite;*/
+    /*animation: spin 2s linear infinite;*/
+    /*-moz-animation-delay: 1s;*/
+    /*-webkit-animation-delay: 1s;*/
+    /*animation-delay: 1s;*/
+/*}*/
+/*.spinner4 {*/
+    /*font-size: 150%;*/
+    /*-webkit-animation: spin 2s linear infinite;*/
+    /*-moz-animation: spin 2s linear infinite;*/
+    /*animation: spin 2s linear infinite;*/
+    /*-moz-animation-delay: 1.5s;*/
+    /*-webkit-animation-delay: 1.5s;*/
+    /*animation-delay: 1.5s;*/
+/*}*/
+
+/* Adjust the contents on smaller devices */
 @media (max-width: 768px) {
 
     .column .padding {
@@ -485,4 +577,648 @@ hr {
     cursor: pointer;
     width: 16px;
     height: 16px;
+}
+
+@-moz-keyframes spin {
+    6.25% {
+        -moz-transform: rotate(90deg);
+        color: red;
+    }
+    12.5% {
+        -moz-transform: rotate(90deg);
+    }
+    18.75% {
+        -moz-transform: rotate(90deg);
+    }
+    25% {
+        -moz-transform: rotate(90deg);
+    }
+    31.25% {
+        -moz-transform: rotate(180deg);
+        color: green;
+    }
+    37.5% {
+        -moz-transform: rotate(180deg);
+    }
+    43.75% {
+        -moz-transform: rotate(180deg);
+    }
+    50% {
+        -moz-transform: rotate(180deg);
+    }
+    56.25% {
+        -moz-transform: rotate(270deg);
+        color: blue;
+    }
+    62.5% {
+        -moz-transform: rotate(270deg);
+    }
+    68.75% {
+        -moz-transform: rotate(270deg);
+    }
+    75% {
+        -moz-transform: rotate(270deg);
+    }
+    81.25% {
+        -moz-transform: rotate(360deg);
+    }
+    87.5% {
+        -moz-transform: rotate(360deg);
+    }
+    93.75% {
+        -moz-transform: rotate(360deg);
+    }
+    100% {
+        -moz-transform: rotate(360deg);
+    }
+}
+
+@-moz-keyframes spin2 {
+    6.25% {
+        -moz-transform: rotate(0deg);
+    }
+    12.5% {
+        -moz-transform: rotate(90deg);
+        color: red;
+    }
+    18.75% {
+        -moz-transform: rotate(90deg);
+    }
+    25% {
+        -moz-transform: rotate(90deg);
+    }
+    31.25% {
+        -moz-transform: rotate(90deg);
+    }
+    37.5% {
+        -moz-transform: rotate(180deg);
+        color: green;
+    }
+    43.75% {
+        -moz-transform: rotate(180deg);
+    }
+    50% {
+        -moz-transform: rotate(180deg);
+    }
+    56.25% {
+        -moz-transform: rotate(180deg);
+    }
+    62.5% {
+        -moz-transform: rotate(270deg);
+        color: blue;
+    }
+    68.75% {
+        -moz-transform: rotate(270deg);
+    }
+    75% {
+        -moz-transform: rotate(270deg);
+    }
+    81.25% {
+        -moz-transform: rotate(270deg);
+    }
+    87.5% {
+        -moz-transform: rotate(360deg);
+    }
+    93.75% {
+        -moz-transform: rotate(360deg);
+    }
+    100% {
+        -moz-transform: rotate(360deg);
+    }
+}
+
+@-moz-keyframes spin3 {
+    6.25% {
+        -moz-transform: rotate(0deg);
+    }
+    12.5% {
+        -moz-transform: rotate(0deg);
+    }
+    18.75% {
+        -moz-transform: rotate(90deg);
+        color: red;
+    }
+    25% {
+        -moz-transform: rotate(90deg);
+    }
+    31.25% {
+        -moz-transform: rotate(90deg);
+    }
+    37.5% {
+        -moz-transform: rotate(90deg);
+    }
+    43.75% {
+        -moz-transform: rotate(180deg);
+        color: green;
+    }
+    50% {
+        -moz-transform: rotate(180deg);
+    }
+    56.25% {
+        -moz-transform: rotate(180deg);
+    }
+    62.5% {
+        -moz-transform: rotate(180deg);
+    }
+    68.75% {
+        -moz-transform: rotate(270deg);
+        color: blue;
+    }
+    75% {
+        -moz-transform: rotate(270deg);
+    }
+    81.25% {
+        -moz-transform: rotate(270deg);
+    }
+    87.5% {
+        -moz-transform: rotate(270deg);
+    }
+    93.75% {
+        -moz-transform: rotate(360deg);
+    }
+    100% {
+        -moz-transform: rotate(360deg);
+    }
+}
+@-moz-keyframes spin4 {
+    6.25% {
+        -moz-transform: rotate(0deg);
+    }
+    12.5% {
+        -moz-transform: rotate(0deg);
+    }
+    18.75% {
+        -moz-transform: rotate(0deg);
+    }
+    25% {
+        -moz-transform: rotate(90deg);
+        color: red;
+    }
+    31.25% {
+        -moz-transform: rotate(90deg);
+    }
+    37.5% {
+        -moz-transform: rotate(90deg);
+    }
+    43.75% {
+        -moz-transform: rotate(90deg);
+    }
+    50% {
+        -moz-transform: rotate(180deg);
+        color: green;
+    }
+    56.25% {
+        -moz-transform: rotate(180deg);
+    }
+    62.5% {
+        -moz-transform: rotate(180deg);
+    }
+    68.75% {
+        -moz-transform: rotate(180deg);
+    }
+    75% {
+        -moz-transform: rotate(270deg);
+        color: blue;
+    }
+    81.25% {
+        -moz-transform: rotate(270deg);
+    }
+    87.5% {
+        -moz-transform: rotate(270deg);
+    }
+    93.75% {
+        -moz-transform: rotate(270deg);
+    }
+    100% {
+        -moz-transform: rotate(360deg);
+    }
+}
+@-webkit-keyframes spin {
+    6.25% {
+        -webkit-transform: rotate(90deg);
+        color: red;
+    }
+    12.5% {
+        -webkit-transform: rotate(90deg);
+    }
+    18.75% {
+        -webkit-transform: rotate(90deg);
+    }
+    25% {
+         -webkit-transform: rotate(90deg);
+    }
+    31.25% {
+        -webkit-transform: rotate(180deg);
+        color: green;
+    }
+    37.5% {
+        -webkit-transform: rotate(180deg);
+    }
+    43.75% {
+        -webkit-transform: rotate(180deg);
+    }
+    50% {
+        -webkit-transform: rotate(180deg);
+    }
+    56.25% {
+        -webkit-transform: rotate(270deg);
+        color: blue;
+    }
+    62.5% {
+        -webkit-transform: rotate(270deg);
+    }
+    68.75% {
+        -webkit-transform: rotate(270deg);
+    }
+    75% {
+        -webkit-transform: rotate(270deg);
+    }
+    81.25% {
+        -webkit-transform: rotate(360deg);
+    }
+    87.5% {
+        -webkit-transform: rotate(360deg);
+    }
+    93.75% {
+        -webkit-transform: rotate(360deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes spin2 {
+    6.25% {
+        -webkit-transform: rotate(0deg);
+    }
+    12.5% {
+        -webkit-transform: rotate(90deg);
+        color: red;
+    }
+    18.75% {
+        -webkit-transform: rotate(90deg);
+    }
+    25% {
+        -webkit-transform: rotate(90deg);
+    }
+    31.25% {
+        -webkit-transform: rotate(90deg);
+    }
+    37.5% {
+        -webkit-transform: rotate(180deg);
+        color: green;
+    }
+    43.75% {
+        -webkit-transform: rotate(180deg);
+    }
+    50% {
+        -webkit-transform: rotate(180deg);
+    }
+    56.25% {
+        -webkit-transform: rotate(180deg);
+    }
+    62.5% {
+        -webkit-transform: rotate(270deg);
+        color: blue;
+    }
+    68.75% {
+        -webkit-transform: rotate(270deg);
+    }
+    75% {
+        -webkit-transform: rotate(270deg);
+    }
+    81.25% {
+        -webkit-transform: rotate(270deg);
+    }
+    87.5% {
+        -webkit-transform: rotate(360deg);
+    }
+    93.75% {
+        -webkit-transform: rotate(360deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes spin3 {
+    6.25% {
+        -webkit-transform: rotate(0deg);
+    }
+    12.5% {
+        -webkit-transform: rotate(0deg);
+    }
+    18.75% {
+        -webkit-transform: rotate(90deg);
+        color: red;
+    }
+    25% {
+        -webkit-transform: rotate(90deg);
+    }
+    31.25% {
+        -webkit-transform: rotate(90deg);
+    }
+    37.5% {
+        -webkit-transform: rotate(90deg);
+    }
+    43.75% {
+        -webkit-transform: rotate(180deg);
+        color: green;
+    }
+    50% {
+        -webkit-transform: rotate(180deg);
+    }
+    56.25% {
+        -webkit-transform: rotate(180deg);
+    }
+    62.5% {
+        -webkit-transform: rotate(180deg);
+    }
+    68.75% {
+        -webkit-transform: rotate(270deg);
+        color: blue;
+    }
+    75% {
+        -webkit-transform: rotate(270deg);
+    }
+    81.25% {
+        -webkit-transform: rotate(270deg);
+    }
+    87.5% {
+        -webkit-transform: rotate(270deg);
+    }
+    93.75% {
+        -webkit-transform: rotate(360deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+@-webkit-keyframes spin4 {
+    6.25% {
+        -webkit-transform: rotate(0deg);
+    }
+    12.5% {
+        -webkit-transform: rotate(0deg);
+    }
+    18.75% {
+        -webkit-transform: rotate(0deg);
+    }
+    25% {
+        -webkit-transform: rotate(90deg);
+        color: red;
+    }
+    31.25% {
+        -webkit-transform: rotate(90deg);
+    }
+    37.5% {
+        -webkit-transform: rotate(90deg);
+    }
+    43.75% {
+        -webkit-transform: rotate(90deg);
+    }
+    50% {
+        -webkit-transform: rotate(180deg);
+        color: green;
+    }
+    56.25% {
+        -webkit-transform: rotate(180deg);
+    }
+    62.5% {
+        -webkit-transform: rotate(180deg);
+    }
+    68.75% {
+        -webkit-transform: rotate(180deg);
+    }
+    75% {
+        -webkit-transform: rotate(270deg);
+        color: blue;
+    }
+    81.25% {
+        -webkit-transform: rotate(270deg);
+    }
+    87.5% {
+        -webkit-transform: rotate(270deg);
+    }
+    93.75% {
+        -webkit-transform: rotate(270deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    6.25% {
+        transform: rotate(90deg);
+        color: red;
+    }
+    12.5% {
+        transform: rotate(90deg);
+    }
+    18.75% {
+        transform: rotate(90deg);
+    }
+    25% {
+        transform: rotate(90deg);
+    }
+    31.25% {
+        transform: rotate(180deg);
+        color: green;
+    }
+    37.5% {
+        transform: rotate(180deg);
+    }
+    43.75% {
+        transform: rotate(180deg);
+    }
+    50% {
+        transform: rotate(180deg);
+    }
+    56.25% {
+        transform: rotate(270deg);
+        color: blue;
+    }
+    62.5% {
+        transform: rotate(270deg);
+    }
+    68.75% {
+        transform: rotate(270deg);
+    }
+    75% {
+        transform: rotate(270deg);
+    }
+    81.25% {
+        transform: rotate(360deg);
+    }
+    87.5% {
+        transform: rotate(360deg);
+    }
+    93.75% {
+        transform: rotate(360deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin2 {
+    6.25% {
+        transform: rotate(0deg);
+    }
+    12.5% {
+        transform: rotate(90deg);
+        color: red;
+    }
+    18.75% {
+        transform: rotate(90deg);
+    }
+    25% {
+        transform: rotate(90deg);
+    }
+    31.25% {
+        transform: rotate(90deg);
+    }
+    37.5% {
+        transform: rotate(180deg);
+        color: green;
+    }
+    43.75% {
+        transform: rotate(180deg);
+    }
+    50% {
+        transform: rotate(180deg);
+    }
+    56.25% {
+        transform: rotate(180deg);
+    }
+    62.5% {
+        transform: rotate(270deg);
+        color: blue;
+    }
+    68.75% {
+        transform: rotate(270deg);
+    }
+    75% {
+        transform: rotate(270deg);
+    }
+    81.25% {
+        transform: rotate(270deg);
+    }
+    87.5% {
+        transform: rotate(360deg);
+    }
+    93.75% {
+        transform: rotate(360deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin3 {
+    6.25% {
+        transform: rotate(0deg);
+    }
+    12.5% {
+        transform: rotate(0deg);
+    }
+    18.75% {
+        transform: rotate(90deg);
+        color: red;
+    }
+    25% {
+        transform: rotate(90deg);
+    }
+    31.25% {
+        transform: rotate(90deg);
+    }
+    37.5% {
+        transform: rotate(90deg);
+    }
+    43.75% {
+        transform: rotate(180deg);
+        color: green;
+    }
+    50% {
+        transform: rotate(180deg);
+    }
+    56.25% {
+        transform: rotate(180deg);
+    }
+    62.5% {
+        transform: rotate(180deg);
+    }
+    68.75% {
+        transform: rotate(270deg);
+        color: blue;
+    }
+    75% {
+        transform: rotate(270deg);
+    }
+    81.25% {
+        transform: rotate(270deg);
+    }
+    87.5% {
+        transform: rotate(270deg);
+    }
+    93.75% {
+        transform: rotate(360deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+@keyframes spin4 {
+    6.25% {
+        transform: rotate(0deg);
+    }
+    12.5% {
+        transform: rotate(0deg);
+    }
+    18.75% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(90deg);
+        color: red;
+    }
+    31.25% {
+        transform: rotate(90deg);
+    }
+    37.5% {
+        transform: rotate(90deg);
+    }
+    43.75% {
+        transform: rotate(90deg);
+    }
+    50% {
+        transform: rotate(180deg);
+        color: green;
+    }
+    56.25% {
+        transform: rotate(180deg);
+    }
+    62.5% {
+        transform: rotate(180deg);
+    }
+    68.75% {
+        transform: rotate(180deg);
+    }
+    75% {
+        transform: rotate(270deg);
+        color: blue;
+    }
+    81.25% {
+        transform: rotate(270deg);
+    }
+    87.5% {
+        transform: rotate(270deg);
+    }
+    93.75% {
+        transform: rotate(270deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

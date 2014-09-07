@@ -19,17 +19,24 @@ angular.module('app.services', [])
     .factory('Socket', function () {
         console.log('Initializing socket...');
         var Socket = {};
+
         // //Initialize socket
 //        var urlSocket = 'http://bark.cse.lehigh.edu:3700';
         var urlSocket = 'http://localhost:8000';
         var socket = io.connect(urlSocket);
 
-        // ctrl.mouseCounter = 0;
         // Get initial message from socket server
         // Receiving data from socket server
         socket.on('message', function(data) {
             console.log(data);
         });
+        var getPdbGeometry = function (id) {
+            console.log('Socket: getPdbGeometry');
+            socket.emit('fetchPdb', {id: id});
+        }
+        return {
+            getPdbGeometry: getPdbGeometry
+        };
 //             welcome message
         //     console.log(data);
         //     if(data.message) {
@@ -159,4 +166,50 @@ angular.module('app.services', [])
             return (c);
         }
         return rainbow;
+    })
+    .factory('workspace', function ($http) {
+        return {
+            getData: function (id) {
+                console.log('GETING DATA FOR WORKSPACE');
+                return $http({method: 'GET', url: 'http://localhost:8000/workspace/' + id});
+//                    .success(function (data, status) {
+//                        if(true) {
+//                            return data;
+//                        }
+//                        else
+//                            TODO: NO SUCH ID
+//                            return 'No such id';
+//                    })
+//                    .error(function (data, status) {
+//                        console.log(data);
+//                        console.log(status);
+//                    })
+            }
+        }
+    })
+    .factory('clog', function () {
+        function log(msg, color){
+            color = color || "black";
+            bgc = "White";
+            switch (color) {
+                case "success":  color = "Green";      bgc = "LimeGreen";       break;
+                case "info":     color = "DodgerBlue"; bgc = "Turquoise";       break;
+                case "error":    color = "Red";        bgc = "Black";           break;
+                case "start":    color = "OliveDrab";  bgc = "PaleGreen";       break;
+                case "warning":  color = "Tomato";     bgc = "Black";           break;
+                case "end":      color = "Orchid";     bgc = "MediumVioletRed"; break;
+                default: color = color;
+            }
+
+            if (typeof msg == "object"){
+                console.log(msg);
+            } else if (typeof color == "object"){
+                console.log("%c" + msg, "color: PowderBlue;font-weight:bold; background-color: RoyalBlue;");
+                console.log(color);
+            } else {
+                console.log("%c" + msg, "color:" + color + ";font-weight:bold; background-color: " + bgc + ";");
+            }
+        }
+
+        return log;
     })

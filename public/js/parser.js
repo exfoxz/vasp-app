@@ -98,17 +98,30 @@ var PARSER = (function () {
         console.time('Making geometry');
         sphereGeometry = new THREE.BulkSphereGeometry(atoms, config.segments, config.rings);
         console.timeEnd('Making geometry');
+        console.log(sphereGeometry);
+        // =====================================================
+        //  ==========
+        // =====================================================
+        var pdbGeometry = {};
+        pdbGeometry.boundingSphere = sphereGeometry.boundingSphere;
+        pdbGeometry.faces = sphereGeometry.faces;
+        pdbGeometry.vertices = sphereGeometry.vertices;
+        pdbGeometry.faceVertexuvs = sphereGeometry.faceVertexuvs;
+        return pdbGeometry;
+        // =====================================================
+        //  ==========
+        // =====================================================
         //create a mesh
-        console.time('Make a mesh');
-        var mesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
-        //add sphereGeometry to scene
-        mesh.position.set(-centroid[0], -centroid[1], -centroid[2]);
-        console.timeEnd('Make a mesh');
-        console.time('Add to scene');
-        scene.add(mesh);
-        console.timeEnd('Add to scene');
-        console.timeEnd('Add Pdb Object');
-        return mesh;
+//        console.time('Make a mesh');
+//        var mesh = new THREE.Mesh(sphereGeometry, sphereMaterial); // was sphereGeometry
+//        //add sphereGeometry to scene
+//        mesh.position.set(-centroid[0], -centroid[1], -centroid[2]);
+//        console.timeEnd('Make a mesh');
+//        console.time('Add to scene');
+//        scene.add(mesh);
+//        console.timeEnd('Add to scene');
+//        console.timeEnd('Add Pdb Object');
+//        return mesh;
     };
 
     /** Surface files parser */
