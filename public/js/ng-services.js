@@ -22,7 +22,7 @@ angular.module('app.services', [])
 
         // //Initialize socket
 //        var urlSocket = 'http://bark.cse.lehigh.edu:3700';
-        var urlSocket = 'http://localhost:8000';
+        var urlSocket = 'http://54.64.25.255:8000/';
         var socket = io.connect(urlSocket);
 
         // Get initial message from socket server
