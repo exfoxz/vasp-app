@@ -2,9 +2,30 @@
  * Created by sam on 26/07/2014.
  */
 
+// Copyright 2009 Nicholas C. Zakas. All rights reserved.
+// MIT Licensed
+THREE.timedChunk = function timedChunk(items, process, context, callback){
+    var todo = items.concat();   //create a clone of the original
+
+    setTimeout(function(){
+        var start = +new Date();
+        do {
+            process.call(context, todo.shift());
+        } while (todo.length > 0 && (+new Date() - start < 50));
+//        console.log('Yeild to UI')
+        if (todo.length > 0){
+//            console.log('Create another timer')
+            setTimeout(arguments.callee, 25);
+        } else {
+            callback(items, context);
+        }
+    }, 25);
+};
+
+// Sam Nguyen
 THREE.BulkSphereGeometry = function (atoms, widthSegments, heightSegments, phiStart, phiLength, thetaStart, thetaLength) {
     console.time('Bulking Sphere Geometry');
-
+    var that = this;
     THREE.Geometry.call( this );
     this.parameters = {
 //        radius: radius,
@@ -15,35 +36,6 @@ THREE.BulkSphereGeometry = function (atoms, widthSegments, heightSegments, phiSt
         thetaStart: thetaStart,
         thetaLength: thetaLength
     };
-//
-//    this.applyBulkMatrix = function(matrix) {
-//        console.log('apply bulk matrix');
-//        console.log(this);
-//
-//        var normalMatrix = new THREE.Matrix3().getNormalMatrix( matrix );
-//
-//        for ( var i = 0, il = this.vertices.length; i < il; i ++ ) {
-//            var vertex = this.vertices[ i ];
-//            vertex.applyMatrix4( matrix );
-//        }
-//
-////        for ( var i = 0, il = this.faces.length; i < il; i ++ ) {
-////            var face = this.faces[ i ];
-////            face.normal.applyMatrix3( normalMatrix ).normalize();
-////            for ( var j = 0, jl = face.vertexNormals.length; j < jl; j ++ ) {
-////                face.vertexNormals[ j ].applyMatrix3( normalMatrix ).normalize();
-////            }
-////            face.centroid.applyMatrix4( matrix );
-////        }
-////
-////        if ( this.boundingBox instanceof THREE.Box3 ) {
-////            this.computeBoundingBox();
-////        }
-////        if ( this.boundingSphere instanceof THREE.Sphere ) {
-////            this.computeBoundingSphere();
-////        }
-//    }
-
     widthSegments = Math.max( 3, Math.floor( widthSegments ) || 8 );
     heightSegments = Math.max( 2, Math.floor( heightSegments ) || 6 );
 
@@ -53,10 +45,8 @@ THREE.BulkSphereGeometry = function (atoms, widthSegments, heightSegments, phiSt
     thetaStart = thetaStart !== undefined ? thetaStart : 0;
     thetaLength = thetaLength !== undefined ? thetaLength : Math.PI;
 
-    var scope = this;
-    console.time('looping');
-    //loop through an array of radius
-    atoms.forEach(function(atom) { //center with x, y, z
+    function process(atom) { //center with x, y, z
+        var scope = this;
         var x, y, vertices = [], uvs = [];
         var startIndex = scope.vertices.length;
         var radius = atom.radius || 50;
@@ -136,12 +126,21 @@ THREE.BulkSphereGeometry = function (atoms, widthSegments, heightSegments, phiSt
             var vertex = scope.vertices[ i ];
             vertex.applyMatrix4(new THREE.Matrix4().makeTranslation(atom.x, atom.y, atom.z));
         }
-    });
-        console.timeEnd('looping');
-
-    scope.computeFaceNormals();
-//    this.boundingSphere = new THREE.Sphere( new THREE.Vector3(), radius );
-    console.timeEnd('Bulking Sphere Geometry');
+    }
+    this.init = function () {
+        return new Promise(function (resolve, reject) {
+            THREE.timedChunk(atoms, process, that, function (items, context) {
+                console.log('DONE');
+                console.log(context);
+                context.computeFaceNormals();
+//              TODO: calculate boundingSphere
+                // context.boundingSphere = new THREE.Sphere( new THREE.Vector3(), radius );
+                console.timeEnd('Bulking Sphere Geometry');
+                console.log(context);
+                resolve(context);
+            })
+        })
+    }
 };
 
 THREE.BulkSphereGeometry.prototype = Object.create( THREE.Geometry.prototype );

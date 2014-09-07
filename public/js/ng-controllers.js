@@ -3,7 +3,7 @@
  */
 
 angular.module('app.controllers', [])
-    .controller('objCtrl', function ($scope, $http, $timeout, Rainbow, Socket, $location, $routeParams) {
+    .controller('objCtrl', function ($scope, $http, $timeout, Rainbow, Socket, $location, timed) {
         var ctrl = this;
 
         //url for server to fetch information
@@ -54,7 +54,6 @@ angular.module('app.controllers', [])
             console.log('toggle');
             SCENE.methods.toggleRotation();
         }
-
         //dummy object for input
         ctrl.input = {};
 
@@ -133,15 +132,29 @@ angular.module('app.controllers', [])
             $http.get(serverUrl + 'pdbs/' + id)
                 .success(function (data) {
                     console.log(data);
-                    ctrl.progress.increment()
-                    //add protein to scene and to list of proteins
-                    var protein = PARSER.addPdbObject(SCENE.scene, data.atoms, data.centroid, ctrl.input.color);
-                    ctrl.proteins[id] = protein;
+                    ctrl.progress.increment();
+//                    //add protein to scene and to list of proteins
+//                    var protein = PARSER.addPdbObject(SCENE.scene, data.atoms, data.centroid, ctrl.input.color);
+                    // =====================================================
+                    //  ==========
+                    // =====================================================
+                    var geometry = PARSER.addPdbObject(SCENE.scene, data.atoms, data.centroid, ctrl.input.color);
+//                    console.log(geometry);
+//                    $http({method: 'POST', url: serverUrl + 'geometry/pdb', data: {id: id, geometry: geometry}})
+//                        .success(function (data) {
+//                            console.log(data);
+//                        });
+//                    Socket.savePdbGeometry(id, geometry);
 
+                    // =====================================================
+                    //  ==========
+                    // =====================================================
+//                    ctrl.proteins[id] = protein;
+//
                     ctrl.progress.increment()
-
+//
                     //hide progress bar
-                    ctrl.progress.started = false;
+//                    ctrl.progress.started = false;
 
                     //add to list of structures
                     ctrl.structures.push({id: id, style: {'border-top-color': ctrl.input.color}})

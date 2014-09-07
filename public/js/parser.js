@@ -96,32 +96,24 @@ var PARSER = (function () {
         });
         console.timeEnd('Prepare data');
         console.time('Making geometry');
-        sphereGeometry = new THREE.BulkSphereGeometry(atoms, config.segments, config.rings);
+        var promise = (new THREE.BulkSphereGeometry(atoms, config.segments, config.rings)).init();
         console.timeEnd('Making geometry');
-        console.log(sphereGeometry);
-        // =====================================================
-        //  ==========
-        // =====================================================
-        var pdbGeometry = {};
-        pdbGeometry.boundingSphere = sphereGeometry.boundingSphere;
-        pdbGeometry.faces = sphereGeometry.faces;
-        pdbGeometry.vertices = sphereGeometry.vertices;
-        pdbGeometry.faceVertexuvs = sphereGeometry.faceVertexuvs;
-        return pdbGeometry;
-        // =====================================================
-        //  ==========
-        // =====================================================
-        //create a mesh
-//        console.time('Make a mesh');
-//        var mesh = new THREE.Mesh(sphereGeometry, sphereMaterial); // was sphereGeometry
-//        //add sphereGeometry to scene
-//        mesh.position.set(-centroid[0], -centroid[1], -centroid[2]);
-//        console.timeEnd('Make a mesh');
-//        console.time('Add to scene');
-//        scene.add(mesh);
-//        console.timeEnd('Add to scene');
-//        console.timeEnd('Add Pdb Object');
-//        return mesh;
+        promise.then(function (geometry) {
+            console.log(geometry);
+            //create a mesh
+            console.time('Make a mesh');
+            var mesh = new THREE.Mesh(geometry, sphereMaterial); // was sphereGeometry
+            //add sphereGeometry to scene
+            mesh.position.set(-centroid[0], -centroid[1], -centroid[2]);
+            console.timeEnd('Make a mesh');
+            console.time('Add to scene');
+            scene.add(mesh);
+            console.timeEnd('Add to scene');
+            console.timeEnd('Add Pdb Object');
+            return mesh;
+        }, function (error) {
+            console.log(err);
+        })
     };
 
     /** Surface files parser */
