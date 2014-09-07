@@ -175,7 +175,7 @@ angular.module('app.services', [])
         return {
             getData: function (id) {
                 console.log('GETING DATA FOR WORKSPACE');
-                return $http({method: 'GET', url: 'http://localhost:8000/workspace/' + id});
+                return $http({method: 'GET', url: 'http://54.64.25.255:8000/workspace/' + id});
 //                    .success(function (data, status) {
 //                        if(true) {
 //                            return data;

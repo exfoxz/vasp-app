@@ -15,7 +15,7 @@ THREE.timedChunk = function timedChunk(items, process, context, callback){
 //        console.log('Yeild to UI')
         if (todo.length > 0){
 //            console.log('Create another timer')
-            setTimeout(arguments.callee, 25);
+            setTimeout(arguments.callee, 0);
         } else {
             callback(items, context);
         }
