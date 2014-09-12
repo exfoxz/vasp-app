@@ -58,9 +58,9 @@ angular.module('app.controllers', [])
         ctrl.input = {};
 
         //list of pdbs
-        ctrl.structures = [];
+        ctrl.pdbList = [];
         //list of pdbs meshes
-        ctrl.proteins = {};
+        ctrl.pdbs = {};
 
         //list of surfaces
         ctrl.surfaces = [];
@@ -138,18 +138,15 @@ angular.module('app.controllers', [])
                     // =====================================================
                     //  ==========
                     // =====================================================
-                    var geometry = PARSER.addPdbObject(SCENE.scene, data.atoms, data.centroid, ctrl.input.color);
-//                    console.log(geometry);
-//                    $http({method: 'POST', url: serverUrl + 'geometry/pdb', data: {id: id, geometry: geometry}})
-//                        .success(function (data) {
-//                            console.log(data);
-//                        });
-//                    Socket.savePdbGeometry(id, geometry);
-
-                    // =====================================================
-                    //  ==========
-                    // =====================================================
-//                    ctrl.proteins[id] = protein;
+                    var qMesh = PARSER.getPdbMeshAsync(SCENE.scene, data.atoms, data.centroid, ctrl.input.color);
+                    qMesh.then(function (pdbMesh) {
+                        console.log('Mesh');
+                        console.log(pdbMesh);
+                        SCENE.scene.add(pdbMesh);
+//                        ctrl.pdbs[id] = pdbMesh;
+                    }, function (error) {
+                        console.log(error);
+                    });
 //
                     ctrl.progress.increment()
 //
@@ -157,10 +154,10 @@ angular.module('app.controllers', [])
 //                    ctrl.progress.started = false;
 
                     //add to list of structures
-                    ctrl.structures.push({id: id, style: {'border-top-color': ctrl.input.color}})
+                    ctrl.pdbList.push({id: id, style: {'border-top-color': ctrl.input.color}})
+                    ctrl.setColor(ctrl.colorIndex++);
 
                     //rotate through colors
-                    ctrl.setColor(ctrl.colorIndex++);
                 })
                 .error(function (err) {
                     //hide progress bar
@@ -168,6 +165,7 @@ angular.module('app.controllers', [])
                     console.log(err);
                 })
         }
+
         /** Get atoms from server and add it to scene */
         ctrl.fetch = $scope.fetch = function (id) {
             //check for undefined or empty input
@@ -239,7 +237,7 @@ angular.module('app.controllers', [])
         //toggle pdb object visibility
         ctrl.vToggle = function (id) {
             console.log('toggle', id)
-            ctrl.proteins[id].visible = !ctrl.proteins[id].visible;
+            ctrl.pdbs[id].visible = !ctrl.pdb[id].visible;
         }
 
         //toggle surf object visibility

@@ -50,7 +50,7 @@
                             </div>
                             <!--Structure list-->
                             <ul class="list-group">
-                                <li class="list-group-item" ng-repeat="item in ctrl.structures" ng-style="item.style"><code>{{item.id}}</code><input type="checkbox" checked name="toggle" ng-click="ctrl.vToggle(item.id)" class="btn sidebar-list-item"><span class="glyphicon glyphicon-eye-open "></span></li>
+                                <li class="list-group-item" ng-repeat="item in ctrl.pdbList" ng-style="item.style"><code>{{item.id}}</code><input type="checkbox" checked name="toggle" ng-click="ctrl.vToggle(item.id)" class="btn sidebar-list-item"><span class="glyphicon glyphicon-eye-open "></span></li>
                             </ul>
                             <!--/Structure list-->
                         </div>

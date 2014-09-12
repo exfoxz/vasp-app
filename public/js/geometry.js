@@ -136,7 +136,6 @@ THREE.BulkSphereGeometry = function (atoms, widthSegments, heightSegments, phiSt
 //              TODO: calculate boundingSphere
                 // context.boundingSphere = new THREE.Sphere( new THREE.Vector3(), radius );
                 console.timeEnd('Bulking Sphere Geometry');
-                console.log(context);
                 resolve(context);
             })
         })

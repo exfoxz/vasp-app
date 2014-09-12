@@ -56,7 +56,7 @@ var PARSER = (function () {
     }
 
     /** function to add object to a scene of THREEJS - pdb */
-    parser.addPdbObject = function (scene, atoms, centroid, color) {
+    parser.getPdbMeshAsync = function (scene, atoms, centroid, color) {
         console.time('Add Pdb Object');
         var config = {
             radius: {
@@ -80,7 +80,7 @@ var PARSER = (function () {
 
         var sphereGeometry;
         console.time('Prepare data');
-        //material to make the final sphere
+        // Material to make the final sphere
         var sphereMaterial = new THREE.MeshLambertMaterial({color: color});
         //TODO: is loop through each atom to get radius beforehand efficient?
         atoms.forEach(function (atom) {
@@ -96,24 +96,25 @@ var PARSER = (function () {
         });
         console.timeEnd('Prepare data');
         console.time('Making geometry');
-        var promise = (new THREE.BulkSphereGeometry(atoms, config.segments, config.rings)).init();
-        console.timeEnd('Making geometry');
-        promise.then(function (geometry) {
-            console.log(geometry);
-            //create a mesh
-            console.time('Make a mesh');
-            var mesh = new THREE.Mesh(geometry, sphereMaterial); // was sphereGeometry
-            //add sphereGeometry to scene
-            mesh.position.set(-centroid[0], -centroid[1], -centroid[2]);
-            console.timeEnd('Make a mesh');
-            console.time('Add to scene');
-            scene.add(mesh);
-            console.timeEnd('Add to scene');
-            console.timeEnd('Add Pdb Object');
-            return mesh;
-        }, function (error) {
-            console.log(err);
-        })
+        var qMesh = new Promise(function (resolve, reject) {
+            // Create a geometry asyncly
+            var qGeometry = (new THREE.BulkSphereGeometry(atoms, config.segments, config.rings)).init();
+            qGeometry.then(function (geometry) {
+                console.timeEnd('Making geometry');
+                console.log(geometry);
+                // Create a mesh
+                console.time('Make a mesh');
+                var mesh = new THREE.Mesh(geometry, sphereMaterial); // was sphereGeometry
+                // Set position of mesh
+                mesh.position.set(-centroid[0], -centroid[1], -centroid[2]);
+                console.timeEnd('Make a mesh');
+                resolve(mesh);
+            }, function (error) {
+                reject(error);
+            })
+        });
+        // Return a promise to generate mesh
+        return qMesh;
     };
 
     /** Surface files parser */
