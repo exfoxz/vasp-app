@@ -296,6 +296,14 @@ hr {
     padding-left: 20px;
 }
 
+.spin-loader {
+    animation: loader 1.3s linear infinite;
+    -webkit-animation: loader 1.3s linear infinite;
+    -moz-animation: loader 1.3s linear infinite;
+    -moz-transition: all 1s ease-in;
+    -webkit-transition: all 1s ease-in;
+    transition: all 1s ease-in;
+}
 /* spinner */
 .spinner-large {
     font-size: 1000%;
@@ -347,25 +355,17 @@ hr {
     animation-timing-function: linear;
     animation-iteration-count: infinite;
 }
-/*.spinner3 {*/
-    /*font-size: 150%;*/
-    /*-webkit-animation: spin 2s linear infinite;*/
-    /*-moz-animation: spin 2s linear infinite;*/
-    /*animation: spin 2s linear infinite;*/
-    /*-moz-animation-delay: 1s;*/
-    /*-webkit-animation-delay: 1s;*/
-    /*animation-delay: 1s;*/
-/*}*/
-/*.spinner4 {*/
-    /*font-size: 150%;*/
-    /*-webkit-animation: spin 2s linear infinite;*/
-    /*-moz-animation: spin 2s linear infinite;*/
-    /*animation: spin 2s linear infinite;*/
-    /*-moz-animation-delay: 1.5s;*/
-    /*-webkit-animation-delay: 1.5s;*/
-    /*animation-delay: 1.5s;*/
-/*}*/
-
+.progress-init {
+    margin-top: 2px;
+}
+.fade-out {
+    -moz-transition: all 1s ease-in;
+    -webkit-transition: all 1s ease-in;
+    transition: all 1s ease-in;
+    -webkit-opacity: 0;
+    -moz-opacity: 0;
+    opacity: 0;
+}
 /* Adjust the contents on smaller devices */
 @media (max-width: 768px) {
 
@@ -1218,6 +1218,22 @@ hr {
     93.75% {
         transform: rotate(270deg);
     }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@-moz-keyframes loader {
+    100% {
+        -moz-transform: rotate(360deg);
+    }
+}
+@-webkit-keyframes loader {
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+@keyframes loader {
     100% {
         transform: rotate(360deg);
     }

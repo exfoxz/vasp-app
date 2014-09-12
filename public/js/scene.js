@@ -97,8 +97,7 @@ var SCENE = (function(){
         increaseRotationSpeed: function (tick) {
             return controls.autoRotateSpeed+= tick;
         },
-        resetCameraRotation: function () {
-            var lastPosition = myScene.position;
+        restorePosition: function (lastPosition) {
             var target = controls.target;
             camera.position.copy(target).add(lastPosition);
             return camera.lookAt(target);

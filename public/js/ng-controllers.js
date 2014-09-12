@@ -6,14 +6,28 @@ angular.module('app.controllers', [])
     .controller('objCtrl', function ($scope, $http, $timeout, Rainbow, Socket, $location, timed) {
         var ctrl = this;
 
-        //url for server to fetch information
+        // Url for server to fetch information
 //        var serverUrl = 'http://localhost:8000/';
-      var serverUrl = 'http://54.64.25.255:8000/';
+        var serverUrl = 'http://54.64.25.255:8000/';
+        function init(ctrl) {
+            //dummy object for input
+            ctrl.input = {};
+            //list of pdbs
+            ctrl.pdbList = [];
+            //list of pdbs meshes
+            ctrl.pdbs = {};
+            //list of surfaces
+            ctrl.surfaces = [];
+            //list of surf meshes
+            ctrl.surfs = {};
+        };
 
-         // Save current workspace info to server
+        init(ctrl);
+
+        // Save current workspace info to server
         ctrl.save = function () {
             // =====================================================
-            // Check save conditions ===============================
+            // Check SAVE conditions ===============================
             // =====================================================
             console.log($location.path());
 
@@ -24,7 +38,7 @@ angular.module('app.controllers', [])
             var lastPosition = SCENE.methods.savePosition();
             // Get ids for all the current pdbs
             var pdbs = [];
-            ctrl.structures.forEach(function (data) {
+            ctrl.pdbList.forEach(function (data) {
                 pdbs.push(data.id);
             });
             // TODO: Surf files data?
@@ -53,45 +67,27 @@ angular.module('app.controllers', [])
         ctrl.toggleRotation = function () {
             console.log('toggle');
             SCENE.methods.toggleRotation();
-        }
-        //dummy object for input
-        ctrl.input = {};
+        };
 
-        //list of pdbs
-        ctrl.pdbList = [];
-        //list of pdbs meshes
-        ctrl.pdbs = {};
-
-        //list of surfaces
-        ctrl.surfaces = [];
-        //list of surf meshes
-        ctrl.surfs = {};
-
-        //object for progress feedback
-        ctrl.progress = $scope.progress = {started: false, value: 0, delay: 1000, inc: 20};
-        ctrl.progress.increment = function () {
-            var value = this.value;
-            var inc = this.inc;
-            $timeout(function () {
-                value += inc;
-            }, this.delay);
-        }
-
-        /* reset ctrl.input */
+        /** reset ctrl.input */
         ctrl.input.reset = function () {
             ctrl.input.name = '';
-        }
+        };
+        // Object for progress feedback
+        ctrl.progress = $scope.progress = {started: false, value: 100, class: 'progress-init'};
+        ctrl.progress.init = function () {
+            this.started = true;
+            this.class = 'progress-init';
+        };
+        ctrl.progress.fadeout = function () {
+            this.class = 'fade-out';
+            $timeout(function () {
+                ctrl.progress.started = false;
+            }, 1000);
+        };
+
         //welcome message
         ctrl.welcomeMessage = "<- Enter a protein's name and click Go! to get started!";
-
-        //objects recevied from Bark
-        ctrl.barkObjects = [];
-
-        //current objects
-        ctrl.objects = {
-            names: [],
-            counter: 0
-        };
 
         //an array of colors for proteins
         ctrl.colors = ['red', 'blue', 'green', 'yellow', 'black'];
@@ -105,22 +101,31 @@ angular.module('app.controllers', [])
             ctrl.input.color = ctrl.colors[index];
             ctrl.proteinStyle = {'background-color': ctrl.input.color};
         }
-        //offset in children array to get to objects
-        ctrl.offset = 2;
 
-        //check for empty color, default to red
+        // Check for empty color, default to red
         if (!ctrl.input.color) {
             console.log('No color, default to red');
             ctrl.setColor(ctrl.colorIndex++);
         }
+        /** Get atoms from server and add it to scene */
+        ctrl.fetch = $scope.fetch = function (id) {
+            //check for undefined or empty input
+            if (ctrl.input.name == undefined || ctrl.input.name == '') {
+                console.log('NO NAME');
+            }
+            else
+                $scope.fetchPdbAsync(id).then(function (data) {
+                   console.log('Fetching', id, 'done')
+                }, function (error) {
+                    console.log(error);
+                });
+        };
 
-        /* Get pdb with id and add to scene  */
-        $scope.fetchPdb = function (id) {
+        /** Get pdb with id and add to scene  */
+        $scope.fetchPdbAsync = function (id) {
             console.log($scope.toggleCover)
-            //show progress bar
-            ctrl.progress.increment();
-            ctrl.progress.started = true;
-            ctrl.progress.value = 20;
+            // Show progress bar
+            ctrl.progress.init();
             //remove welcome message
             if (angular.element('#welcome'))
                 angular.element('#welcome').remove();
@@ -129,53 +134,44 @@ angular.module('app.controllers', [])
             ctrl.input.reset();
 
             console.log('fetching... ' + id);
-            $http.get(serverUrl + 'pdbs/' + id)
-                .success(function (data) {
-                    console.log(data);
-                    ctrl.progress.increment();
-//                    //add protein to scene and to list of proteins
-//                    var protein = PARSER.addPdbObject(SCENE.scene, data.atoms, data.centroid, ctrl.input.color);
-                    // =====================================================
-                    //  ==========
-                    // =====================================================
-                    var qMesh = PARSER.getPdbMeshAsync(SCENE.scene, data.atoms, data.centroid, ctrl.input.color);
-                    qMesh.then(function (pdbMesh) {
-                        console.log('Mesh');
-                        console.log(pdbMesh);
-                        SCENE.scene.add(pdbMesh);
-//                        ctrl.pdbs[id] = pdbMesh;
-                    }, function (error) {
-                        console.log(error);
-                    });
-//
-                    ctrl.progress.increment()
-//
-                    //hide progress bar
-//                    ctrl.progress.started = false;
+            return new Promise(function (resolve, reject) {
+                $http.get(serverUrl + 'pdbs/' + id)
+                    .success(function (data) {
+                        console.log(data);
+                        // Hide progress bar
+                        ctrl.progress.fadeout();
 
-                    //add to list of structures
-                    ctrl.pdbList.push({id: id, style: {'border-top-color': ctrl.input.color}})
-                    ctrl.setColor(ctrl.colorIndex++);
+                        // Add to list of structures
+                        ctrl.pdbList.push({id: id, style: {'border-top-color': ctrl.input.color}})
 
-                    //rotate through colors
-                })
-                .error(function (err) {
-                    //hide progress bar
-                    ctrl.progress.started = false;
-                    console.log(err);
-                })
+                        var qMesh = PARSER.getPdbMeshAsync(SCENE.scene, data.atoms, data.centroid, ctrl.input.color);
+                        qMesh.then(function (pdbMesh) {
+                            console.log('Mesh');
+                            console.log(pdbMesh);
+                            SCENE.scene.add(pdbMesh);
+                            ctrl.pdbs[id] = pdbMesh;
+                            // Stop spin-loader
+//                        console.log(_.where(ctrl.pdbList, {id: id}));
+                            $scope.$apply(function () {
+                                _.where(ctrl.pdbList, {id: id})[0].fetched = true;
+                            });
+                            resolve(true);
+                        }, function (error) {
+                            console.log(error);
+                            reject(err);
+                        });
+
+                        // Rotate through colors
+                        ctrl.setColor(ctrl.colorIndex++);
+                    })
+                    .error(function (err) {
+                        //hide progress bar
+                        ctrl.progress.started = false;
+                        console.log(err);
+                        reject(err);
+                    })
+            })
         }
-
-        /** Get atoms from server and add it to scene */
-        ctrl.fetch = $scope.fetch = function (id) {
-            //check for undefined or empty input
-            if (ctrl.input.name == undefined || ctrl.input.name == '') {
-                console.log('NO NAME');
-            }
-            else
-                $scope.fetchPdb(id);
-        };
-
 
         /** callback after surf file has been read */
         ctrl.readerCallback = function (file, data) {
@@ -237,34 +233,53 @@ angular.module('app.controllers', [])
         //toggle pdb object visibility
         ctrl.vToggle = function (id) {
             console.log('toggle', id)
-            ctrl.pdbs[id].visible = !ctrl.pdb[id].visible;
+            ctrl.pdbs[id].visible = !ctrl.pdbs[id].visible;
         }
 
         //toggle surf object visibility
         ctrl.surfToggle = function (id) {
-            console.log('toggle', id)
+            console.log('toggle', id);
             ctrl.surfs[id].visible = !ctrl.surfs[id].visible;
         }
     })
+
     .controller('canvasCtrl', function ($scope, clog, Socket) {
         clog('CANVAS CTRL INIT', 'info');
         var s = $scope;
         s.showCover = false;
         s.toggleCover = function () {
             s.showCover = !s.showCover;
+        };
+        s.hideCover = function () {
+            s.showCover = false;
         }
         s.restoreWorkspace = function (data) {
             console.log(data);
             var pdbs = data.pdbs;
             console.log('RESTORING WORKSPACE...');
-            pdbs.forEach(function (pdb) {
-//                s.fetchPdb(pdb);
-                Socket.getPdbGeometry(pdb);
-            })
+            pdbs.forEach(function (pdb, index, array) {
+                if(index === array.length - 1) { // Last element
+                    console.log('LAST ELEMENT');
+                    s.fetchPdbAsync(pdb).then(function (done) {
+                        console.log('FETCHING ASYNC!!!!');
+                        // Restore camera rotation
+                        SCENE.methods.restorePosition(data.cameraPosition);
+                        // Done restoring, hide cover
+                        console.log('(GONNA) DONE RESTORTING');
+                        s.hideCover();
+                    }, function (error) {
+                        console.log(error);
+                    });
+                }
+                else {
+                    console.log('NOT LAST');
+                    s.fetchPdbAsync(pdb).then(function (data) {
+                    }, function (error) {
+                        console.log(error);
+                    });
+                }
 
-            // Done restoring, hide cover
-            console.log('DONE RESTORTING');
-//            s.toggleCover();
+            })
         }
     })
     .controller('modalCtrl', function ($scope, clog, workspace) {

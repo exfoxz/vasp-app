@@ -50,7 +50,11 @@
                             </div>
                             <!--Structure list-->
                             <ul class="list-group">
-                                <li class="list-group-item" ng-repeat="item in ctrl.pdbList" ng-style="item.style"><code>{{item.id}}</code><input type="checkbox" checked name="toggle" ng-click="ctrl.vToggle(item.id)" class="btn sidebar-list-item"><span class="glyphicon glyphicon-eye-open "></span></li>
+                                <li class="list-group-item" ng-repeat="item in ctrl.pdbList" ng-style="item.style">
+                                    <code>{{item.id}}</code>
+                                    <input type="checkbox" checked name="toggle" ng-click="ctrl.vToggle(item.id)" class="btn sidebar-list-item">
+                                    <span ng-hide="item.fetched" class="spin-loader glyphicon glyphicon-repeat"></span>
+                                </li>
                             </ul>
                             <!--/Structure list-->
                         </div>
@@ -133,7 +137,7 @@
 
                     <!-- editor -->
                     <div class="canvas-container" ng-controller="canvasCtrl">
-                        <div ng-show="progress.started"><progressbar class="progress-striped active" type='success' value="progress.value"></progressbar></div>
+                        <div ng-show="progress.started"><progressbar  ng-class='progress.class' class="progress-striped active" type='success' value="progress.value"></progressbar></div>
                         <!--<div class="cover" ng-show="showCover">-->
                             <!--<div ng-view></div>-->
                         <!--</div>-->
