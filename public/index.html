@@ -52,8 +52,9 @@
                             <ul class="list-group">
                                 <li class="list-group-item" ng-repeat="item in ctrl.pdbList" ng-style="item.style">
                                     <code>{{item.id}}</code>
-                                    <input type="checkbox" checked name="toggle" ng-click="ctrl.vToggle(item.id)" class="btn sidebar-list-item">
+                                    <input type="checkbox" checked name="toggle" ng-click="ctrl.vToggle(item.id, item)" class="btn sidebar-list-item">
                                     <span ng-hide="item.fetched" class="spin-loader glyphicon glyphicon-repeat"></span>
+                                    <span ng-repeat="chain in item.chains" ng-style="chain.style" class="badge" ng-click="ctrl.chainUtil.toggle(item.id, chain, item)">{{chain.id}}</span>
                                 </li>
                             </ul>
                             <!--/Structure list-->

@@ -56,7 +56,7 @@ var PARSER = (function () {
     }
 
     /** function to get mesh of an object asyncly - pdb */
-    parser.getPdbMeshAsync = function (atoms, centroid, color) {
+    parser.getPdbMeshAsync = function (atoms, centroid, color, chainId) {
         console.time('Add Pdb Object');
         var config = {
             radius: {
@@ -106,6 +106,10 @@ var PARSER = (function () {
                 // Set position of mesh
                 mesh.position.set(-centroid[0], -centroid[1], -centroid[2]);
                 console.timeEnd('Make a mesh');
+                // Add chainId
+                mesh.chainId = chainId;
+                // Add color to mesh to pass down to chain
+                mesh.color = color;
                 resolve(mesh);
             }, function (error) {
                 reject(error);

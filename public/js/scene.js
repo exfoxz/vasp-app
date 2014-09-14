@@ -70,17 +70,10 @@ var SCENE = (function(){
     function animate() {
         window.requestAnimationFrame(animate, renderer.domElement);
         if(isRotating){
-            console.log('is rotating');
             controls.update();
         };
         render();
     }
-
-    //TEST: add drag event to window
-//    window.addEventListener('dragenter', function(e){
-//        console.log('drag enter');
-//        console.log(e);
-//    })
 
     //bind scene to myScene
     myScene.scene = scene;

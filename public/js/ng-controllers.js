@@ -144,23 +144,26 @@ angular.module('app.controllers', [])
                         ctrl.progress.fadeout();
 
                         // Add to list of structures
-                        ctrl.pdbList.push({id: id, style: {'border-top-color': ctrl.input.color}})
+                        ctrl.pdbList.push({id: id, style: {'border-top-color': ctrl.input.color}, chains: []})
 
-                        // =====================================================
-                        // CHAINS ==========
-                        // =====================================================
                         var group = new THREE.Object3D();
                         group.color = ctrl.input.color
                         var qMeshes = [];
-                        for(var key in data.chains){
+                        for(var key in data.chains) {
                             var chain = data.chains[key];
-                            qMeshes.push(PARSER.getPdbMeshAsync(chain.atoms, chain.centroid, group.color).then(function (pdbMesh) {
+                            qMeshes.push(PARSER.getPdbMeshAsync(chain.atoms, chain.centroid, group.color, chain.id).then(function (pdbMesh) {
+                                // Add a chain mesh to group
                                 group.add(pdbMesh);
+                                // Add a chain to pdb list
+                                _.where(ctrl.pdbList, {id: id})[0].chains.push({id: pdbMesh.chainId, style: {'background-color' : pdbMesh.color}});
+                                console.log('CHAIN: ');
+                                console.log(ctrl.pdbList);
+                                console.log(pdbMesh);
                                 return true;
                             }, function (error) {
                                 console.error(error);
                             }));
-                        }
+                        };
                         console.log(qMeshes);
                         $q.all(qMeshes).then(function (data) {
                             console.log('ALL DONE');
@@ -170,26 +173,9 @@ angular.module('app.controllers', [])
                             console.log(ctrl.pdbs);
                             // Add group to scene
                             SCENE.scene.add(group);
-                        })
-                        // =====================================================
-                        // CHAINS END ==========
-                        // =====================================================
-//                        var qMesh = PARSER.getPdbMeshAsync(data.atoms, data.centroid, ctrl.input.color);
-//                        qMesh.then(function (pdbMesh) {
-//                            console.log('Mesh');
-//                            console.log(pdbMesh);
-//                            SCENE.scene.add(pdbMesh);
-//                            ctrl.pdbs[id] = pdbMesh;
                             // Stop spin-loader
-//                        console.log(_.where(ctrl.pdbList, {id: id}));
-//                            $scope.$apply(function () {
-//                                _.where(ctrl.pdbList, {id: id})[0].fetched = true;
-//                            });
-//                            resolve(true);
-//                        }, function (error) {
-//                            console.log(error);
-//                            reject(err);
-//                        });
+                            _.where(ctrl.pdbList, {id: id})[0].fetched = true;
+                        })
 
                         // Rotate through colors
                         ctrl.setColor(ctrl.colorIndex++);
@@ -261,8 +247,9 @@ angular.module('app.controllers', [])
         };
 
         //toggle pdb object visibility
-        ctrl.vToggle = function (id) {
+        ctrl.vToggle = function (id, parentList) {
             console.log('toggle', id);
+            console.log(parentList);
             var parent = ctrl.pdbs[id];
             parent.visible = !parent.visible;
             // Traverse object
@@ -272,6 +259,17 @@ angular.module('app.controllers', [])
                     return;
                 // Else, it's a child
                 child.visible = parent.visible;
+            });
+
+            parentList.chains.forEach(function (chain) {
+                if(parent.visible === false) { // turned off
+                    console.log('OFF');
+                     ctrl.chainUtil.bgOff(chain)
+                }
+                else { // turned on
+                    console.log('ON');
+                    ctrl.chainUtil.bgOn(chain, parentList);
+                }
             })
         }
 
@@ -279,6 +277,33 @@ angular.module('app.controllers', [])
         ctrl.surfToggle = function (id) {
             console.log('toggle', id);
             ctrl.surfs[id].visible = !ctrl.surfs[id].visible;
+        }
+
+        ctrl.chainUtil = {};
+        // Toggle a pdb's chain visibility
+        ctrl.chainUtil.vToggle = function (pdbId, chain) {
+            // Toggle visible
+            var currentChain = _.where(ctrl.pdbs[pdbId].children, {'chainId': chain.id})[0];
+            currentChain.visible = !currentChain.visible;
+        }
+        ctrl.chainUtil.bgOff = function (chain) {
+            chain.style['background-color'] = '#777';
+        };
+        ctrl.chainUtil.bgOn = function (chain, parent) {
+            chain.style['background-color'] = parent.style['border-top-color'];
+        };
+        // Change background-color
+        ctrl.chainUtil.bgToggle = function (chain, parent) {
+            if (chain.style['background-color'] !== '#777') {
+                chain.style['background-color'] = '#777';
+            }
+            else {
+                chain.style['background-color'] = parent.style['border-top-color'];
+            }
+        }
+        ctrl.chainUtil.toggle = function (pdbId, chain, parent) {
+            this.bgToggle(chain, parent);
+            this.vToggle(pdbId, chain);
         }
     })
 
