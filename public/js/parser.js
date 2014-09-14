@@ -55,8 +55,8 @@ var PARSER = (function () {
         }
     }
 
-    /** function to add object to a scene of THREEJS - pdb */
-    parser.getPdbMeshAsync = function (scene, atoms, centroid, color) {
+    /** function to get mesh of an object asyncly - pdb */
+    parser.getPdbMeshAsync = function (atoms, centroid, color) {
         console.time('Add Pdb Object');
         var config = {
             radius: {
@@ -78,7 +78,6 @@ var PARSER = (function () {
             rings: 6 //drop to 6
         }
 
-        var sphereGeometry;
         console.time('Prepare data');
         // Material to make the final sphere
         var sphereMaterial = new THREE.MeshLambertMaterial({color: color});
@@ -101,7 +100,6 @@ var PARSER = (function () {
             var qGeometry = (new THREE.BulkSphereGeometry(atoms, config.segments, config.rings)).init();
             qGeometry.then(function (geometry) {
                 console.timeEnd('Making geometry');
-                console.log(geometry);
                 // Create a mesh
                 console.time('Make a mesh');
                 var mesh = new THREE.Mesh(geometry, sphereMaterial); // was sphereGeometry

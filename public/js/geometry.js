@@ -45,11 +45,11 @@ THREE.BulkSphereGeometry = function (atoms, widthSegments, heightSegments, phiSt
     thetaStart = thetaStart !== undefined ? thetaStart : 0;
     thetaLength = thetaLength !== undefined ? thetaLength : Math.PI;
 
-    function process(atom) { //center with x, y, z
+    function process(atom) { // center with x, y, z
         var scope = this;
         var x, y, vertices = [], uvs = [];
         var startIndex = scope.vertices.length;
-        var radius = atom.radius || 50;
+        var radius = atom.radius || 3;
         for (y = 0; y <= heightSegments; y++) {
 
             var verticesRow = [];

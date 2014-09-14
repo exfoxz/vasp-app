@@ -232,6 +232,7 @@ hr {
     outline: solid 3px rgba(66, 87, 203, 0.8);
     outline-offset: -3px;
     background-image: url('/assets/grid.png');
+    background-color: #ffffff;
 }
 
 #canvas {

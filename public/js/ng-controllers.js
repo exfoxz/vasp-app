@@ -1,14 +1,16 @@
 /**
+ *
  * Created by sam on 31/08/2014.
  */
-
+'use strict';
 angular.module('app.controllers', [])
-    .controller('objCtrl', function ($scope, $http, $timeout, Rainbow, Socket, $location, timed) {
+    .controller('objCtrl', function ($scope, $http, $timeout, $q, Rainbow, Socket, $location) {
         var ctrl = this;
 
         // Url for server to fetch information
-//        var serverUrl = 'http://localhost:8000/';
-        var serverUrl = 'http://54.64.25.255:8000/';
+        var serverUrl = 'http://localhost:8000/';
+//        var serverUrl = 'http://54.64.25.255:8000/';
+1
         function init(ctrl) {
             //dummy object for input
             ctrl.input = {};
@@ -144,22 +146,50 @@ angular.module('app.controllers', [])
                         // Add to list of structures
                         ctrl.pdbList.push({id: id, style: {'border-top-color': ctrl.input.color}})
 
-                        var qMesh = PARSER.getPdbMeshAsync(SCENE.scene, data.atoms, data.centroid, ctrl.input.color);
-                        qMesh.then(function (pdbMesh) {
-                            console.log('Mesh');
-                            console.log(pdbMesh);
-                            SCENE.scene.add(pdbMesh);
-                            ctrl.pdbs[id] = pdbMesh;
+                        // =====================================================
+                        // CHAINS ==========
+                        // =====================================================
+                        var group = new THREE.Object3D();
+                        group.color = ctrl.input.color
+                        var qMeshes = [];
+                        for(var key in data.chains){
+                            var chain = data.chains[key];
+                            qMeshes.push(PARSER.getPdbMeshAsync(chain.atoms, chain.centroid, group.color).then(function (pdbMesh) {
+                                group.add(pdbMesh);
+                                return true;
+                            }, function (error) {
+                                console.error(error);
+                            }));
+                        }
+                        console.log(qMeshes);
+                        $q.all(qMeshes).then(function (data) {
+                            console.log('ALL DONE');
+                            console.log(data);
+                            console.log(group);
+                            ctrl.pdbs[id] = group;
+                            console.log(ctrl.pdbs);
+                            // Add group to scene
+                            SCENE.scene.add(group);
+                        })
+                        // =====================================================
+                        // CHAINS END ==========
+                        // =====================================================
+//                        var qMesh = PARSER.getPdbMeshAsync(data.atoms, data.centroid, ctrl.input.color);
+//                        qMesh.then(function (pdbMesh) {
+//                            console.log('Mesh');
+//                            console.log(pdbMesh);
+//                            SCENE.scene.add(pdbMesh);
+//                            ctrl.pdbs[id] = pdbMesh;
                             // Stop spin-loader
 //                        console.log(_.where(ctrl.pdbList, {id: id}));
-                            $scope.$apply(function () {
-                                _.where(ctrl.pdbList, {id: id})[0].fetched = true;
-                            });
-                            resolve(true);
-                        }, function (error) {
-                            console.log(error);
-                            reject(err);
-                        });
+//                            $scope.$apply(function () {
+//                                _.where(ctrl.pdbList, {id: id})[0].fetched = true;
+//                            });
+//                            resolve(true);
+//                        }, function (error) {
+//                            console.log(error);
+//                            reject(err);
+//                        });
 
                         // Rotate through colors
                         ctrl.setColor(ctrl.colorIndex++);
@@ -232,8 +262,17 @@ angular.module('app.controllers', [])
 
         //toggle pdb object visibility
         ctrl.vToggle = function (id) {
-            console.log('toggle', id)
-            ctrl.pdbs[id].visible = !ctrl.pdbs[id].visible;
+            console.log('toggle', id);
+            var parent = ctrl.pdbs[id];
+            parent.visible = !parent.visible;
+            // Traverse object
+            parent.traverse(function (child) {
+                // If child is parent, return
+                if(!(child instanceof THREE.Mesh))
+                    return;
+                // Else, it's a child
+                child.visible = parent.visible;
+            })
         }
 
         //toggle surf object visibility
@@ -264,9 +303,10 @@ angular.module('app.controllers', [])
                         console.log('FETCHING ASYNC!!!!');
                         // Restore camera rotation
                         SCENE.methods.restorePosition(data.cameraPosition);
+
                         // Done restoring, hide cover
                         console.log('(GONNA) DONE RESTORTING');
-                        s.hideCover();
+//                        s.hideCover();
                     }, function (error) {
                         console.log(error);
                     });
@@ -284,6 +324,6 @@ angular.module('app.controllers', [])
     })
     .controller('modalCtrl', function ($scope, clog, workspace) {
         clog('MODAL CTRL INIT', 'info');
-        $scope.toggleCover();
+//        $scope.toggleCover();
         $scope.restoreWorkspace(workspace.data);
     })
