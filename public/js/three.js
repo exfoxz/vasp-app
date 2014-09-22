@@ -37296,4 +37296,3 @@ THREE.ShaderFlares = {
 	}
 
 };
-

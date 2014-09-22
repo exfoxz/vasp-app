@@ -98,6 +98,9 @@ hr {
     color:#fff;
 }
 
+#canvas {
+    background-color: black;
+}
 #main {
     background-color:#e9eaed;
     padding-left:0;

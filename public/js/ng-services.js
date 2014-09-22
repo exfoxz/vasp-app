@@ -222,7 +222,6 @@ angular.module('app.services', [])
                 case "end":      color = "Orchid";     bgc = "MediumVioletRed"; break;
                 default: color = color;
             }
-
             if (typeof msg == "object"){
                 console.log(msg);
             } else if (typeof color == "object"){
@@ -232,6 +231,20 @@ angular.module('app.services', [])
                 console.log("%c" + msg, "color:" + color + ";font-weight:bold; background-color: " + bgc + ";");
             }
         }
-
         return log;
+    })
+    .factory('promiseWrapper', function ($q) {
+        function wrapper(func, sHandler, eHandler, uHandler) {
+            deferred = $q.defer();
+            func(deferred);
+            var promise = deferred.promise;
+            promise.then(function (data) {
+                sHandler(data);
+            }, function (err) {
+                eHandler(err);
+            }, function (update) {
+                uHandler(update);
+            });
+        };
+        return wrapper;
     })

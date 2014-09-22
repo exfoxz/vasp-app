@@ -4,13 +4,16 @@
  */
 'use strict';
 angular.module('app.controllers', [])
-    .controller('objCtrl', function ($scope, $http, $timeout, $q, Rainbow, Socket, $location) {
+    .controller('objCtrl', function ($scope, $http, $timeout, $q, Rainbow, $location, promiseWrapper) {
         var ctrl = this;
 
+        // Init scene
+        $scope.glmol = new GLmol('glmolX', true, 'canvas');
+        $scope.glmol.init();
+
         // Url for server to fetch information
-        var serverUrl = 'http://localhost:8000/';
-//        var serverUrl = 'http://54.64.25.255:8000/';
-1
+//        var serverUrl = 'http://localhost:8000/';
+        var serverUrl = 'http://54.64.25.255:8000/';
         function init(ctrl) {
             //dummy object for input
             ctrl.input = {};
@@ -32,7 +35,6 @@ angular.module('app.controllers', [])
             // Check SAVE conditions ===============================
             // =====================================================
             console.log($location.path());
-
             // =====================================================
             // Save camera position to a database ==================
             // =====================================================
@@ -111,74 +113,67 @@ angular.module('app.controllers', [])
         }
         /** Get atoms from server and add it to scene */
         ctrl.fetch = $scope.fetch = function (id) {
-            //check for undefined or empty input
+//            check for undefined or empty input
             if (ctrl.input.name == undefined || ctrl.input.name == '') {
                 console.log('NO NAME');
-            }
-            else
-                $scope.fetchPdbAsync(id).then(function (data) {
-                   console.log('Fetching', id, 'done')
-                }, function (error) {
-                    console.log(error);
-                });
-        };
-
-        /** Get pdb with id and add to scene  */
-        $scope.fetchPdbAsync = function (id) {
-            console.log($scope.toggleCover)
-            // Show progress bar
-            ctrl.progress.init();
-            //remove welcome message
-            if (angular.element('#welcome'))
-                angular.element('#welcome').remove();
-
-            //reset input
-            ctrl.input.reset();
-
-            console.log('fetching... ' + id);
-            return new Promise(function (resolve, reject) {
-                $http.get(serverUrl + 'pdbs/' + id)
+                }
+            else {
+                $scope.fetchPdbAsync(id)
                     .success(function (data) {
-                        console.log(data);
+                        console.log('Fetching', id, 'done.')
                         // Hide progress bar
                         ctrl.progress.fadeout();
-
                         // Add to list of structures
-                        ctrl.pdbList.push({id: id, style: {'border-top-color': ctrl.input.color}, chains: []})
+                        var currentPDB = {id: id, style: {'border-top-color': ctrl.input.color}, chains: []};
+                        ctrl.pdbList.push(currentPDB);
+                        // =====================================================
+                        //  ==========
+                        // =====================================================
+                        // Call GLmol to render
+//                        console.log(promiseWrapper);
+//                        var x = promiseWrapper($scope.glmol.addPDB(id, data),
+//                            function (data) {
+//                                console.log('addPDB: Done', data);
+//                                Stop spinner
+//                                currentPDB.fetched = true;
+//                        },  function (err) {
+//                                console.log('addPDB: Error', err);
+//                        });
+//                        console.log(x);
+                        console.log('PROMISE');
+                        promiseWrapper(function (deferred) {
+                            $scope.glmol.addPDB(id, data, deferred);
+                        }, function (status) {
+                            console.log(status);
+                            currentPDB.fetched = true;
+                        }, function (err) {
+                            console.log(err)
+                        });
+//                        var promiseX = function () {
+//                            var deferred = $q.defer();
+//                            setTimeout(function () {
+//                                deferred.notify('About to sleep');
+//                                deferred.resolve('HI');
+//                            }, 4000);
+//                            $scope.glmol.addPDB(id, data);
+//                            deferred.resolve('HI')
+//                            return deferred.promise;
+//                        };
+//                        console.log(promise);
+//                        var promise = promiseX();
+//                        promise.then(function (data) {
+//                            console.log('DONE', data);
+//                        }, function (err) {
+//                            console.log(err);
+//                        }, function (update) {
+//                            console.log('UPDATE', update);
+//                        });
 
-                        var group = new THREE.Object3D();
-                        group.color = ctrl.input.color
-                        var qMeshes = [];
-                        for(var key in data.chains) {
-                            var chain = data.chains[key];
-                            qMeshes.push(PARSER.getPdbMeshAsync(chain.atoms, chain.centroid, group.color, chain.id).then(function (pdbMesh) {
-                                // Add a chain mesh to group
-                                group.add(pdbMesh);
-                                // Add a chain to pdb list
-                                _.where(ctrl.pdbList, {id: id})[0].chains.push({id: pdbMesh.chainId, style: {'background-color' : pdbMesh.color}});
-                                console.log('CHAIN: ');
-                                console.log(ctrl.pdbList);
-                                console.log(pdbMesh);
-                                return true;
-                            }, function (error) {
-                                console.error(error);
-                            }));
-                        };
-                        console.log(qMeshes);
-                        $q.all(qMeshes).then(function (data) {
-                            console.log('ALL DONE');
-                            console.log(data);
-                            console.log(group);
-                            ctrl.pdbs[id] = group;
-                            console.log(ctrl.pdbs);
-                            // Add group to scene
-                            SCENE.scene.add(group);
-                            // Stop spin-loader
-                            _.where(ctrl.pdbList, {id: id})[0].fetched = true;
-                        })
-
-                        // Rotate through colors
-                        ctrl.setColor(ctrl.colorIndex++);
+                        // =====================================================
+                        //  ==========
+                        // =====================================================
+                        ctrl.pdbList.push()
+//                        ctrl.setColor(ctrl.colorIndex++);
                     })
                     .error(function (err) {
                         //hide progress bar
@@ -186,8 +181,23 @@ angular.module('app.controllers', [])
                         console.log(err);
                         reject(err);
                     })
-            })
-        }
+            }
+        };
+
+        /** Get pdb with id and add to scene  */
+        $scope.fetchPdbAsync = function (id) {
+            console.log($scope.toggleCover);
+            // Show progress bar
+            ctrl.progress.init();
+            //remove welcome message
+            if (angular.element('#welcome'))
+                angular.element('#welcome').remove();
+            //reset input
+            ctrl.input.reset();
+
+            console.log('fetching... ' + id);
+            return $http.get(serverUrl + 'pdbs2/' + id);
+        };
 
         /** callback after surf file has been read */
         ctrl.readerCallback = function (file, data) {
@@ -247,30 +257,32 @@ angular.module('app.controllers', [])
         };
 
         //toggle pdb object visibility
-        ctrl.vToggle = function (id, parentList) {
-            console.log('toggle', id);
-            console.log(parentList);
-            var parent = ctrl.pdbs[id];
-            parent.visible = !parent.visible;
-            // Traverse object
-            parent.traverse(function (child) {
-                // If child is parent, return
-                if(!(child instanceof THREE.Mesh))
-                    return;
-                // Else, it's a child
-                child.visible = parent.visible;
-            });
-
-            parentList.chains.forEach(function (chain) {
-                if(parent.visible === false) { // turned off
-                    console.log('OFF');
-                     ctrl.chainUtil.bgOff(chain)
-                }
-                else { // turned on
-                    console.log('ON');
-                    ctrl.chainUtil.bgOn(chain, parentList);
-                }
-            })
+        ctrl.vToggle = function (id) {
+            console.log(id);
+            $scope.glmol.vToggle(id);
+//            console.log('toggle', id);
+//            console.log(parentList);
+//            var parent = ctrl.pdbs[id];
+//            parent.visible = !parent.visible;
+//            // Traverse object
+//            parent.traverse(function (child) {
+//                // If child is parent, return
+//                if(!(child instanceof THREE.Mesh))
+//                    return;
+//                // Else, it's a child
+//                child.visible = parent.visible;
+//            });
+//
+//            parentList.chains.forEach(function (chain) {
+//                if(parent.visible === false) { // turned off
+//                    console.log('OFF');
+//                     ctrl.chainUtil.bgOff(chain)
+//                }
+//                else { // turned on
+//                    console.log('ON');
+//                    ctrl.chainUtil.bgOn(chain, parentList);
+//                }
+//            })
         }
 
         //toggle surf object visibility
@@ -307,7 +319,7 @@ angular.module('app.controllers', [])
         }
     })
 
-    .controller('canvasCtrl', function ($scope, clog, Socket) {
+    .controller('canvasCtrl', function ($scope, clog) {
         clog('CANVAS CTRL INIT', 'info');
         var s = $scope;
         s.showCover = false;
