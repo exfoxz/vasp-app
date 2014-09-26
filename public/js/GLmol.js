@@ -1484,6 +1484,28 @@ GLmol.prototype.colorChainbow = function(atomlist, id, colorSidechains) {
    }
 };
 
+    GLmol.prototype.colorMono = function(atomlist, id, colorSidechains) {
+        console.log(this);
+        if(!this.hasOwnProperty('currentColorH')) {
+            this.currentColorH = 0;
+        }
+        else {
+            this.currentColorH += 60;
+        }
+        var atom, i;
+        var atoms = this.atoms[id];
+        for (i in atomlist) {
+            atom = atoms[atomlist[i]]; if (atom == undefined) continue;
+
+            if ((colorSidechains || atom.atom != 'CA' || atom.atom != 'O3\'') && !atom.hetflag) {
+                var color = new TCo(0);
+//                color.setHSV(240.0 / 360 * (1 - cnt / total), 1, 0.9);
+                color.setHSV(this.currentColorH / 360, 1, 1);
+                atom.color = color.getHex();
+            }
+        }
+    };
+
 GLmol.prototype.drawSymmetryMates2 = function(group, asu, matrices) {
    if (matrices == undefined) return;
    asu.matrixAutoUpdate = false;
@@ -1547,7 +1569,8 @@ GLmol.prototype.defineRepresentation = function(id) {
 
     /* Different color mode */
     this.colorByAtom(all, id, {});
-    this.colorChainbow(all, id); // TODO: Modify this
+//    this.colorChainbow(all, id); // TODO: Modify this
+    this.colorMono(all, id); // TODO: Modify this
 
     var asu = new THREE.Object3D();
 

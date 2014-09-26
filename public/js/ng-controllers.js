@@ -102,8 +102,10 @@ angular.module('app.controllers', [])
 
         //set color for protein
         ctrl.setColor = function (index) {
-            ctrl.input.color = ctrl.colors[index];
-            ctrl.proteinStyle = {'background-color': ctrl.input.color};
+            var hue = 60 * index;
+            ctrl.currentColor = 'hsl(' + hue + ', 100%, 50%)';
+
+            ctrl.proteinStyle = {'background-color': ctrl.currentColor};
         }
 
         // Check for empty color, default to red
@@ -124,22 +126,11 @@ angular.module('app.controllers', [])
                         // Hide progress bar
                         ctrl.progress.fadeout();
                         // Add to list of structures
-                        var currentPDB = {id: id, style: {'border-top-color': ctrl.input.color}, chains: []};
+                        var currentPDB = {id: id, style: {'border-top-color': ctrl.currentColor}, chains: []};
                         ctrl.pdbList.push(currentPDB);
                         // =====================================================
                         //  ==========
                         // =====================================================
-                        // Call GLmol to render
-//                        console.log(promiseWrapper);
-//                        var x = promiseWrapper($scope.glmol.addPDB(id, data),
-//                            function (data) {
-//                                console.log('addPDB: Done', data);
-//                                Stop spinner
-//                                currentPDB.fetched = true;
-//                        },  function (err) {
-//                                console.log('addPDB: Error', err);
-//                        });
-//                        console.log(x);
                         console.log('PROMISE');
                         promiseWrapper(function (deferred) {
                             $scope.glmol.addPDB(id, data, deferred);
@@ -149,31 +140,8 @@ angular.module('app.controllers', [])
                         }, function (err) {
                             console.log(err)
                         });
-//                        var promiseX = function () {
-//                            var deferred = $q.defer();
-//                            setTimeout(function () {
-//                                deferred.notify('About to sleep');
-//                                deferred.resolve('HI');
-//                            }, 4000);
-//                            $scope.glmol.addPDB(id, data);
-//                            deferred.resolve('HI')
-//                            return deferred.promise;
-//                        };
-//                        console.log(promise);
-//                        var promise = promiseX();
-//                        promise.then(function (data) {
-//                            console.log('DONE', data);
-//                        }, function (err) {
-//                            console.log(err);
-//                        }, function (update) {
-//                            console.log('UPDATE', update);
-//                        });
-
-                        // =====================================================
-                        //  ==========
-                        // =====================================================
                         ctrl.pdbList.push()
-//                        ctrl.setColor(ctrl.colorIndex++);
+                        ctrl.setColor(ctrl.colorIndex++);
                     })
                     .error(function (err) {
                         //hide progress bar
