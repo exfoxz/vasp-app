@@ -12,8 +12,8 @@ angular.module('app.controllers', [])
         $scope.glmol.init();
 
         // Url for server to fetch information
-//        var serverUrl = 'http://localhost:8000/';
-        var serverUrl = 'http://54.64.25.255:8000/';
+        var serverUrl = 'http://localhost:8000/';
+//        var serverUrl = 'http://54.64.25.255:8000/';
         function init(ctrl) {
             //dummy object for input
             ctrl.input = {};
