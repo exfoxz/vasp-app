@@ -406,8 +406,8 @@ GLmol.prototype.subdivide = function(_points, DIV) { // points as Vector3
       var p0 = points[(i == -1) ? 0 : i];
       var p1 = points[i + 1], p2 = points[i + 2];
       var p3 = points[(i == size - 3) ? size - 1 : i + 3];
-      var v0 = new TV3().sub(p2, p0).multiplyScalar(0.5);
-      var v1 = new TV3().sub(p3, p1).multiplyScalar(0.5);
+      var v0 = new TV3().subVectors(p2, p0).multiplyScalar(0.5);
+      var v1 = new TV3().subVectors(p3, p1).multiplyScalar(0.5);
       for (var j = 0; j < DIV; j++) {
          var t = 1.0 / DIV * j;
          var x = p1.x + t * v0.x 
@@ -723,7 +723,7 @@ GLmol.prototype.drawSmoothTube = function(group, _points, colors, radii) {
       var delta, axis1, axis2;
 
       if (i < lim - 1) {
-         delta = new TV3().sub(points[i], points[i + 1]);
+         delta = new TV3().subVectors(points[i], points[i + 1]);
          axis1 = new TV3(0, - delta.z, delta.y).normalize().multiplyScalar(r);
          axis2 = new TV3().cross(delta, axis1).normalize().multiplyScalar(r);
 //      var dir = 1, offset = 0;
@@ -750,8 +750,8 @@ GLmol.prototype.drawSmoothTube = function(group, _points, colors, radii) {
       var c =  new TCo(colors[Math.round((i - 1)/ axisDiv)]);
 
       var reg = 0;
-      var r1 = new TV3().sub(geo.vertices[offset], geo.vertices[offset + circleDiv]).lengthSq();
-      var r2 = new TV3().sub(geo.vertices[offset], geo.vertices[offset + circleDiv + 1]).lengthSq();
+      var r1 = new TV3().subVectors(geo.vertices[offset], geo.vertices[offset + circleDiv]).lengthSq();
+      var r2 = new TV3().subVectors(geo.vertices[offset], geo.vertices[offset + circleDiv + 1]).lengthSq();
       if (r1 > r2) {r1 = r2; reg = 1;};
       for (var j = 0; j < circleDiv; j++) {
           geo.faces.push(new TF3(offset + j, offset + (j + reg) % circleDiv + circleDiv, offset + (j + 1) % circleDiv));
@@ -998,7 +998,6 @@ GLmol.prototype.drawStrand = function(group, id, atomlist, num, div, fill, coilW
          }
       }
    }
-    console.log(this.drawSmoothCurve);
    for (var j = 0; !thickness && j < num; j++) {
         console.log(this.drawSmoothCurve);
       this.drawSmoothCurve(group, points[j], 1 ,colors, div);
@@ -1559,6 +1558,20 @@ GLmol.prototype.defineRepresentation = function(id) {
     asu.name = id;
     this.modelGroup.add(asu);
     console.timeEnd('Representation');
+
+    // =====================================================
+    // CSG ==========
+    // =====================================================
+    var cube_mesh1 = new THREE.Mesh(new THREE.CubeGeometry(10, 10, 10), new THREE.MeshLambertMaterial({color: new THREE.Color(0xff0000)}));
+    var cube_mesh2 = new THREE.Mesh(new THREE.SphereGeometry(6, 32, 32), new THREE.MeshLambertMaterial({color: new THREE.Color(0xff0000)}));
+    var cube_bsp1 = new ThreeBSP(cube_mesh1);
+    var cube_bsp2 = new ThreeBSP(cube_mesh2);
+    var subtract_bsp = cube_bsp1.subtract(cube_bsp2);
+    var result = subtract_bsp.toMesh(new THREE.MeshLambertMaterial({ shading: THREE.SmoothShading, color: 0xff0000}));
+    this.modelGroup.add(result);
+    // =====================================================
+    // /CSG ==========
+    // =====================================================
 //   var all = this.getAllAtoms();
 //   var hetatm = this.removeSolvents(this.getHetatms(all));
 //   this.colorByAtom(all, {});

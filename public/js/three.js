@@ -1531,7 +1531,6 @@ THREE.Vector3.prototype = {
 		return this;
 
 	},
-
 	addScalar: function ( s ) {
 
 		this.x += s;
