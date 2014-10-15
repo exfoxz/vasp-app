@@ -41,6 +41,7 @@
                                     </li>
                                 </ul>
                             </header>
+                            <!-- Input group for PDBs -->
                             <div class="input-group">
                                 <input type="text" ng-model='ctrl.input.name' placeholder="Enter protein's name" class="form-control">
                                 <span class="input-group-addon input-group-addon-middle" ng-click="ctrl.colorPicker()" ng-style="ctrl.proteinStyle"></span>
@@ -83,6 +84,9 @@
                                <li class="list-group-item" draggable droppable item="{{item.id}}" ondrop="ctrl.vasp" ng-repeat="item in ctrl.surfaces" ng-style="item.style"><code>{{item.id}}</code><input type="checkbox" checked name="toggle" ng-click="ctrl.surfToggle(item.id)" class="btn sidebar-list-item"><span class="glyphicon glyphicon-eye-open "></span></li>
                            </ul>
                            <!--/Surface list-->
+
+                           <button class="btn btn-primary" ng-click="ctrl.csgTest()"> CSG </button>
+                           <button class="btn btn-primary" ng-click="ctrl.test()"> CSG </button>
                        </div>
                    </div>
 
@@ -144,6 +148,7 @@
                         <!--</div>-->
                         <div ng-view class="cover" ng-show="showCover"></div>
                         <div id="canvas">
+                            <img src="assets/15.jpg" class="img">
                             <h1 id="welcome">{{Canvas.welcomeMessage}}</h1>
                         </div>
                     </div>
@@ -155,35 +160,37 @@
         </div>
     </div>
     <!-- Lo-Dash -->
-    <script src="js/lodash.js"></script>
+    <!--<script src="js/lodash.js"></script>-->
     <!--jQuery-->
-    <script src="js/jquery.min.js"></script>
+    <!--<script src="js/jquery.min.js"></script>-->
     <!--AngularJS-->
-    <script src="js/angular-file-upload-shim.min.js"></script>
-    <script src="js/angular.min.js"></script>
-    <script src="js/angular-file-upload.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular-route.js"></script>
-    <script src="js/angular-ui-router.min.js"></script>
+    <!--<script src="js/angular-file-upload-shim.min.js"></script>-->
+    <!--<script src="js/angular.min.js"></script>-->
+    <!--<script src="js/angular-file-upload.min.js"></script>-->
+    <!--<script src="js/angular-route.js"></script>-->
+    <!--<script src="js/angular-ui-router.min.js"></script>-->
     <!--Bootstrap-->
-    <script src="js/bootstrap.js"></script>
-    <script src="js/ui-bootstrap-tpls-0.11.0.js"></script>
+    <!--<script src="js/bootstrap.js"></script>-->
+    <!--<script src="js/ui-bootstrap-tpls-0.11.0.js"></script>-->
+    <script src="js/build/lib.js"></script>
     <!-- Socket IO -->
-    <script src="https://cdn.socket.io/socket.io-1.0.6.js"></script>
+    <!--<script src="https://cdn.socket.io/socket.io-1.0.6.js"></script>-->
     <!-- App's js -->
     <script src="js/ng.js"></script>
     <script src="js/ng-controllers.js"></script>
     <script src="js/ng-services.js"></script>
     <script src="js/ng-directives.js"></script>
+    <!-- THREE -->
     <!--<script src="js/three.js"></script>-->
     <script src="js/three49custom.js"></script>
-    <script src="js/ThreeCSG.js"></script>
-    <script src="js/csg.js"></script>
     <!--<script src="js/geometry.js"></script>-->
     <!--<script src="js/OrbitControls.js"></script>-->
     <!--<script src="js/scene.js"></script>-->
     <!--<script src="js/scene2.js"></script>-->
-    <script src="js/parser.js"></script>
+    <!--<script src="js/parser.js"></script>-->
     <script src="js/GLmol.js"></script>
+    <!-- GRUNT -->
+    <script src="//localhost:35729/livereload.js"></script>
 
     </body>
 </html>

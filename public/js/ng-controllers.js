@@ -2,9 +2,10 @@
  *
  * Created by sam on 31/08/2014.
  */
+
 'use strict';
 angular.module('app.controllers', [])
-    .controller('objCtrl', function ($scope, $http, $timeout, $q, Rainbow, $location, promiseWrapper) {
+    .controller('objCtrl', function ($scope, $http, $timeout, $q, Rainbow, $location, promiseWrapper, Surface) {
         var ctrl = this;
 
         // Init scene
@@ -174,17 +175,50 @@ angular.module('app.controllers', [])
                 angular.element('#welcome').remove();
             var id = file.name.split('.')[0];
             //parse surf data
-            var object = PARSER.surfParser(data);
-            var color = ctrl.colors[ctrl.surfColorIndex++];
+            var object = $scope.glmol.surfParser(data);
+            console.log('OBJECt:');
+            console.log(object);
+            var color = 0xff0000;
             //add to scene
             console.log('add surf to scene');
-            var surfMesh = PARSER.addSurfObject(SCENE.scene, object, color);
+            var surfMesh = $scope.glmol.addSurf(object, color);
             //add to a list of surf meshes
             ctrl.surfs[id] = surfMesh; //TODO: potential overwrite of data with same id
             console.log(ctrl.surfs);
             //add to an array of surf
             ctrl.surfaces.push({id: id, style: {'border-top-color': color}});
             console.log(ctrl.surfaces)
+        };
+        ctrl.csgTest = function () {
+            console.log('csgTest');
+            var meshes = [];
+            for(var i in ctrl.surfs) {
+                meshes.push(ctrl.surfs[i])
+            };
+//            var cube_mesh1 = new THREE.Mesh(new THREE.CubeGeometry(10, 10, 10), new THREE.MeshLambertMaterial({color: new THREE.Color(0xff0000)}));
+//            var cube_mesh2 = new THREE.Mesh(new THREE.SphereGeometry(6, 32, 32), new THREE.MeshLambertMaterial({color: new THREE.Color(0xff0000)}));
+
+            var bsp1 = new ThreeBSP(meshes[0]);
+            var bsp2 = new ThreeBSP(meshes[1]);
+            console.log(bsp1);
+            console.log(bsp2);
+
+            var subtract_bsp = bsp1.union(bsp2);
+            var result = subtract_bsp.toMesh(new THREE.MeshLambertMaterial({ shading: THREE.SmoothShading, color: 0xff0000}));
+//
+            $scope.glmol.modelGroup.add(result);
+            $scope.glmol.show();
+        }
+
+        /* TEST Method */
+        ctrl.test = function () {
+            Surface.getSurf('4TLM')
+                .success(function (data) {
+                    var raw = Surface.parser(data);
+                    $scope.glmol.addSurf(raw, 0xff0000);
+//                    var mesh = Surface.makeMesh(raw, 'red');
+//                    console.log(mesh);
+                })
         };
 
         /** Surface file reader */

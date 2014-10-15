@@ -5,18 +5,39 @@
 
 module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.initConfig({
         watch: {
            app: {
-                files: ['**/**/*'],
+                files: ['**/**/*', '!public/js/build/*'],
                 options: {
                     livereload: true
-                }
+                },
+               tasks: ['concat']
            }
+        },
+        concat: {
+            lib: {
+                src: ['public/js/lodash.js', 'public/js/jquery.min.js', 'public/js/angular.min.js', 'public/js/angular-*.js', 'public/js/bootstrap*.js'],
+                dest: 'public/js/build/lib.js'
+            }
+//            ng: {
+//                src: ['public/js/ng*.js'],
+//                dest: 'public/js/build/ng-app.js'
+//            }
         }
-    })
-    grunt.registerTask('pat', function (data) {
-        grunt.log.writeln("Keep going, you're great Sam!");
+//        uglify: {
+//            js: {
+//                files: [
+//                    {
+//                        expand: true,
+//                        cwd: 'public/js',
+//                        src: ['**/*.js'],
+//                        dest: 'public/js/build'
+//                    }
+//                ]
+//            }
+//        }
     })
     grunt.registerTask('default', function () {
         grunt.log.writeln('Hello');

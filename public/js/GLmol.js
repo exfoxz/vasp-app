@@ -97,7 +97,7 @@ GLmol.prototype.create = function(id, suppressAutoload, canvas_id) {
    this.scene = null;
    this.rotationGroup = null; // which contains modelGroup
    this.modelGroup = null;
-
+    this.surfGroup = null;
    this.bgColor = 0x000000;
    this.fov = 20;
    this.fogStart = 0.4;
@@ -143,7 +143,7 @@ GLmol.prototype.create = function(id, suppressAutoload, canvas_id) {
         this.initializeScene();
 //    this.defineRepresentation();
 //    this.setView(view);
-        console.log("builded scene in " + (+new Date() - time) + "ms");
+        console.log("built scene in " + (+new Date() - time) + "ms");
     };
 
     GLmol.prototype.addPDB = function (id, data, deferred) {
@@ -1581,20 +1581,7 @@ GLmol.prototype.defineRepresentation = function(id) {
     asu.name = id;
     this.modelGroup.add(asu);
     console.timeEnd('Representation');
-
-    // =====================================================
-    // CSG ==========
-    // =====================================================
-    var cube_mesh1 = new THREE.Mesh(new THREE.CubeGeometry(10, 10, 10), new THREE.MeshLambertMaterial({color: new THREE.Color(0xff0000)}));
-    var cube_mesh2 = new THREE.Mesh(new THREE.SphereGeometry(6, 32, 32), new THREE.MeshLambertMaterial({color: new THREE.Color(0xff0000)}));
-    var cube_bsp1 = new ThreeBSP(cube_mesh1);
-    var cube_bsp2 = new ThreeBSP(cube_mesh2);
-    var subtract_bsp = cube_bsp1.subtract(cube_bsp2);
-    var result = subtract_bsp.toMesh(new THREE.MeshLambertMaterial({ shading: THREE.SmoothShading, color: 0xff0000}));
-    this.modelGroup.add(result);
-    // =====================================================
-    // /CSG ==========
-    // =====================================================
+    this.show();
 //   var all = this.getAllAtoms();
 //   var hetatm = this.removeSolvents(this.getHetatms(all));
 //   this.colorByAtom(all, {});
@@ -1641,10 +1628,12 @@ GLmol.prototype.initializeScene = function() {
    this.scene.fog = new THREE.Fog(this.bgColor, 100, 200);
 
    this.modelGroup = new THREE.Object3D();
+   this.surfGroup = new THREE.Object3D();
    this.rotationGroup = new THREE.Object3D();
    this.rotationGroup.useQuaternion = true;
    this.rotationGroup.quaternion = new THREE.Quaternion(1, 0, 0, 0);
    this.rotationGroup.add(this.modelGroup);
+   this.rotationGroup.add(this.surfGroup);
 
    this.scene.add(this.rotationGroup);
     /* Add camera */
@@ -1819,6 +1808,137 @@ GLmol.prototype.show = function() {
 GLmol.prototype.doFunc = function(func) {
     func(this);
 };
+
+    /* SURF */
+    /** Surface files parser */
+    GLmol.prototype.surfParser = function (data) {
+        var myCoordinates = [], myFaces = [], lines;
+        var numGeometry, numTopology;
+        var startGeometry = 0, startTopology = 0;
+
+        //range of looking for GEOMETRY and TOPOLOGY
+        var RANGE = 30;
+
+        //split file into different lines
+        lines = data.split("\n");
+
+        //get the GEOMETRY position
+        for (var i = 0; i < RANGE; i++) {
+            if (lines[i].charAt(0) == "G") {
+                startGeometry = i;
+                break;
+            }
+        }
+        //get number of geometries
+        numGeometry = parseInt(lines[startGeometry].replace("GEOMETRY: ", ""))
+
+        //split each line into different words separated by a space " "
+        //words will be contained in an object - words
+        //loop through lines[] to break down lines into words[]
+        var words = [];
+        for (i = 0; i < numGeometry; i++) {
+            words[i] = lines[i + startGeometry + 1].split(" ");
+        }
+
+        //a counter to loop through words[]
+        var counter = 0;
+
+        //loop through words[] to add parsed-Floats to myCoordinates[]
+        for (var j = 0; j < words.length; j++) {
+            for (var k = 0; k < words[0].length; k++) {
+                myCoordinates[counter] = parseFloat(words[j][k]);
+                counter++;
+            }
+        }
+        ////START LOOKING FOR FACES - TOPOLOGY
+
+        //get the TOPOLOGY position
+        for (j = numGeometry - 1 + startGeometry; j < numGeometry - 1 + startGeometry + RANGE; j++) {
+            if (lines[j].charAt(0) == "T") {
+                startTopology = j;
+                break;
+            }
+        }
+
+        //get number of topologies
+        numTopology = parseInt(lines[startTopology].replace("TOPOLOGY: ", ""));
+        words = [];
+        for (i = 0; i < numTopology; i++) {
+            words[i] = lines[i + startTopology + 1].split(" ");
+        }
+
+        //reset counter
+        counter = 0;
+
+        //loop through words[] to add parsed-Floats to myCoordinates[]
+        for (j = 0; j < words.length; j++) {
+            for (k = 0; k < words[0].length; k++) {
+                myFaces[counter] = parseFloat(words[j][k]);
+                counter++;
+            }
+        }
+
+        //data to render
+        var data = {
+            coordinates: myCoordinates,
+            faces: myFaces,
+            numGeometry: numGeometry,
+            numTopology: numTopology,
+            startGeometry: startGeometry,
+            startTopology: startTopology
+        };
+
+        return data;
+    };
+
+    GLmol.prototype.addSurf = function (data, color) {
+        var geometry = new THREE.Geometry();
+        var myCoordinates = data.coordinates;
+        var myFaces = data.faces;
+        var objectCount = 2;
+        var offset;
+        //loop to add vertices
+        for (var i = 0; i < myCoordinates.length; i += 6) {
+            addVertex(myCoordinates[i], myCoordinates[i + 1], myCoordinates[i + 2])
+        }
+
+        for (var j = 0; j < myFaces.length; j += 3) {
+            addFace(myFaces[j], myFaces[j + 1], myFaces[j + 2]);
+        }
+
+        geometry.computeFaceNormals();
+        geometry.computeVertexNormals();
+
+        //findPrime function to find xP, yP and zP
+        if (objectCount == 2) {
+            offset = findPrime(myCoordinates, data.numGeometry);
+        }
+
+        //create a new object containing geometry
+        var mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: color}));
+        mesh.position.set(-offset[0], -offset[1], -offset[2]);
+        this.surfGroup.add(mesh);
+        this.show();
+        return mesh;
+
+        function addVertex(x, y, z) {
+            geometry.vertices.push(new THREE.Vector3(x, y, z));
+        }
+        function addFace(x, y, z) {
+            geometry.faces.push(new THREE.Face3(x, y, z));
+        }
+    }
+
+    /** Find primes to position object to origin */
+    function findPrime(myCoordinates, numGeometry) {
+        var xPrime = 0, yPrime = 0, zPrime = 0;
+        for (var i = 0; i < myCoordinates.length - 6; i += 6) {
+            xPrime += myCoordinates[i];
+            yPrime += myCoordinates[i + 1];
+            zPrime += myCoordinates[i + 2];
+        }
+        return [xPrime / numGeometry, yPrime / numGeometry, zPrime / numGeometry];
+    }
 
 return GLmol;
 }());
