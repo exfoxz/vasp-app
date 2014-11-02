@@ -1273,7 +1273,7 @@ hr {
     background-color: transparent;
     margin-top: 10px;
     width: 250px;
-    border: solid 2px blue;
+    /*border: solid 1px blue;*/
 }
 
 .floating-sub {
@@ -1287,8 +1287,12 @@ hr {
     margin: 0;
 }
 
+.panel-heading {
+    border-radius: 0px;
+    border: 0;
+}
 .panel-body-custom {
-    color: black;
+    color: white;
 }
 .panel-heading {
     border-bottom: 1px solid;
@@ -1311,6 +1315,31 @@ hr {
     /*transform-origin:top left;*/
 }
 
+/* Animate background */
+.panel-header-color {
+    /*color: green;*/
+    -webkit-animation: panel-header-color 3s linear infinite;
+    -moz-animation: panel-header-color 3s linear infinite;
+    animation: panel-header-color 4s linear infinite;
+}
+@-webkit-keyframes panel-header-color {
+    0% { background-color: yellow;}
+    33% { background-color: green; }
+    66% {background-color: blue;}
+    100% {background-color: yellow;}
+}
+@-moz-keyframes panel-header-color {
+    0% { background-color: yellow;}
+    33% { background-color: green; }
+    66% {background-color: blue;}
+    100% {background-color: yellow;}
+}
+@keyframes panel-header-color {
+    0% { background-color: yellow;}
+    33% { background-color: green; }
+    66% {background-color: blue;}
+    100% {background-color: yellow;}
+}
 
 h1 {
     /*font-size:2rem;*/

@@ -148,8 +148,10 @@ GLmol.prototype.create = function(id, suppressAutoload, canvas_id) {
 
     GLmol.prototype.addPDB = function (id, data, deferred) {
         console.log('addPDB NEW!');
-        console.log(data.atoms.centroid);
         console.log(data);
+        if(!this.mainCentroid) {
+            this.mainCentroid = data.centroid;
+        }
         this.proteins[id] = data.protein;
         this.protein = data.protein;
 //        this.protein[id] = data.protein;
@@ -157,7 +159,8 @@ GLmol.prototype.create = function(id, suppressAutoload, canvas_id) {
         this.atoms[id] = data.atoms;
 //        this.atoms = _.clone(data.atoms);
 //        console.log(this.atoms);
-        this.centroids[id] = data.centroid;
+//        this.centroids[id] = data.centroid;
+        this.centroids[id] = this.mainCentroid; // Changed to main centroid
         this.rebuildScene(id);
         deferred.resolve('addPDB: Done');
     };

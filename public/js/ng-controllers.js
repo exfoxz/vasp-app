@@ -32,23 +32,23 @@ angular.module('app.controllers', [])
         // Url for server to fetch information
 //        var serverUrl = 'http://localhost:8000/';
         var serverUrl = 'http://54.64.25.255:8000/';
-        function init(ctrl) {
+        function init(scope) {
             //dummy object for input
-            ctrl.input = {};
+            scope.input = {};
             //list of pdbs
-            ctrl.pdbList = [];
+            scope.pdbList = [];
             //list of pdbs meshes
-            ctrl.pdbs = {};
+            scope.pdbs = {};
             //list of surfaces
-            ctrl.surfaces = [];
+            scope.surfaces = [];
             //list of surf meshes
-            ctrl.surfs = {};
+            scope.surfs = {};
         };
 
-        init(ctrl);
+        init($scope);
 
         // Save current workspace info to server
-        ctrl.save = function () {
+        $scope.save = function () {
             // =====================================================
             // Check SAVE conditions ===============================
             // =====================================================
@@ -60,7 +60,7 @@ angular.module('app.controllers', [])
             var lastPosition = SCENE.methods.savePosition();
             // Get ids for all the current pdbs
             var pdbs = [];
-            ctrl.pdbList.forEach(function (data) {
+            $scope.pdbList.forEach(function (data) {
                 pdbs.push(data.id);
             });
             // TODO: Surf files data?
@@ -86,67 +86,68 @@ angular.module('app.controllers', [])
         };
 
         // Toggle camera rotation
-        ctrl.toggleRotation = function () {
+        $scope.toggleRotation = function () {
             console.log('toggle');
             SCENE.methods.toggleRotation();
         };
 
-        /** reset ctrl.input */
-        ctrl.input.reset = function () {
-            ctrl.input.name = '';
+        /** reset $scope.input */
+        $scope.input.reset = function () {
+            $scope.input.name = '';
         };
         // Object for progress feedback
-        ctrl.progress = $scope.progress = {started: false, value: 100, class: 'progress-init'};
-        ctrl.progress.init = function () {
+        $scope.progress = $scope.progress = {started: false, value: 100, class: 'progress-init'};
+        $scope.progress.init = function () {
             this.started = true;
             this.class = 'progress-init';
         };
-        ctrl.progress.fadeout = function () {
+        $scope.progress.fadeout = function () {
             this.class = 'fade-out';
             $timeout(function () {
-                ctrl.progress.started = false;
+                $scope.progress.started = false;
             }, 1000);
         };
 
         //welcome message
-        ctrl.welcomeMessage = "<- Enter a protein's name and click Go! to get started!";
+        $scope.welcomeMessage = "<- Enter a protein's name and click Go! to get started!";
 
         //an array of colors for proteins
-        ctrl.colors = ['red', 'blue', 'green', 'yellow', 'black'];
+        $scope.colors = ['red', 'blue', 'green', 'yellow', 'black'];
         //color index for pdb
-        ctrl.colorIndex = 0;
+        $scope.colorIndex = 0;
         //color index for surf
-        ctrl.surfColorIndex = 0;
+        $scope.surfColorIndex = 0;
 
         //set color for protein
-        ctrl.setColor = function (index) {
+        $scope.setColor = function (index) {
             var hue = 60 * index;
-            ctrl.currentColor = 'hsl(' + hue + ', 100%, 50%)';
+            $scope.currentColor = 'hsl(' + hue + ', 100%, 50%)';
 
-            ctrl.proteinStyle = {'background-color': ctrl.currentColor};
+            $scope.proteinStyle = {'background-color': $scope.currentColor};
         }
 
         // Check for empty color, default to red
-        if (!ctrl.input.color) {
+        if (!$scope.input.color) {
             console.log('No color, default to red');
-            ctrl.setColor(ctrl.colorIndex++);
+            $scope.setColor($scope.colorIndex++);
         }
 
         /** Get atoms from server and add it to scene */
-        ctrl.fetch = $scope.fetch = function (id) {
+        $scope.fetch = $scope.fetch = function (id) {
 //            check for undefined or empty input
-            if (ctrl.input.name == undefined || ctrl.input.name == '') {
+            if ($scope.input.name == undefined || $scope.input.name == '') {
                 console.log('NO NAME');
                 }
             else {
+                console.log('HERE');
                 $scope.fetchPdbAsync(id)
                     .success(function (data) {
                         console.log('Fetching', id, 'done.')
                         // Hide progress bar
-                        ctrl.progress.fadeout();
+                        $scope.progress.fadeout();
                         // Add to list of structures
-                        var currentPDB = {id: id, style: {'border-top-color': ctrl.currentColor}, chains: []};
-                        ctrl.pdbList.push(currentPDB);
+                        var currentPDB = {id: id, style: {'border-top-color': $scope.currentColor}, chains: []};
+                        $scope.pdbList.push(currentPDB);
                         // =====================================================
                         //  ==========
                         // =====================================================
@@ -159,12 +160,12 @@ angular.module('app.controllers', [])
                         }, function (err) {
                             console.log(err)
                         });
-                        ctrl.pdbList.push()
-                        ctrl.setColor(ctrl.colorIndex++);
+                        $scope.pdbList.push()
+                        $scope.setColor($scope.colorIndex++);
                     })
                     .error(function (err) {
                         //hide progress bar
-                        ctrl.progress.started = false;
+                        $scope.progress.started = false;
                         console.log(err);
                         reject(err);
                     })
@@ -175,19 +176,19 @@ angular.module('app.controllers', [])
         $scope.fetchPdbAsync = function (id) {
             console.log($scope.toggleCover);
             // Show progress bar
-            ctrl.progress.init();
+            $scope.progress.init();
             //remove welcome message
             if (angular.element('#welcome'))
                 angular.element('#welcome').remove();
             //reset input
-            ctrl.input.reset();
+            $scope.input.reset();
 
             console.log('fetching... ' + id);
             return $http.get(serverUrl + 'pdbs2/' + id);
         };
 
         /** callback after surf file has been read */
-        ctrl.readerCallback = function (file, data) {
+        $scope.readerCallback = function (file, data) {
             //remove welcome message
             if (angular.element('#welcome'))
                 angular.element('#welcome').remove();
@@ -201,17 +202,17 @@ angular.module('app.controllers', [])
             console.log('add surf to scene');
             var surfMesh = $scope.glmol.addSurf(object, color);
             //add to a list of surf meshes
-            ctrl.surfs[id] = surfMesh; //TODO: potential overwrite of data with same id
-            console.log(ctrl.surfs);
+            $scope.surfs[id] = surfMesh; //TODO: potential overwrite of data with same id
+            console.log($scope.surfs);
             //add to an array of surf
-            ctrl.surfaces.push({id: id, style: {'border-top-color': color}});
-            console.log(ctrl.surfaces)
+            $scope.surfaces.push({id: id, style: {'border-top-color': color}});
+            console.log($scope.surfaces)
         };
-        ctrl.csgTest = function () {
+        $scope.csgTest = function () {
             console.log('csgTest');
             var meshes = [];
-            for(var i in ctrl.surfs) {
-                meshes.push(ctrl.surfs[i])
+            for(var i in $scope.surfs) {
+                meshes.push($scope.surfs[i])
             };
 //            var cube_mesh1 = new THREE.Mesh(new THREE.CubeGeometry(10, 10, 10), new THREE.MeshLambertMaterial({color: new THREE.Color(0xff0000)}));
 //            var cube_mesh2 = new THREE.Mesh(new THREE.SphereGeometry(6, 32, 32), new THREE.MeshLambertMaterial({color: new THREE.Color(0xff0000)}));
@@ -229,7 +230,7 @@ angular.module('app.controllers', [])
         }
 
         /* TEST Method */
-        ctrl.test = function () {
+        $scope.test = function () {
             Surface.getSurf('4TLM')
                 .success(function (data) {
                     var raw = Surface.parser(data);
@@ -240,7 +241,7 @@ angular.module('app.controllers', [])
         };
 
         /** Surface file reader */
-        ctrl.fileReader = function (event) {
+        $scope.fileReader = function (event) {
             if (window.File && window.FileReader && window.FileList && window.Blob) {
                 console.log('File reader is supported!');
                 console.log(event);
@@ -250,9 +251,9 @@ angular.module('app.controllers', [])
         }
 
         /** ng-file-upload init */
-        ctrl.myModelObj;
-        ctrl.className = "dragover";
-        ctrl.onFileSelect = function ($files) {
+        $scope.myModelObj;
+        $scope.className = "dragover";
+        $scope.onFileSelect = function ($files) {
             //$files: an array of files selected, each file has name, size, and type.
             for (var i = 0; i < $files.length; i++) {
                 var file = $files[i];
@@ -268,7 +269,7 @@ angular.module('app.controllers', [])
                     return function (e) {
 //                       console.log(e.target.result);
                         //callback to paint surf object to scene
-                        $scope.$apply(ctrl.readerCallback(file, e.target.result));
+                        $scope.$apply($scope.readerCallback(file, e.target.result));
                     }
                 })(file);
 
@@ -277,12 +278,12 @@ angular.module('app.controllers', [])
         };
 
         //toggle pdb object visibility
-        ctrl.vToggle = function (id) {
+        $scope.vToggle = function (id) {
             console.log(id);
             $scope.glmol.vToggle(id);
 //            console.log('toggle', id);
 //            console.log(parentList);
-//            var parent = ctrl.pdbs[id];
+//            var parent = $scope.pdbs[id];
 //            parent.visible = !parent.visible;
 //            // Traverse object
 //            parent.traverse(function (child) {
@@ -296,36 +297,36 @@ angular.module('app.controllers', [])
 //            parentList.chains.forEach(function (chain) {
 //                if(parent.visible === false) { // turned off
 //                    console.log('OFF');
-//                     ctrl.chainUtil.bgOff(chain)
+//                     $scope.chainUtil.bgOff(chain)
 //                }
 //                else { // turned on
 //                    console.log('ON');
-//                    ctrl.chainUtil.bgOn(chain, parentList);
+//                    $scope.chainUtil.bgOn(chain, parentList);
 //                }
 //            })
         }
 
         //toggle surf object visibility
-        ctrl.surfToggle = function (id) {
+        $scope.surfToggle = function (id) {
             console.log('toggle', id);
-            ctrl.surfs[id].visible = !ctrl.surfs[id].visible;
+            $scope.surfs[id].visible = !$scope.surfs[id].visible;
         }
 
-        ctrl.chainUtil = {};
+        $scope.chainUtil = {};
         // Toggle a pdb's chain visibility
-        ctrl.chainUtil.vToggle = function (pdbId, chain) {
+        $scope.chainUtil.vToggle = function (pdbId, chain) {
             // Toggle visible
-            var currentChain = _.where(ctrl.pdbs[pdbId].children, {'chainId': chain.id})[0];
+            var currentChain = _.where($scope.pdbs[pdbId].children, {'chainId': chain.id})[0];
             currentChain.visible = !currentChain.visible;
         }
-        ctrl.chainUtil.bgOff = function (chain) {
+        $scope.chainUtil.bgOff = function (chain) {
             chain.style['background-color'] = '#777';
         };
-        ctrl.chainUtil.bgOn = function (chain, parent) {
+        $scope.chainUtil.bgOn = function (chain, parent) {
             chain.style['background-color'] = parent.style['border-top-color'];
         };
         // Change background-color
-        ctrl.chainUtil.bgToggle = function (chain, parent) {
+        $scope.chainUtil.bgToggle = function (chain, parent) {
             if (chain.style['background-color'] !== '#777') {
                 chain.style['background-color'] = '#777';
             }
@@ -333,7 +334,7 @@ angular.module('app.controllers', [])
                 chain.style['background-color'] = parent.style['border-top-color'];
             }
         }
-        ctrl.chainUtil.toggle = function (pdbId, chain, parent) {
+        $scope.chainUtil.toggle = function (pdbId, chain, parent) {
             this.bgToggle(chain, parent);
             this.vToggle(pdbId, chain);
         }
@@ -342,8 +343,8 @@ angular.module('app.controllers', [])
         //  ==========
         // =====================================================
         console.log('Fetching 103M..');
-        ctrl.input.name = '103M';
-        ctrl.fetch('103M');
+        $scope.input.name = '103M';
+        $scope.fetch('103M');
         // =====================================================
         //  ==========
         // =====================================================

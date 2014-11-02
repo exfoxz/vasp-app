@@ -28,18 +28,39 @@
                             <!--<div class="panel-heading">-->
                                 <!--<h3 class="panel-title">PDB</h3>-->
                             <!--</div>-->
-                            <div ng-show="nope" class="panel-body panel-body-custom">
+                            <div ng-show="nope" class="panel-body panel-body-custom bg-primary">
                                 Drag ZONE
                             </div>
                             <!--<div class="panel-footer">-->
                                 <div class="input-group panel-footer">
-                                    <span class="input-group-addon">ID:</span>
-                                    <input type="text" class="form-control" placeholder="PDB file">
+                                    <!--<span class="input-group-addon">ID:</span>-->
+                                    <input type="text" ng-model='input.name' class="form-control" placeholder="PDB file">
                                      <span class="input-group-btn">
-        <button class="btn btn-default" type="button">Go!</button>
+        <button class="btn btn-default" ng-click="fetch(input.name)" type="button">Go!</button>
       </span>
                                 </div>
                             <!--</div>-->
+                        </div>
+                    </section>
+                    <section class="floating-com">
+                        <div class="panel panel-default panel-custom">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Structures</h3>
+                            </div>
+                            <div ng-hide="nope" class="panel-body panel-body-custom bg-primary">
+
+                            </div>
+                        </div>
+                    </section>
+                    <section class="floating-com">
+                        <div class="panel panel-default panel-custom">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Surfaces</h3>
+
+                            </div>
+                            <div ng-hide="nope" class="panel-body panel-body-custom">
+
+                            </div>
                         </div>
                     </section>
                 </div>
