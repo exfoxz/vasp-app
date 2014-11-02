@@ -10,170 +10,72 @@
         <link href="css/styles.css" rel="stylesheet">
     </head>
 
-    <body ng-app="app" ng-controller='objCtrl as ctrl'>
+    <body ng-app="app" ng-controller='mainCtrl'>
     <div class="wrapper">
-        <div class="box">
-            <div class="row row-offcanvas row-offcanvas-right">
-                <!-- sidebar -->
-                <div class="column col-sm-2 col-xs-1 sidebar-offcanvas" id="sidebar">
-                    <div class="sidebar-offcanvas sidebar-header">
-                        <a href="/" class="navbar-brand logo">
-                            <span>VASPi <span class="glyphicon glyphicon-heart"></span></span>
-                        </a>
-                        <ul class="nav">
-                            <li><a href="#" data-toggle="offcanvas" class="visible-xs text-center"><i class="glyphicon glyphicon-chevron-right">X</i></a></li>
-                        </ul>
-
-                         <!-- NAV MENU -->
-                        <ul class="nav hidden-xs" id="lg-menu">
-                        </ul>
-                        <!-- /NAV MENU -->
-                    </div>
-                   <div class="sidebar-main">
-                        <div class="sidebar-main-first">
-                            <!--Structure component-->
-                            <header>
-                                <ul class="nav hidden-xs" id="lg-menu">
-                                    <li class="active">
-                                        <a>
-                                            <i class="glyphicon glyphicon-th-list"></i> Structures
-                                        </a>
-                                    </li>
-                                </ul>
-                            </header>
-                            <!-- Input group for PDBs -->
-                            <div class="input-group">
-                                <input type="text" ng-model='ctrl.input.name' placeholder="Enter protein's name" class="form-control">
-                                <span class="input-group-addon input-group-addon-middle" ng-click="ctrl.colorPicker()" ng-style="ctrl.proteinStyle"></span>
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button" ng-click="ctrl.fetch(ctrl.input.name)">Go!</button>
-                                </span>
+        <!--<div class="box">-->
+            <!-- editor -->
+        <div class="canvas-container">
+            <!--<div ng-show="progress.started"><progressbar  ng-class='progress.class' class="progress-striped active" type='success' value="progress.value"></progressbar></div>-->
+            <!--<div class="cover" ng-show="showCover">-->
+            <!--<div ng-view></div>-->
+            <!--</div>-->
+            <!--<div ng-view class="cover" ng-show="showCover"></div>-->
+            <div id="canvas">
+                <!--<img src="assets/15.jpg" class="img">-->
+                <div class="floating">
+                    <!--<h1> This is how floating feels like </h1>-->
+                    <section ng-click="test2()" class="floating-com">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Hide Panel title</h3>
                             </div>
-                            <!--Structure list-->
-                            <ul class="list-group">
-                                <li class="list-group-item" ng-repeat="item in ctrl.pdbList" ng-style="item.style">
-                                    <code>{{item.id}}</code>
-                                    <input type="checkbox" checked name="toggle" ng-click="ctrl.vToggle(item.id, item)" class="btn sidebar-list-item">
-                                    <span ng-hide="item.fetched" class="spin-loader glyphicon glyphicon-repeat"></span>
-                                    <span ng-repeat="chain in item.chains" ng-style="chain.style" class="badge" ng-click="ctrl.chainUtil.toggle(item.id, chain, item)">{{chain.id}}</span>
-                                </li>
-                            </ul>
-                            <!--/Structure list-->
-                        </div>
-                       <div class="sidebar-main-second">
-                           <!--Surface component-->
-                           <header>
-                               <ul class="nav hidden-xs" id="lg-menu">
-                                   <li class="active">
-                                       <a>
-                                           <i class="glyphicon glyphicon-th-list"></i> Surfaces
-                                       </a>
-                                   </li>
-                               </ul>
-                           </header>
-                           <!-- file uploader -->
-                           <div>
-                               <input type="file" class="uploader" id="fileinput" fileread="ctrl.readerCallback">
-                               <div class="drop-box" ng-file-drop="ctrl.onFileSelect($files)" ng-file-drag-over-class="ctrl.className"
-                                    ng-show="true">drop files here</div>
-                           </div>
-                           <!-- /file uploader -->
-
-                           <!--Surface list-->
-                           <ul class="list-group">
-                               <li class="list-group-item" draggable droppable item="{{item.id}}" ondrop="ctrl.vasp" ng-repeat="item in ctrl.surfaces" ng-style="item.style"><code>{{item.id}}</code><input type="checkbox" checked name="toggle" ng-click="ctrl.surfToggle(item.id)" class="btn sidebar-list-item"><span class="glyphicon glyphicon-eye-open "></span></li>
-                           </ul>
-                           <!--/Surface list-->
-
-                           <button class="btn btn-primary" ng-click="ctrl.csgTest()"> CSG </button>
-                           <button class="btn btn-primary" ng-click="ctrl.test()"> CSG </button>
-                       </div>
-                   </div>
-
-                    <!-- tiny only nav-->
-                    <ul class="nav visible-xs" id="xs-menu">
-                        <li><a href="#featured" class="text-center"><i class="glyphicon glyphicon-list-alt"></i></a></li>
-                        <li><a href="#stories" class="text-center"><i class="glyphicon glyphicon-list"></i></a></li>
-                        <li><a href="#" class="text-center"><i class="glyphicon glyphicon-paperclip"></i></a></li>
-                        <li><a href="#" class="text-center"><i class="glyphicon glyphicon-refresh"></i></a></li>
-                    </ul>
-
-                </div>
-                <!-- /sidebar -->
-
-                <!-- main right col -->
-                <div class="column col-sm-10 col-xs-11" id="main">
-                    <!-- top nav -->
-                        <div class="navbar navbar-blue">
-                            <div class="navbar-header">
-                                <button class="navbar-toggle"
-                                        type="button"
-                                        data-toggle="collapse" data-target=".navbar-collapse">
-                                    <span class="sr-only">Toggle</span>
-                                    <span class="icon-bar"></span>
-                                    <span class="icon-bar"></span>
-                                    <span class="icon-bar"></span>
-                                </button>
+                            <div ng-show="nope" class="panel-body">
+                                Panel content
                             </div>
-                            <nav class="collapse navbar-collapse" role="navigation">
-                                <ul class="nav navbar-nav">
-                                    <li ng-click="ctrl.test()">
-                                        <a href="#"><i class="glyphicon glyphicon-home"></i> Home</a>
-                                    </li>
-                                    <li ng-click="ctrl.toggleRotation()">
-                                        <a href="#"><i class="glyphicon glyphicon-play-circle"></i> Rotation</a>
-                                    </li>
-                                    <li ng-click="ctrl.save()">
-                                        <a href="#"><i class="glyphicon glyphicon-floppy-disk"></i> Save</a>
-                                    </li>
-                                </ul>
-                                <!--                            <ul class="nav navbar-nav navbar-right">
-                                                                <li class="dropdown">
-                                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i></a>
-                                                                    <ul class="dropdown-menu">
-                                                                        <li><a href="">More</a></li>
-                                                                        <li><a href="">More</a></li>
-                                                                    </ul>
-                                                                </li>
-                                                            </ul>-->
-                            </nav>
                         </div>
-                    <!-- /top nav -->
-
-                    <!-- editor -->
-                    <div class="canvas-container" ng-controller="canvasCtrl">
-                        <div ng-show="progress.started"><progressbar  ng-class='progress.class' class="progress-striped active" type='success' value="progress.value"></progressbar></div>
-                        <!--<div class="cover" ng-show="showCover">-->
-                            <!--<div ng-view></div>-->
-                        <!--</div>-->
-                        <div ng-view class="cover" ng-show="showCover"></div>
-                        <div id="canvas">
-                            <img src="assets/15.jpg" class="img">
-                            <h1 id="welcome">{{Canvas.welcomeMessage}}</h1>
+                    </section>
+                    <section class="floating-com">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Show Panel title</h3>
+                            </div>
+                            <div ng-show="!nope" class="panel-body">
+                                Panel content
+                            </div>
                         </div>
-                    </div>
-                    <!-- /editor -->
+                    </section>
+                    <section class="floating-com">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Panel title</h3>
+                            </div>
+                            <div ng-show="!nope" class="panel-body">
+                                Panel content
+                            </div>
+                        </div>
+                    </section>
                 </div>
-                <!-- /main -->
-
+                <h1 id="welcome">{{Canvas.welcomeMessage}}</h1>
             </div>
         </div>
+            <!-- /editor -->
+        <!--</div>-->
     </div>
     <!-- Lo-Dash -->
-    <!--<script src="js/lodash.js"></script>-->
+    <script src="js/lodash.js"></script>
     <!--jQuery-->
-    <!--<script src="js/jquery.min.js"></script>-->
+    <script src="js/jquery.min.js"></script>
     <!--AngularJS-->
-    <!--<script src="js/angular-file-upload-shim.min.js"></script>-->
-    <!--<script src="js/angular.min.js"></script>-->
-    <!--<script src="js/angular-file-upload.min.js"></script>-->
-    <!--<script src="js/angular-route.js"></script>-->
-    <!--<script src="js/angular-ui-router.min.js"></script>-->
+    <script src="js/angular-file-upload-shim.min.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-file-upload.min.js"></script>
+    <script src="js/angular-route.js"></script>
+    <script src="js/angular-ui-router.min.js"></script>
     <!--Bootstrap-->
-    <!--<script src="js/bootstrap.js"></script>-->
-    <!--<script src="js/ui-bootstrap-tpls-0.11.0.js"></script>-->
-    <script src="js/build/lib.js"></script>
-    <!-- Socket IO -->
+    <script src="js/bootstrap.js"></script>
+    <script src="js/bootstrap-ui.js"></script>
+    <!--<script src="js/build/lib.js"></script>-->
+     <!--Socket IO -->
     <!--<script src="https://cdn.socket.io/socket.io-1.0.6.js"></script>-->
     <!-- App's js -->
     <script src="js/ng.js"></script>
@@ -190,7 +92,7 @@
     <!--<script src="js/parser.js"></script>-->
     <script src="js/GLmol.js"></script>
     <!-- GRUNT -->
-    <script src="//localhost:35729/livereload.js"></script>
+    <!--<script src="//localhost:35729/livereload.js"></script>-->
 
     </body>
 </html>

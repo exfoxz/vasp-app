@@ -1,0 +1,86 @@
+<!-- sidebar -->
+<div class="column col-sm-2 col-xs-1 sidebar-offcanvas" id="sidebar">
+    <div class="sidebar-offcanvas sidebar-header">
+        <a href="/" class="navbar-brand logo">
+            <span>VASPi <span class="glyphicon glyphicon-heart"></span></span>
+        </a>
+        <ul class="nav">
+            <li><a href="#" data-toggle="offcanvas" class="visible-xs text-center"><i class="glyphicon glyphicon-chevron-right">X</i></a></li>
+        </ul>
+
+        <!-- NAV MENU -->
+        <ul class="nav hidden-xs" id="lg-menu">
+        </ul>
+        <!-- /NAV MENU -->
+    </div>
+    <div class="sidebar-main">
+        <div class="sidebar-main-first">
+            <!--Structure component-->
+            <header>
+                <ul class="nav hidden-xs" id="lg-menu">
+                    <li class="active">
+                        <a>
+                            <i class="glyphicon glyphicon-th-list"></i> Structures
+                        </a>
+                    </li>
+                </ul>
+            </header>
+            <!-- Input group for PDBs -->
+            <div class="input-group">
+                <input type="text" ng-model='ctrl.input.name' placeholder="Enter protein's name" class="form-control">
+                <span class="input-group-addon input-group-addon-middle" ng-click="ctrl.colorPicker()" ng-style="ctrl.proteinStyle"></span>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" ng-click="ctrl.fetch(ctrl.input.name)">Go!</button>
+                                </span>
+            </div>
+            <!--Structure list-->
+            <ul class="list-group">
+                <li class="list-group-item" ng-repeat="item in ctrl.pdbList" ng-style="item.style">
+                    <code>{{item.id}}</code>
+                    <input type="checkbox" checked name="toggle" ng-click="ctrl.vToggle(item.id, item)" class="btn sidebar-list-item">
+                    <span ng-hide="item.fetched" class="spin-loader glyphicon glyphicon-repeat"></span>
+                    <span ng-repeat="chain in item.chains" ng-style="chain.style" class="badge" ng-click="ctrl.chainUtil.toggle(item.id, chain, item)">{{chain.id}}</span>
+                </li>
+            </ul>
+            <!--/Structure list-->
+        </div>
+        <div class="sidebar-main-second">
+            <!--Surface component-->
+            <header>
+                <ul class="nav hidden-xs" id="lg-menu">
+                    <li class="active">
+                        <a>
+                            <i class="glyphicon glyphicon-th-list"></i> Surfaces
+                        </a>
+                    </li>
+                </ul>
+            </header>
+            <!-- file uploader -->
+            <div>
+                <input type="file" class="uploader" id="fileinput" fileread="ctrl.readerCallback">
+                <div class="drop-box" ng-file-drop="ctrl.onFileSelect($files)" ng-file-drag-over-class="ctrl.className"
+                     ng-show="true">drop files here</div>
+            </div>
+            <!-- /file uploader -->
+
+            <!--Surface list-->
+            <ul class="list-group">
+                <li class="list-group-item" draggable droppable item="{{item.id}}" ondrop="ctrl.vasp" ng-repeat="item in ctrl.surfaces" ng-style="item.style"><code>{{item.id}}</code><input type="checkbox" checked name="toggle" ng-click="ctrl.surfToggle(item.id)" class="btn sidebar-list-item"><span class="glyphicon glyphicon-eye-open "></span></li>
+            </ul>
+            <!--/Surface list-->
+
+            <button class="btn btn-primary" ng-click="ctrl.csgTest()"> CSG </button>
+            <button class="btn btn-primary" ng-click="ctrl.test()"> CSG </button>
+        </div>
+    </div>
+
+    <!-- tiny only nav-->
+    <ul class="nav visible-xs" id="xs-menu">
+        <li><a href="#featured" class="text-center"><i class="glyphicon glyphicon-list-alt"></i></a></li>
+        <li><a href="#stories" class="text-center"><i class="glyphicon glyphicon-list"></i></a></li>
+        <li><a href="#" class="text-center"><i class="glyphicon glyphicon-paperclip"></i></a></li>
+        <li><a href="#" class="text-center"><i class="glyphicon glyphicon-refresh"></i></a></li>
+    </ul>
+
+</div>
+<!-- /sidebar -->

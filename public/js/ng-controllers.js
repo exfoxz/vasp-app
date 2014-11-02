@@ -5,9 +5,13 @@
 
 'use strict';
 angular.module('app.controllers', [])
-    .controller('objCtrl', function ($scope, $http, $timeout, $q, Rainbow, $location, promiseWrapper, Surface) {
+    .controller('mainCtrl', function ($scope, $http, $timeout, $q, Rainbow, $location, promiseWrapper, Surface) {
         var ctrl = this;
-
+        $scope.nope = true;
+        $scope.test2 = function () {
+            console.log('Test');
+            $scope.nope = !$scope.nope;
+        }
         // Init scene
         $scope.glmol = new GLmol('glmolX', true, 'canvas');
         $scope.glmol.init();
@@ -114,6 +118,7 @@ angular.module('app.controllers', [])
             console.log('No color, default to red');
             ctrl.setColor(ctrl.colorIndex++);
         }
+
         /** Get atoms from server and add it to scene */
         ctrl.fetch = $scope.fetch = function (id) {
 //            check for undefined or empty input
@@ -319,10 +324,25 @@ angular.module('app.controllers', [])
             this.bgToggle(chain, parent);
             this.vToggle(pdbId, chain);
         }
-    })
 
+        // =====================================================
+        //  ==========
+        // =====================================================
+        console.log('Fetching 103M..');
+        ctrl.input.name = '103M';
+        ctrl.fetch('103M');
+        // =====================================================
+        //  ==========
+        // =====================================================
+
+    })
     .controller('canvasCtrl', function ($scope, clog) {
         clog('CANVAS CTRL INIT', 'info');
+        $scope.nope = true;
+        $scope.test = function () {
+            console.log('Toggle...');
+            $scope.nope = !$scope.nope;
+        }
         var s = $scope;
         s.showCover = false;
         s.toggleCover = function () {
