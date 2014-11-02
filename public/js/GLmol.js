@@ -1628,7 +1628,7 @@ GLmol.prototype.setBackground = function(hex, a) {
 GLmol.prototype.initializeScene = function() {
    // CHECK: Should I explicitly call scene.deallocateObject?
    this.scene = new THREE.Scene();
-   this.scene.fog = new THREE.Fog(this.bgColor, 100, 200);
+   this.scene.fog = new THREE.Fog(0xffffff, 1000, 2000);
 
    this.modelGroup = new THREE.Object3D();
    this.surfGroup = new THREE.Object3D();
@@ -1686,25 +1686,26 @@ GLmol.prototype.loadMoleculeStr = function(repressZoom, id) {
 //   this.show();
  };
 
+    //TODO: change fog settings?
 GLmol.prototype.setSlabAndFog = function() {
-   var center = this.rotationGroup.position.z - this.camera.position.z;
-   if (center < 1) center = 1;
-   this.camera.near = center + this.slabNear;
-   if (this.camera.near < 1) this.camera.near = 1;
-   this.camera.far = center + this.slabFar;
-   if (this.camera.near + 1 > this.camera.far) this.camera.far = this.camera.near + 1;
-   if (this.camera instanceof THREE.PerspectiveCamera) {
-      this.camera.fov = this.fov;
-   } else {
-      this.camera.right = center * Math.tan(Math.PI / 180 * this.fov);
-      this.camera.left = - this.camera.right;
-      this.camera.top = this.camera.right / this.ASPECT;
-      this.camera.bottom = - this.camera.top;
-   }
-   this.camera.updateProjectionMatrix();
-   this.scene.fog.near = this.camera.near + this.fogStart * (this.camera.far - this.camera.near);
-//   if (this.scene.fog.near > center) this.scene.fog.near = center;
-   this.scene.fog.far = this.camera.far;
+//   var center = this.rotationGroup.position.z - this.camera.position.z;
+//   if (center < 1) center = 1;
+//   this.camera.near = center + this.slabNear;
+//   if (this.camera.near < 1) this.camera.near = 1;
+//   this.camera.far = center + this.slabFar;
+//   if (this.camera.near + 1 > this.camera.far) this.camera.far = this.camera.near + 1;
+//   if (this.camera instanceof THREE.PerspectiveCamera) {
+//      this.camera.fov = this.fov;
+//   } else {
+//      this.camera.right = center * Math.tan(Math.PI / 180 * this.fov);
+//      this.camera.left = - this.camera.right;
+//      this.camera.top = this.camera.right / this.ASPECT;
+//      this.camera.bottom = - this.camera.top;
+//   }
+//   this.camera.updateProjectionMatrix();
+//   this.scene.fog.near = this.camera.near + this.fogStart * (this.camera.far - this.camera.near);
+////   if (this.scene.fog.near > center) this.scene.fog.near = center;
+//   this.scene.fog.far = this.camera.far;
 };
 
 GLmol.prototype.enableMouse = function() {
