@@ -12,6 +12,19 @@ angular.module('app.controllers', [])
             console.log('Test');
             $scope.nope = !$scope.nope;
         }
+
+        $scope.floatingClass = 'floating-blur';
+        $scope.mouseFloating = function () {
+            if(this.mouseover) {
+                console.log(this);
+                $scope.floatingClass = 'floating-blur';
+                this.mouseover = false;
+            } else {
+                console.log(this);
+                $scope.floatingClass = 'floating-show';
+                this.mouseover = true;
+            }
+        };
         // Init scene
         $scope.glmol = new GLmol('glmolX', true, 'canvas');
         $scope.glmol.init();

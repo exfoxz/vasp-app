@@ -22,36 +22,24 @@
             <!--<div ng-view class="cover" ng-show="showCover"></div>-->
             <div id="canvas">
                 <!--<img src="assets/15.jpg" class="img">-->
-                <div class="floating">
-                    <!--<h1> This is how floating feels like </h1>-->
-                    <section ng-click="test2()" class="floating-com">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Hide Panel title</h3>
-                            </div>
-                            <div ng-show="nope" class="panel-body">
-                                Panel content
-                            </div>
-                        </div>
-                    </section>
+                <div id="floating" class="floating {{floatingClass}}">
                     <section class="floating-com">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Show Panel title</h3>
+                        <div class="panel panel-default panel-custom">
+                            <!--<div class="panel-heading">-->
+                                <!--<h3 class="panel-title">PDB</h3>-->
+                            <!--</div>-->
+                            <div ng-show="nope" class="panel-body panel-body-custom">
+                                Drag ZONE
                             </div>
-                            <div ng-show="!nope" class="panel-body">
-                                Panel content
-                            </div>
-                        </div>
-                    </section>
-                    <section class="floating-com">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Panel title</h3>
-                            </div>
-                            <div ng-show="!nope" class="panel-body">
-                                Panel content
-                            </div>
+                            <!--<div class="panel-footer">-->
+                                <div class="input-group panel-footer">
+                                    <span class="input-group-addon">ID:</span>
+                                    <input type="text" class="form-control" placeholder="PDB file">
+                                     <span class="input-group-btn">
+        <button class="btn btn-default" type="button">Go!</button>
+      </span>
+                                </div>
+                            <!--</div>-->
                         </div>
                     </section>
                 </div>

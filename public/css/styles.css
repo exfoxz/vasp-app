@@ -1255,23 +1255,40 @@ hr {
     position: absolute;
     /*left: 20px;*/
     /*top: 20px;*/
-    z-index: 2;
+    z-index: 99;
     margin-left: 10px;
+    maring-top: 10px;
     background-color: transparent;
+
 }
 
-
+.floating-blur {
+    opacity: .9;
+}
+.floating-show {
+    opacity: 1;
+}
 .floating-com {
     margin-left: 10px;
     background-color: transparent;
     margin-top: 10px;
     width: 250px;
+    border: solid 2px blue;
 }
-.panel {
+
+.floating-sub {
+    z-index: 100;
+}
+.panel-custom {
     -moz-border-radius: 0px;
     -webkit-border-radius: 0px;
     border-radius: 0px;
     border: 0;
+    margin: 0;
+}
+
+.panel-body-custom {
+    color: black;
 }
 .panel-heading {
     border-bottom: 1px solid;
