@@ -69,7 +69,7 @@
                             <div ng-show="show.surfaces" class="panel-body panel-body-custom">
                                 <ul class="list-group">
                                     <li class="list-group-item" ng-repeat="item in pdbList" ng-style="item.style">
-                                        <code>{{item.id}}</code>
+                                        <code ng-bind="item.id"></code>
                                         <input type="checkbox" checked name="toggle" ng-click="vToggle(item.id, item)" class="btn sidebar-list-item">
                                         <span ng-hide="item.fetched" class="spin-loader glyphicon glyphicon-repeat"></span>
                                         <span ng-repeat="chain in item.chains" ng-style="chain.style" class="badge" ng-click="chainUtil.toggle(item.id, chain, item)">{{chain.id}}</span>
