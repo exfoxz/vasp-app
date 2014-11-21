@@ -17,8 +17,4 @@ app.config(['$locationProvider','$routeProvider', function ($locationProvider, $
                 }
             }
         });
-//        .otherwise({
-//            redirectTo: '/'
-//        });
-
 }]);

@@ -24,7 +24,8 @@ angular.module('app.controllers', [])
 
         // Url for server to fetch information
 //        var serverUrl = 'http://localhost:8000/';
-        var serverUrl = 'http://54.64.25.255:8000/';
+        var serverUrl = 'http://vaspapp.com:8000/';
+
         function init(scope) {
             //dummy object for input
             scope.input = {};
@@ -47,17 +48,10 @@ angular.module('app.controllers', [])
 
         init($scope);
 
-        // Save current workspace info to server
-
-        // Toggle camera rotation
-
         /** reset $scope.input */
         $scope.input.reset = function () {
             $scope.input.name = '';
         };
-
-        // Object for progress feedback
-
         //welcome message
         $scope.welcomeMessage = "<- Enter a protein's name and click Go! to get started!";
 
@@ -67,10 +61,6 @@ angular.module('app.controllers', [])
         $scope.colorIndex = 0;
         //color index for surf
         $scope.surfColorIndex = 0;
-
-        //set color for protein
-
-        // Check for empty color, default to red
 
         /** Get atoms from server and add it to scene */
         $scope.fetch = function (id) {
@@ -82,9 +72,6 @@ angular.module('app.controllers', [])
                 $scope.fetchPdbAsync(id)
                     .success(function (data) {
                         console.log('Fetching', id, 'done.')
-                        // Hide progress bar
-//                        $scope.progress.fadeout();
-                        // Add to list of structures
                         var currentPDB = {id: id, style: {'border-top-color': $scope.currentColor}, chains: []};
                         $scope.pdbList.push(currentPDB);
                         $scope.show.structures = true;
@@ -114,15 +101,16 @@ angular.module('app.controllers', [])
 
         /** Get pdb with id and add to scene  */
         $scope.fetchPdbAsync = function (id) {
-            console.log($scope.toggleCover);
-            // Show progress bar
-//            $scope.progress.init();
-            //remove welcome message
-            if (angular.element('#welcome'))
-                angular.element('#welcome').remove();
             //reset input
             $scope.input.reset();
+            console.log('fetching... ' + id);
+            return $http.get(serverUrl + 'pdbs2/' + id);
+        };
 
+        /** Get pdb with id and add to scene  */
+        $scope.fetchPdbAsync = function (id) {
+            //reset input
+            $scope.input.reset();
             console.log('fetching... ' + id);
             return $http.get(serverUrl + 'pdbs2/' + id);
         };
