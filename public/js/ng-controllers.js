@@ -63,7 +63,7 @@ angular.module('app.controllers', [])
         $scope.surfColorIndex = 0;
 
         /** Get atoms from server and add it to scene */
-        $scope.fetch = function (id) {
+        $scope.fetchPdb = function (id) {
 //            check for undefined or empty input
             if ($scope.input.name == undefined || $scope.input.name == '') {
                 console.log('NO NAME');
@@ -99,6 +99,25 @@ angular.module('app.controllers', [])
             }
         };
 
+        /** Get Surf from server and add it to scene */
+        $scope.fetchSurf = function (id) {
+            console.log('FETCH SURF');
+            $scope.fetchSurfAsync(id)
+                .success(function (data) {
+                    console.log(data);
+                    $http.get(data.url)
+                        .success(function (data) {
+                            console.log(data);
+                        })
+                        .error(function (err) {
+                            console.log(err);
+                        })
+                })
+                .error(function (err) {
+                    console.log('ERROR: FetchSurf:', err);
+                })
+        }
+
         /** Get pdb with id and add to scene  */
         $scope.fetchPdbAsync = function (id) {
             //reset input
@@ -107,12 +126,16 @@ angular.module('app.controllers', [])
             return $http.get(serverUrl + 'pdbs2/' + id);
         };
 
-        /** Get pdb with id and add to scene  */
-        $scope.fetchPdbAsync = function (id) {
+        /** Get Surf with id and add to scene  */
+        $scope.fetchSurfAsync = function (id) {
+            console.log('Fetching surf...');
             //reset input
             $scope.input.reset();
-            console.log('fetching... ' + id);
-            return $http.get(serverUrl + 'pdbs2/' + id);
+
+            // Fetch
+            console.log(serverUrl +'pdb/surfgen/' + id);
+            return $http.get(serverUrl +'pdb/surfgen/' + id);
+
         };
 
         /** callback after surf file has been read */
@@ -217,7 +240,7 @@ angular.module('app.controllers', [])
         // =====================================================
         console.log('Fetching 103M..');
         $scope.input.name = '103M';
-        $scope.fetch('103M');
+        $scope.fetchPdb('103M');
         // =====================================================
         //  ==========
         // =====================================================
