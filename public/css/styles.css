@@ -1256,14 +1256,24 @@ hr {
     /*left: 20px;*/
     /*top: 20px;*/
     z-index: 99;
-    margin-left: 10px;
-    maring-top: 10px;
+    /*margin-left: 10px;*/
+    /*maring-top: 20px;*/
     background-color: transparent;
 
 }
 
-.floating-blur {
+#floating {
     opacity: .9;
+}
+
+#floating:hover {
+    opacity: 1;
+}
+.first {
+    padding-top: 3.5px;
+}
+.floating-blur {
+    opacity: 1;
 }
 .floating-show {
     opacity: 1;
@@ -1271,7 +1281,7 @@ hr {
 .floating-com {
     margin-left: 10px;
     background-color: transparent;
-    margin-top: 10px;
+    margin-top: 5px;
     width: 250px;
     /*border: solid 1px blue;*/
 }

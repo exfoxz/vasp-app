@@ -9,7 +9,6 @@
         <link href="css/bootstrap.css" rel="stylesheet">
         <link href="css/styles.css" rel="stylesheet">
     </head>
-
     <body ng-app="app" ng-controller='mainCtrl'>
     <div class="wrapper">
         <!--<div class="box">-->
@@ -23,13 +22,13 @@
             <div id="canvas">
                 <!--<img src="assets/15.jpg" class="img">-->
                 <div id="floating" class="floating {{floatingClass}}">
-                    <section class="floating-com">
+                    <section class="floating-com first">
                         <div class="panel panel-default panel-custom">
                             <!--<div class="panel-heading">-->
                                 <!--<h3 class="panel-title">PDB</h3>-->
                             <!--</div>-->
                             <div ng-show="show.dropzone" class="panel-body panel-body-custom bg-primary">
-                                Drag ZONE
+                                Drop ZONE
                             </div>
                             <!--<div class="panel-footer">-->
                                 <div class="input-group panel-footer">
@@ -46,13 +45,12 @@
                     <section class="floating-com">
                         <div class="panel panel-default panel-custom">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Structures</h3>
-                                <button class="btn btn-primary" ng-click="show.structures=!show.structures"> Toggle </button>
+                                <h3 class="panel-title" ng-click="show.structures=!show.structures">Structures</h3>
                             </div>
                             <div ng-show="show.structures" class="panel-body panel-body-custom bg-primary">
                                 <ul class="list-group">
                                     <li class="list-group-item" ng-repeat="item in pdbList" ng-style="item.style">
-                                        <code>{{item.id}}</code>
+                                        <code ng-bind="item.id"></code>
                                         <input type="checkbox" checked name="toggle" ng-click="vToggle(item.id, item)" class="btn sidebar-list-item">
                                         <span ng-hide="item.fetched" class="spin-loader glyphicon glyphicon-repeat"></span>
                                         <span ng-repeat="chain in item.chains" ng-style="chain.style" class="badge" ng-click="chainUtil.toggle(item.id, chain, item)">{{chain.id}}</span>
@@ -65,11 +63,18 @@
                     <section class="floating-com">
                         <div class="panel panel-default panel-custom">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Surfaces</h3>
+                                <h3 class="panel-title" ng-click="show.surfaces=!show.surfaces" >Surfaces</h3>
 
                             </div>
-                            <div ng-show="show.structures" class="panel-body panel-body-custom">
-
+                            <div ng-show="show.surfaces" class="panel-body panel-body-custom">
+                                <ul class="list-group">
+                                    <li class="list-group-item" ng-repeat="item in pdbList" ng-style="item.style">
+                                        <code>{{item.id}}</code>
+                                        <input type="checkbox" checked name="toggle" ng-click="vToggle(item.id, item)" class="btn sidebar-list-item">
+                                        <span ng-hide="item.fetched" class="spin-loader glyphicon glyphicon-repeat"></span>
+                                        <span ng-repeat="chain in item.chains" ng-style="chain.style" class="badge" ng-click="chainUtil.toggle(item.id, chain, item)">{{chain.id}}</span>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </section>

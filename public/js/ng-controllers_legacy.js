@@ -6,6 +6,13 @@
 'use strict';
 angular.module('app.controllers', [])
     .controller('mainCtrl', function ($scope, $http, $timeout, $q, Rainbow, $location, promiseWrapper, Surface) {
+        var ctrl = this;
+        $scope.nope = true;
+        $scope.test2 = function () {
+            console.log('Test');
+            $scope.nope = !$scope.nope;
+        }
+
         $scope.floatingClass = 'floating-blur';
         $scope.mouseFloating = function () {
             if(this.mouseover) {
@@ -28,11 +35,6 @@ angular.module('app.controllers', [])
         function init(scope) {
             //dummy object for input
             scope.input = {};
-            scope.show = {
-                dropzone: true,
-                surfaces: false,
-                structures: false
-            };
             //list of pdbs
             scope.pdbList = [];
             //list of pdbs meshes
@@ -41,22 +43,70 @@ angular.module('app.controllers', [])
             scope.surfaces = [];
             //list of surf meshes
             scope.surfs = {};
-
-            scope.progress = {};
         };
 
         init($scope);
 
         // Save current workspace info to server
+        $scope.save = function () {
+            // =====================================================
+            // Check SAVE conditions ===============================
+            // =====================================================
+            console.log($location.path());
+            // =====================================================
+            // Save camera position to a database ==================
+            // =====================================================
+            console.log('saving workspace');
+            var lastPosition = SCENE.methods.savePosition();
+            // Get ids for all the current pdbs
+            var pdbs = [];
+            $scope.pdbList.forEach(function (data) {
+                pdbs.push(data.id);
+            });
+            // TODO: Surf files data?
+            console.log('POST to workspace/save');
+            // Do a POST request to server API
+            $http({method: 'POST', url: serverUrl + 'workspace/save', data: {pdbs: pdbs, cameraPosition: lastPosition}})
+                .success(function (data, status) {
+                    console.log('done POST save workspace');
+                    console.log(data);
+                   // Check status
+                   if(status === 200)
+                        // Change url without reloading
+                       $location.path(data.id);
+                })
+                .error(function (data, status) {
+                    // TODO: resolve POST error
+                    console.log('error');
+                });
+
+            // =====================================================
+            // END =================================================
+            // =====================================================
+        };
 
         // Toggle camera rotation
+        $scope.toggleRotation = function () {
+            console.log('toggle');
+            SCENE.methods.toggleRotation();
+        };
 
         /** reset $scope.input */
         $scope.input.reset = function () {
             $scope.input.name = '';
         };
-
         // Object for progress feedback
+        $scope.progress = $scope.progress = {started: false, value: 100, class: 'progress-init'};
+        $scope.progress.init = function () {
+            this.started = true;
+            this.class = 'progress-init';
+        };
+        $scope.progress.fadeout = function () {
+            this.class = 'fade-out';
+            $timeout(function () {
+                $scope.progress.started = false;
+            }, 1000);
+        };
 
         //welcome message
         $scope.welcomeMessage = "<- Enter a protein's name and click Go! to get started!";
@@ -69,25 +119,35 @@ angular.module('app.controllers', [])
         $scope.surfColorIndex = 0;
 
         //set color for protein
+        $scope.setColor = function (index) {
+            var hue = 60 * index;
+            $scope.currentColor = 'hsl(' + hue + ', 100%, 50%)';
+
+            $scope.proteinStyle = {'background-color': $scope.currentColor};
+        }
 
         // Check for empty color, default to red
+        if (!$scope.input.color) {
+            console.log('No color, default to red');
+            $scope.setColor($scope.colorIndex++);
+        }
 
         /** Get atoms from server and add it to scene */
-        $scope.fetch = function (id) {
+        $scope.fetch = $scope.fetch = function (id) {
 //            check for undefined or empty input
             if ($scope.input.name == undefined || $scope.input.name == '') {
                 console.log('NO NAME');
                 }
             else {
+                console.log('HERE');
                 $scope.fetchPdbAsync(id)
                     .success(function (data) {
                         console.log('Fetching', id, 'done.')
                         // Hide progress bar
-//                        $scope.progress.fadeout();
+                        $scope.progress.fadeout();
                         // Add to list of structures
                         var currentPDB = {id: id, style: {'border-top-color': $scope.currentColor}, chains: []};
                         $scope.pdbList.push(currentPDB);
-                        $scope.show.structures = true;
                         // =====================================================
                         //  ==========
                         // =====================================================
@@ -101,7 +161,7 @@ angular.module('app.controllers', [])
                             console.log(err)
                         });
                         $scope.pdbList.push()
-//                        $scope.setColor($scope.colorIndex++);
+                        $scope.setColor($scope.colorIndex++);
                     })
                     .error(function (err) {
                         //hide progress bar
@@ -116,7 +176,7 @@ angular.module('app.controllers', [])
         $scope.fetchPdbAsync = function (id) {
             console.log($scope.toggleCover);
             // Show progress bar
-//            $scope.progress.init();
+            $scope.progress.init();
             //remove welcome message
             if (angular.element('#welcome'))
                 angular.element('#welcome').remove();
@@ -147,6 +207,37 @@ angular.module('app.controllers', [])
             //add to an array of surf
             $scope.surfaces.push({id: id, style: {'border-top-color': color}});
             console.log($scope.surfaces)
+        };
+        $scope.csgTest = function () {
+            console.log('csgTest');
+            var meshes = [];
+            for(var i in $scope.surfs) {
+                meshes.push($scope.surfs[i])
+            };
+//            var cube_mesh1 = new THREE.Mesh(new THREE.CubeGeometry(10, 10, 10), new THREE.MeshLambertMaterial({color: new THREE.Color(0xff0000)}));
+//            var cube_mesh2 = new THREE.Mesh(new THREE.SphereGeometry(6, 32, 32), new THREE.MeshLambertMaterial({color: new THREE.Color(0xff0000)}));
+
+            var bsp1 = new ThreeBSP(meshes[0]);
+            var bsp2 = new ThreeBSP(meshes[1]);
+            console.log(bsp1);
+            console.log(bsp2);
+
+            var subtract_bsp = bsp1.union(bsp2);
+            var result = subtract_bsp.toMesh(new THREE.MeshLambertMaterial({ shading: THREE.SmoothShading, color: 0xff0000}));
+//
+            $scope.glmol.modelGroup.add(result);
+            $scope.glmol.show();
+        }
+
+        /* TEST Method */
+        $scope.test = function () {
+            Surface.getSurf('4TLM')
+                .success(function (data) {
+                    var raw = Surface.parser(data);
+                    $scope.glmol.addSurf(raw, 0xff0000);
+//                    var mesh = Surface.makeMesh(raw, 'red');
+//                    console.log(mesh);
+                })
         };
 
         /** Surface file reader */
@@ -188,7 +279,31 @@ angular.module('app.controllers', [])
 
         //toggle pdb object visibility
         $scope.vToggle = function (id) {
+            console.log(id);
             $scope.glmol.vToggle(id);
+//            console.log('toggle', id);
+//            console.log(parentList);
+//            var parent = $scope.pdbs[id];
+//            parent.visible = !parent.visible;
+//            // Traverse object
+//            parent.traverse(function (child) {
+//                // If child is parent, return
+//                if(!(child instanceof THREE.Mesh))
+//                    return;
+//                // Else, it's a child
+//                child.visible = parent.visible;
+//            });
+//
+//            parentList.chains.forEach(function (chain) {
+//                if(parent.visible === false) { // turned off
+//                    console.log('OFF');
+//                     $scope.chainUtil.bgOff(chain)
+//                }
+//                else { // turned on
+//                    console.log('ON');
+//                    $scope.chainUtil.bgOn(chain, parentList);
+//                }
+//            })
         }
 
         //toggle surf object visibility
