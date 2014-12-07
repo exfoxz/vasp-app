@@ -16,6 +16,10 @@
          Copyright (c) 2011 John Resig
  */
 
+/*
+    Modified and PDB, SURF, CSG, features added by exfoxz (Sam Nguyen)
+*/
+
 // Workaround for Intel GMA series (gl_FrontFacing causes compilation error)
 THREE.ShaderLib.lambert.fragmentShader = THREE.ShaderLib.lambert.fragmentShader.replace("gl_FrontFacing", "true");
 THREE.ShaderLib.lambert.vertexShader = THREE.ShaderLib.lambert.vertexShader.replace(/\}$/, "#ifdef DOUBLE_SIDED\n if (transformedNormal.z < 0.0) vLightFront = vLightBack;\n #endif\n }");
@@ -146,23 +150,17 @@ GLmol.prototype.create = function(id, suppressAutoload, canvas_id) {
         console.log("built scene in " + (+new Date() - time) + "ms");
     };
 
-    GLmol.prototype.addPDB = function (id, data, deferred) {
-        console.log('addPDB NEW!');
-        console.log(data);
-        if(!this.mainCentroid) {
+    GLmol.prototype.addPDB = function (id, data) {
+        if(!this.mainCentroid) { // If main centroid has not been set
             this.mainCentroid = data.centroid;
-        }
+        } //
         this.proteins[id] = data.protein;
         this.protein = data.protein;
-//        this.protein[id] = data.protein;
-//        console.log(this.protein);
         this.atoms[id] = data.atoms;
-//        this.atoms = _.clone(data.atoms);
-//        console.log(this.atoms);
-//        this.centroids[id] = data.centroid;
         this.centroids[id] = this.mainCentroid; // Changed to main centroid
+        console.log("CENTROID:");
+        console.log(this.mainCentroid);
         this.rebuildScene(id);
-        deferred.resolve('addPDB: Done');
     };
 
 GLmol.prototype.setupLights = function(scene) {
@@ -273,7 +271,7 @@ GLmol.prototype.parsePDB2 = function(str) {
    var molID;
 
    var atoms_cnt = 0;
-   lines = str.split("\n");
+   var lines = str.split("\n");
    for (var i = 0; i < lines.length; i++) {
       var line = lines[i].replace(/^\s*/, ''); // remove indent
       var recordName = line.substr(0, 6);
@@ -1437,7 +1435,7 @@ GLmol.prototype.colorByResidue = function(atomlist, residueColors) {
    for (var i in atomlist) {
       var atom = this.atoms[atomlist[i]]; if (atom == undefined) continue;
 
-      c = residueColors[atom.resn]
+      var c = residueColors[atom.resn]
       if (c != undefined) atom.color = c;
    }
 };
@@ -1672,7 +1670,7 @@ GLmol.prototype.rebuildScene = function(id) {
    this.defineRepresentation(id);
    this.setView(view);
 
-   console.log("builded scene in " + (+new Date() - time) + "ms");
+   console.log("built scene in " + (+new Date() - time) + "ms");
 };
 
 GLmol.prototype.loadMolecule = function(repressZoom) {
@@ -1901,38 +1899,37 @@ GLmol.prototype.doFunc = function(func) {
         var myFaces = data.faces;
         var objectCount = 2;
         var offset;
+        if(!this.mainCentroid) { // If main centroid has not been set
+            this.mainCentroid = findPrime(myCoordinates, data.numGeometry);
+        }
         //loop to add vertices
         for (var i = 0; i < myCoordinates.length; i += 6) {
-            addVertex(myCoordinates[i], myCoordinates[i + 1], myCoordinates[i + 2])
+            addVertex(myCoordinates[i], myCoordinates[i + 1], myCoordinates[i + 2], geometry)
         }
-
+        //loop to add faces
         for (var j = 0; j < myFaces.length; j += 3) {
-            addFace(myFaces[j], myFaces[j + 1], myFaces[j + 2]);
+            addFace(myFaces[j], myFaces[j + 1], myFaces[j + 2], geometry);
         }
 
         geometry.computeFaceNormals();
         geometry.computeVertexNormals();
 
-        //findPrime function to find xP, yP and zP
-        if (objectCount == 2) {
-            offset = findPrime(myCoordinates, data.numGeometry);
-        }
-
         //create a new object containing geometry
         var mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: color}));
-        mesh.position.set(-offset[0], -offset[1], -offset[2]);
+        mesh.position.set(-this.mainCentroid[0], -this.mainCentroid[1], -this.mainCentroid[2]);
         this.surfGroup.add(mesh);
         this.show();
         return mesh;
-
-        function addVertex(x, y, z) {
-            geometry.vertices.push(new THREE.Vector3(x, y, z));
-        }
-        function addFace(x, y, z) {
-            geometry.faces.push(new THREE.Face3(x, y, z));
-        }
     }
 
+    /** Add vertex to a geometry */
+    function addVertex(x, y, z, geometry) {
+        geometry.vertices.push(new THREE.Vector3(x, y, z));
+    }
+    /** Add face to a geometry */
+    function addFace(x, y, z, geometry) {
+        geometry.faces.push(new THREE.Face3(x, y, z));
+    }
     /** Find primes to position object to origin */
     function findPrime(myCoordinates, numGeometry) {
         var xPrime = 0, yPrime = 0, zPrime = 0;

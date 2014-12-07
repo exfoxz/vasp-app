@@ -5,7 +5,7 @@
 
 'use strict';
 angular.module('app.controllers', [])
-    .controller('mainCtrl', function ($scope, $http, $timeout, $q, Rainbow, $location, promiseWrapper, Surface) {
+    .controller('mainCtrl', function ($scope, $http, $timeout, $q, Rainbow, $location, Surface) {
         $scope.floatingClass = 'floating-blur';
         $scope.mouseFloating = function () {
             if(this.mouseover) {
@@ -22,9 +22,9 @@ angular.module('app.controllers', [])
         $scope.glmol = new GLmol('glmolX', true, 'canvas');
         $scope.glmol.init();
 
-        // Url for server to fetch information
-//        var serverUrl = 'http://localhost:8000/';
-        var serverUrl = 'http://vaspapp.com:8000/';
+        // Url for VASPI Server
+        var SERVER = 'http://localhost:8000/';
+        //var SERVER = 'http://vaspapp.com:8000/';
 
         function init(scope) {
             //dummy object for input
@@ -62,11 +62,11 @@ angular.module('app.controllers', [])
         //color index for surf
         $scope.surfColorIndex = 0;
 
-        /** Get atoms from server and add it to scene */
+        /** Get PDB info from server and add it to scene */
         $scope.fetchPdb = function (id) {
 //            check for undefined or empty input
             if ($scope.input.name == undefined || $scope.input.name == '') {
-                console.log('NO NAME');
+                    alert('Please enter PDB ID.');
                 }
             else {
                 $scope.fetchPdbAsync(id)
@@ -75,42 +75,36 @@ angular.module('app.controllers', [])
                         var currentPDB = {id: id, style: {'border-top-color': $scope.currentColor}, chains: []};
                         $scope.pdbList.push(currentPDB);
                         $scope.show.structures = true;
-                        // =====================================================
-                        //  ==========
-                        // =====================================================
                         console.log('PROMISE');
-                        promiseWrapper(function (deferred) {
-                            $scope.glmol.addPDB(id, data, deferred);
-                        }, function (status) {
-                            console.log(status);
-                            currentPDB.fetched = true;
-                        }, function (err) {
-                            console.log(err)
-                        });
-                        $scope.pdbList.push()
+                        $scope.glmol.addPDB(id, data);
+                        currentPDB.fetched = true; // Set fetched to true to show in list of PDBs
+
 //                        $scope.setColor($scope.colorIndex++);
                     })
                     .error(function (err) {
                         //hide progress bar
                         $scope.progress.started = false;
-                        console.log(err);
-                        reject(err);
+                        alert(err);
+                    })
+                    .then(function (progress) {
+                        console.log("fetchPdbAsync::Progress()");
+                        console.log(progress);
                     })
             }
         };
 
-        /** Get Surf from server and add it to scene */
+        /** Get Surf info from server and add it to scene */
         $scope.fetchSurf = function (id) {
-            console.log('FETCH SURF');
             $scope.fetchSurfAsync(id)
                 .success(function (data) {
                     console.log(data);
                     $http.get(data.url)
                         .success(function (data) {
                             console.log(data);
+                            $scope.glmol.addSurf(data, 0xff0000);
                         })
                         .error(function (err) {
-                            console.log(err);
+                            alert("Oops, something's wrong when retrieve SURF info", err);
                         })
                 })
                 .error(function (err) {
@@ -120,22 +114,20 @@ angular.module('app.controllers', [])
 
         /** Get pdb with id and add to scene  */
         $scope.fetchPdbAsync = function (id) {
-            //reset input
+            // Reset input
             $scope.input.reset();
-            console.log('fetching... ' + id);
-            return $http.get(serverUrl + 'pdbs2/' + id);
+            console.log('fetching PDB... ', id);
+            return $http.get(SERVER + 'pdbs/' + id);
         };
 
         /** Get Surf with id and add to scene  */
         $scope.fetchSurfAsync = function (id) {
-            console.log('Fetching surf...');
+            console.log('Fetching SURF...', id);
             //reset input
             $scope.input.reset();
-
             // Fetch
-            console.log(serverUrl +'pdb/surfgen/' + id);
-            return $http.get(serverUrl +'pdb/surfgen/' + id);
-
+            console.log(SERVER +'pdb/surfgen/' + id);
+            return $http.get(SERVER +'pdb/surfgen/' + id);
         };
 
         /** callback after surf file has been read */

@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width">
         <link href="css/bootstrap.css" rel="stylesheet">
         <link href="css/styles.css" rel="stylesheet">
+        <link href="bower_components/angular-loading-bar/build/loading-bar.min.css" rel="stylesheet">
     </head>
     <body ng-app="app" ng-controller='mainCtrl'>
     <div class="wrapper">
@@ -36,7 +37,7 @@
                                     <input type="text" ng-model='input.name' class="form-control" placeholder="PDB file">
                                      <span class="input-group-btn">
         <button class="btn btn-default" ng-click="fetchPdb(input.name)" type="button">Go!</button>
-        <button class="btn btn-default" ng-click="fetchSurf('103M')" type="button">Go Surf!</button>
+        <button class="btn btn-default" ng-click="fetchSurf(input.name)" type="button">Go Surf!</button>
       </span>
                                 </div>
                             <!--</div>-->
@@ -96,6 +97,7 @@
     <script src="js/angular-file-upload.min.js"></script>
     <script src="js/angular-route.js"></script>
     <script src="js/angular-ui-router.min.js"></script>
+    <script src="bower_components/angular-loading-bar/build/loading-bar.min.js"></script>
     <!--Bootstrap-->
     <script src="js/bootstrap.js"></script>
     <script src="js/bootstrap-ui.js"></script>
@@ -117,7 +119,6 @@
     <!--<script src="js/parser.js"></script>-->
     <script src="js/GLmol.js"></script>
     <!-- GRUNT -->
-    <!--<script src="//localhost:35729/livereload.js"></script>-->
-
+    <script src="//localhost:35729/livereload.js"></script>
     </body>
 </html>

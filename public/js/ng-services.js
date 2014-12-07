@@ -136,21 +136,6 @@ angular.module('app.services', [])
         }
         return log;
     })
-    .factory('promiseWrapper', function ($q) {
-        function wrapper(func, sHandler, eHandler, uHandler) {
-            deferred = $q.defer();
-            func(deferred);
-            var promise = deferred.promise;
-            promise.then(function (data) {
-                sHandler(data);
-            }, function (err) {
-                eHandler(err);
-            }, function (update) {
-                uHandler(update);
-            });
-        };
-        return wrapper;
-    })
     .factory('Surface', function ($http) {
         var Surface = {};
         var getSurfUrl = 'http://localhost:8000/pdbs/surfgen/';
