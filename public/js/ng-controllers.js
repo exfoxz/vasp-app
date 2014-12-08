@@ -36,13 +36,8 @@ angular.module('app.controllers', [])
             };
             //list of pdbs
             scope.pdbList = [];
-            //list of pdbs meshes
-            scope.pdbs = {};
-            //list of surfaces
-            scope.surfaces = [];
             //list of surf meshes
-            scope.surfs = {};
-
+            scope.surfList = [];
             scope.progress = {};
         };
 
@@ -101,6 +96,46 @@ angular.module('app.controllers', [])
                     $http.get(data.url)
                         .success(function (data) {
                             console.log(data);
+                            var currentSURF = {id: id, style: {'border-top-color': $scope.currentColor}};
+                            $scope.surfList.push(currentSURF);
+                            $scope.glmol.addSurf(data, 0xff0000);
+                        })
+                        .error(function (err) {
+                            alert("Oops, something's wrong when retrieve SURF info", err);
+                        })
+                })
+                .error(function (err) {
+                    console.log('ERROR: FetchSurf:', err);
+                })
+        }
+
+        /** Get Vasp info from server and add it to scene */
+        $scope.fetchVasp = function (id1, id2, op) {
+            $scope.fetchVaspAsync(id1, id2, op)
+                .success(function (data) {
+                    console.log(data);
+                    var id = data.id;
+                    var symbol = null;
+                    switch (op.toLowerCase()) {
+                        case 'u':
+                            symbol = ' \u222A ';
+                            break;
+                        case 'd':
+                            symbol = ' \u2207 ';
+                            break;
+                        case 'i':
+                            symbol = ' \u2229 ';
+                            break;
+                        default:
+                            alert('No such CSG operation!');
+                            return;
+                    }
+                    $http.get(data.url)
+                        .success(function (data) {
+                            data.id = id;
+                            console.log(data);
+                            var currentSURF = {id: id1 + symbol + id2, style: {'border-top-color': $scope.currentColor}};
+                            $scope.surfList.push(currentSURF);
                             $scope.glmol.addSurf(data, 0xff0000);
                         })
                         .error(function (err) {
@@ -128,6 +163,17 @@ angular.module('app.controllers', [])
             // Fetch
             console.log(SERVER +'pdb/surfgen/' + id);
             return $http.get(SERVER +'pdb/surfgen/' + id);
+        };
+
+        /** Get Vasp results with 2 ids and add to scene  */
+        $scope.fetchVaspAsync = function (id1, id2, op) {
+            console.log('Fetching VASP...', id1, id2, op);
+            //reset input
+            $scope.input.reset();
+            // Fetch
+            var vasp = 'vasp/?op=' + op + '&id=' + id1 + '+' + id2;
+            console.log(SERVER + vasp);
+            return $http.get(SERVER + vasp);
         };
 
         /** callback after surf file has been read */
@@ -190,14 +236,13 @@ angular.module('app.controllers', [])
         };
 
         //toggle pdb object visibility
-        $scope.vToggle = function (id) {
-            $scope.glmol.vToggle(id);
+        $scope.pdbToggle = function (id) {
+            $scope.glmol.pdbToggle(id);
         }
 
         //toggle surf object visibility
         $scope.surfToggle = function (id) {
-            console.log('toggle', id);
-            $scope.surfs[id].visible = !$scope.surfs[id].visible;
+            $scope.glmol.surfToggle(id);
         }
 
         $scope.chainUtil = {};
@@ -233,6 +278,7 @@ angular.module('app.controllers', [])
         console.log('Fetching 103M..');
         $scope.input.name = '103M';
         $scope.fetchPdb('103M');
+        $scope.fetchVasp('103M', '103D', 'u');
         // =====================================================
         //  ==========
         // =====================================================

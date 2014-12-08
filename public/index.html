@@ -36,8 +36,8 @@
                                     <!--<span class="input-group-addon">ID:</span>-->
                                     <input type="text" ng-model='input.name' class="form-control" placeholder="PDB file">
                                      <span class="input-group-btn">
-        <button class="btn btn-default" ng-click="fetchPdb(input.name)" type="button">Go!</button>
-        <button class="btn btn-default" ng-click="fetchSurf(input.name)" type="button">Go Surf!</button>
+        <button class="btn btn-default" ng-click="fetchPdb(input.name)" type="button">PDB</button>
+        <button class="btn btn-default" ng-click="fetchSurf(input.name)" type="button">Surf</button>
       </span>
                                 </div>
                             <!--</div>-->
@@ -53,7 +53,7 @@
                                 <ul class="list-group">
                                     <li class="list-group-item" ng-repeat="item in pdbList" ng-style="item.style">
                                         <code ng-bind="item.id"></code>
-                                        <input type="checkbox" checked name="toggle" ng-click="vToggle(item.id, item)" class="btn sidebar-list-item">
+                                        <input type="checkbox" checked name="toggle" ng-click="pdbToggle(item.id, item)" class="btn sidebar-list-item">
                                         <span ng-hide="item.fetched" class="spin-loader glyphicon glyphicon-repeat"></span>
                                         <span ng-repeat="chain in item.chains" ng-style="chain.style" class="badge" ng-click="chainUtil.toggle(item.id, chain, item)" ng-bind="chain.id"></span>
                                     </li>
@@ -70,9 +70,9 @@
                             </div>
                             <div ng-show="show.surfaces" class="panel-body panel-body-custom">
                                 <ul class="list-group">
-                                    <li class="list-group-item" ng-repeat="item in pdbList" ng-style="item.style">
+                                    <li class="list-group-item" ng-repeat="item in surfList" ng-style="item.style">
                                         <code ng-bind="item.id"></code>
-                                        <input type="checkbox" checked name="toggle" ng-click="vToggle(item.id, item)" class="btn sidebar-list-item">
+                                        <input type="checkbox" checked name="toggle" ng-click="surfToggle(item.id, item)" class="btn sidebar-list-item">
                                         <span ng-hide="item.fetched" class="spin-loader glyphicon glyphicon-repeat"></span>
                                         <span ng-repeat="chain in item.chains" ng-style="chain.style" class="badge" ng-click="chainUtil.toggle(item.id, chain, item)" ng-bind="chain.id"></span>
                                     </li>

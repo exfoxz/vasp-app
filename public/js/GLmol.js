@@ -158,8 +158,6 @@ GLmol.prototype.create = function(id, suppressAutoload, canvas_id) {
         this.protein = data.protein;
         this.atoms[id] = data.atoms;
         this.centroids[id] = this.mainCentroid; // Changed to main centroid
-        console.log("CENTROID:");
-        console.log(this.mainCentroid);
         this.rebuildScene(id);
     };
 
@@ -175,13 +173,25 @@ GLmol.prototype.setupLights = function(scene) {
    scene.add(ambientLight);
 };
     /* Toggle visibility of a pdb object */
-    GLmol.prototype.vToggle = function (id) {
+    GLmol.prototype.pdbToggle = function (id) {
 //        console.log(this.modelGroup);
         var currentPDB = _.where(this.modelGroup.children, {name: id})[0];
         // Toggle visible of group
         currentPDB.visible = !currentPDB.visible;
         // Toggle visible of children
         currentPDB.children.forEach(function (child) {
+            console.log(child);
+            child.visible = !child.visible;
+        })
+        this.show();
+    }
+    /* Toggle visibility of a surf object */
+    GLmol.prototype.surfToggle = function (id) {
+        var currentSURF = _.where(this.surfGroup.children, {name: id})[0];
+        // Toggle visible of group
+        currentSURF.visible = !currentSURF.visible;
+        // Toggle visible of children
+        currentSURF.children.forEach(function (child) {
             console.log(child);
             child.visible = !child.visible;
         })
@@ -1917,6 +1927,7 @@ GLmol.prototype.doFunc = function(func) {
         //create a new object containing geometry
         var mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: color}));
         mesh.position.set(-this.mainCentroid[0], -this.mainCentroid[1], -this.mainCentroid[2]);
+        mesh.name = data.id;
         this.surfGroup.add(mesh);
         this.show();
         return mesh;
