@@ -132,14 +132,10 @@ angular.module('app.controllers', [])
                     }
                     $http.get(data.url)
                         .success(function (data) {
-                            data.id = id;
-                            console.log(data);
-                            var currentSURF = {id: id1 + symbol + id2, style: {'border-top-color': $scope.currentColor}};
-                            $scope.surfList.push(currentSURF);
-                            $scope.glmol.addSurf(data, 0xff0000);
+                            console.log(data.length);
                         })
                         .error(function (err) {
-                            alert("Oops, something's wrong when retrieve SURF info", err);
+                            alert("Oops, something's wrong when retrieving SURF info", err);
                         })
                 })
                 .error(function (err) {
@@ -277,7 +273,7 @@ angular.module('app.controllers', [])
         // =====================================================
         console.log('Fetching 103M..');
         $scope.input.name = '103M';
-        $scope.fetchPdb('103M');
+        //$scope.fetchPdb('103M');
         $scope.fetchVasp('103M', '103D', 'u');
         // =====================================================
         //  ==========

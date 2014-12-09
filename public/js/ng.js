@@ -1,5 +1,5 @@
 'use strict';
-var app = angular.module('app', ['angular-loading-bar', 'ngRoute', 'app.controllers', 'app.directives', 'app.services', 'ui.bootstrap', 'angularFileUpload']);
+var app = angular.module('app', ['angular-loading-bar', 'ngRoute', 'app.controllers', 'app.directives', 'app.services', 'ui.bootstrap']);
 
 app.config(['$locationProvider','$routeProvider', function ($locationProvider, $routeProvider) {
 //    delete $httpProvider.defaults.headers.common['X-Requested-With'];
