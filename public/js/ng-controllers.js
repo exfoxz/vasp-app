@@ -67,13 +67,17 @@ angular.module('app.controllers', [])
                 $scope.fetchPdbAsync(id)
                     .success(function (data) {
                         console.log('Fetching', id, 'done.')
-                        var currentPDB = {id: id, style: {'border-top-color': $scope.currentColor}, chains: []};
-                        $scope.pdbList.push(currentPDB);
-                        $scope.show.structures = true;
-                        console.log('PROMISE');
-                        $scope.glmol.addPDB(id, data);
-                        currentPDB.fetched = true; // Set fetched to true to show in list of PDBs
-
+                        //var currentPDB = {id: id, style: {'border-top-color': $scope.currentColor}, chains: []};
+                        //$scope.pdbList.push(currentPDB);
+                        //$scope.show.structures = true;
+                        //console.log('PROMISE');
+                        //$scope.glmol.addPDB(id, data);
+                        //currentPDB.fetched = true; // Set fetched to true to show in list of PDBs
+                        console.log(data.url);
+                        $http.get(data.url)
+                            .success(function (d) {
+                                console.log(d);
+                            })
 //                        $scope.setColor($scope.colorIndex++);
                     })
                     .error(function (err) {
@@ -148,7 +152,7 @@ angular.module('app.controllers', [])
             // Reset input
             $scope.input.reset();
             console.log('fetching PDB... ', id);
-            return $http.get(SERVER + 'pdbs/' + id);
+            return $http.get(SERVER + 'pdb?op=surfgen&id=' + id);
         };
 
         /** Get Surf with id and add to scene  */
@@ -273,8 +277,8 @@ angular.module('app.controllers', [])
         // =====================================================
         console.log('Fetching 103M..');
         $scope.input.name = '103M';
-        //$scope.fetchPdb('103M');
-        $scope.fetchVasp('103M', '103D', 'u');
+        $scope.fetchPdb('103M');
+        //$scope.fetchVasp('103M', '103D', 'u');
         // =====================================================
         //  ==========
         // =====================================================
